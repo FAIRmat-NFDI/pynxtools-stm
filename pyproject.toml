@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64.0.1", "setuptools-scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pynxtools-stm"
+dynamic = ["version"]
+authors = [
+    { name = "The NOMAD Authors" },
+]
+description = "Extend NeXus for materials science experiment and serve as a NOMAD parser implementation for NeXus."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8,<3.11"
+classifiers = [
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "pynxtools",
+]
+
+[project.entry-points."pynxtools.reader.sts"]
+reader = "pynxtools_stm:STMReader"
