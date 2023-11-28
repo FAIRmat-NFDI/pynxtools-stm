@@ -23,5 +23,5 @@ dependencies = [
     "pynxtools",
 ]
 
-[project.entry-points."pynxtools.reader.sts"]
-reader = "pynxtools_stm:STMReader"
+[project.entry-points."pynxtools.reader"]
+sts = "pynxtools_stm.reader:STMReader"

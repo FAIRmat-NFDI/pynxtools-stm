@@ -20,32 +20,32 @@
 #
 
 
-from typing import Any, Dict, Tuple, Union
-from collections.abc import Callable
 import json
+from collections.abc import Callable
+from typing import Any, Dict, Tuple, Union
+
 import yaml
-
 from pynxtools.dataconverter.readers.base.reader import BaseReader
+from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
 from pynxtools.dataconverter.template import Template
-from pynxtools.dataconverter.readers.sts.sts_file_parser import from_dat_file_into_template
-from pynxtools.dataconverter.readers.sts.stm_file_parser import STM_Nanonis
-from pynxtools.dataconverter.readers.utils import flatten_and_replace, FlattenSettings
 
+from pynxtools_stm.stm_file_parser import STM_Nanonis
+from pynxtools_stm.sts_file_parser import from_dat_file_into_template
 
 CONVERT_DICT = {
-    'Instrument': 'INSTRUMENT[instrument]',
-    'Software': 'SOFTWARE[software]',
-    'Hardware': 'Hardware[hardware]',
-    'Analyser': 'ELECTRONANALYSER[electronanalyser]',
-    'Beam': 'BEAM[beam]',
-    'unit': '@units',
-    'version': '@version',
-    'Sample': 'SAMPLE[sample]',
-    'User': 'USER[user]',
-    'Data': 'DATA[data]',
-    'Source': 'SOURCE[source]',
-    'Environment': 'ENVIRONMENT[environment]',
-    'Sample_bias': 'SAMPLE_BIAS[sample_bias]'
+    "Instrument": "INSTRUMENT[instrument]",
+    "Software": "SOFTWARE[software]",
+    "Hardware": "Hardware[hardware]",
+    "Analyser": "ELECTRONANALYSER[electronanalyser]",
+    "Beam": "BEAM[beam]",
+    "unit": "@units",
+    "version": "@version",
+    "Sample": "SAMPLE[sample]",
+    "User": "USER[user]",
+    "Data": "DATA[data]",
+    "Source": "SOURCE[source]",
+    "Environment": "ENVIRONMENT[environment]",
+    "Sample_bias": "SAMPLE_BIAS[sample_bias]",
 }
 # For flatened key-value pair from nested dict.
 REPLACE_NESTED: Dict[str, str] = {}
@@ -57,7 +57,9 @@ class StmNanonisGeneric5e:
     vendor.
     """
 
-    def __call__(self, template: Dict, data_file: str, config_dict: str, eln_dict: Dict) -> None:
+    def __call__(
+        self, template: Dict, data_file: str, config_dict: str, eln_dict: Dict
+    ) -> None:
         """Convert class instace as callable function.
 
         Parameters
@@ -72,9 +74,9 @@ class StmNanonisGeneric5e:
             user provided dict
         """
 
-        STM_Nanonis(file_name=data_file).from_sxm_file_into_template(template,
-                                                                     config_dict,
-                                                                     eln_dict)
+        STM_Nanonis(file_name=data_file).from_sxm_file_into_template(
+            template, config_dict, eln_dict
+        )
 
 
 # pylint: disable=too-few-public-methods
@@ -82,7 +84,10 @@ class StsNanonisGeneric5e:
     """Class to handle 'sts' experiment of software version 'Generic 5e' from 'nanonis'
     vendor.
     """
-    def __call__(self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict) -> None:
+
+    def __call__(
+        self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict
+    ) -> None:
         """Convert class instace as callable function.
 
         Parameters
@@ -96,8 +101,7 @@ class StsNanonisGeneric5e:
         eln_dict : Dict
             user provided dict
         """
-        from_dat_file_into_template(template, data_file,
-                                    config_dict, eln_dict)
+        from_dat_file_into_template(template, data_file, config_dict, eln_dict)
 
 
 # pylint: disable=too-few-public-methods
@@ -116,11 +120,11 @@ class Spm:
     """
 
     # parser navigate type
-    par_nav_t = Dict[str, Union['par_nav_t', Callable]]
-    __parser_navigation: Dict[str, par_nav_t] = \
-        {'stm': {'nanonis': {'Generic 5e': StmNanonisGeneric5e}},
-            'sts': {'nanonis': {'Generic 5e': StsNanonisGeneric5e}}
-         }
+    par_nav_t = Dict[str, Union["par_nav_t", Callable]]
+    __parser_navigation: Dict[str, par_nav_t] = {
+        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric5e}},
+        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric5e}},
+    }
 
     def get_appropriate_parser(self, eln_dict: Dict) -> Callable:
         """Search for appropriate prser and pass it the reader.
@@ -141,26 +145,36 @@ class Spm:
         try:
             experiment_dict: Spm.par_nav_t = self.__parser_navigation[experiment_t]
         except KeyError as exc:
-            raise KeyError(f"Add correct experiment type in ELN file "
-                           f" from {list(self.__parser_navigation.keys())}.") from exc
+            raise KeyError(
+                f"Add correct experiment type in ELN file "
+                f" from {list(self.__parser_navigation.keys())}."
+            ) from exc
 
-        vendor_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/vendor"
+        vendor_key: str = (
+            "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/vendor"
+        )
         vendor_t: str = eln_dict[vendor_key]
         try:
             vendor_dict: Spm.par_nav_t = experiment_dict[vendor_t]  # type: ignore[assignment]
         except KeyError as exc:
-            raise KeyError(f"Add correct vendor name in ELN file "
-                           f" from {list(experiment_dict.keys())}.") from exc
+            raise KeyError(
+                f"Add correct vendor name in ELN file "
+                f" from {list(experiment_dict.keys())}."
+            ) from exc
 
-        software_v_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/@version"
+        software_v_key: str = (
+            "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/@version"
+        )
         software_v: str = eln_dict[software_v_key]
         try:
             parser_cls: Callable = vendor_dict[software_v]  # type: ignore[assignment]
             # cls instance
             parser = parser_cls()
         except KeyError as exc:
-            raise KeyError(f"Add correct software version in ELN file "
-                           f" from {list(vendor_dict.keys())}.") from exc
+            raise KeyError(
+                f"Add correct software version in ELN file "
+                f" from {list(vendor_dict.keys())}."
+            ) from exc
 
         # Return callable function
         return parser
@@ -168,17 +182,18 @@ class Spm:
 
 # pylint: disable=invalid-name, too-few-public-methods
 class STMReader(BaseReader):
-    """ Reader for XPS.
-    """
+    """Reader for XPS."""
 
     supported_nxdls = ["NXsts"]
 
-    def read(self,
-             template: dict = None,
-             file_paths: Tuple[str] = None,
-             objects: Tuple[Any] = None):
+    def read(
+        self,
+        template: dict = None,
+        file_paths: Tuple[str] = None,
+        objects: Tuple[Any] = None,
+    ):
         """
-            General read menthod to prepare the template.
+        General read menthod to prepare the template.
         """
         # has_sxm_file: bool = False
         # sxm_file: str = ""
@@ -191,20 +206,18 @@ class STMReader(BaseReader):
 
         data_file: str = ""
         for file in file_paths:
-            ext = file.rsplit('.', 1)[-1]
+            ext = file.rsplit(".", 1)[-1]
             fl_obj: object
-            if ext in ['sxm', 'dat']:
+            if ext in ["sxm", "dat"]:
                 data_file = file
-            if ext == 'json':
+            if ext == "json":
                 with open(file, mode="r", encoding="utf-8") as fl_obj:
                     config_dict = json.load(fl_obj)
-            if ext in ['yaml', 'yml']:
+            if ext in ["yaml", "yml"]:
                 with open(file, mode="r", encoding="utf-8") as fl_obj:
                     eln_dict = flatten_and_replace(
                         FlattenSettings(
-                            yaml.safe_load(fl_obj),
-                            CONVERT_DICT,
-                            REPLACE_NESTED
+                            yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED
                         )
                     )
 
@@ -213,14 +226,15 @@ class STMReader(BaseReader):
         parser(template, data_file, config_dict, eln_dict)
 
         for key, val in template.items():
-
             if val is None:
                 del template[key]
             else:
                 filled_template[key] = val
         if not filled_template.keys():
-            raise ValueError("Reader could not read anything! Check for input files and the"
-                             " corresponding extention.")
+            raise ValueError(
+                "Reader could not read anything! Check for input files and the"
+                " corresponding extention."
+            )
         return filled_template
 
 

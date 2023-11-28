@@ -23,16 +23,20 @@
 #
 
 
-from typing import Dict, Union, Tuple
 import logging
 import os
-import numpy as np
-from pynxtools.dataconverter.readers.sts.helper import (fill_template_from_eln_data,
-                                                        nested_path_to_slash_separated_path,
-                                                        work_out_overwriteable_field,
-                                                        link_seperation_from_hard_code,
-                                                        to_intended_t, UNIT_TO_SKIP)
+from typing import Dict, Tuple, Union
 
+import numpy as np
+
+from pynxtools_stm.helper import (
+    UNIT_TO_SKIP,
+    fill_template_from_eln_data,
+    link_seperation_from_hard_code,
+    nested_path_to_slash_separated_path,
+    to_intended_t,
+    work_out_overwriteable_field,
+)
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
