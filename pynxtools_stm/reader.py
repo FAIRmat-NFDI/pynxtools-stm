@@ -34,18 +34,14 @@ from pynxtools_stm.sts_file_parser import from_dat_file_into_template
 
 CONVERT_DICT = {
     "Instrument": "INSTRUMENT[instrument]",
-    "Software": "SOFTWARE[software]",
-    "Hardware": "Hardware[hardware]",
-    "Analyser": "ELECTRONANALYSER[electronanalyser]",
-    "Beam": "BEAM[beam]",
+    "Environment": "ENVIRONMENT[environment]",
+    "Sample_bias": "SAMPLE_BIAS[sample_bias]",
     "unit": "@units",
     "version": "@version",
     "Sample": "SAMPLE[sample]",
     "User": "USER[user]",
     "Data": "DATA[data]",
     "Source": "SOURCE[source]",
-    "Environment": "ENVIRONMENT[environment]",
-    "Sample_bias": "SAMPLE_BIAS[sample_bias]",
 }
 # For flatened key-value pair from nested dict.
 REPLACE_NESTED: Dict[str, str] = {}
@@ -60,7 +56,7 @@ class StmNanonisGeneric5e:
     def __call__(
         self, template: Dict, data_file: str, config_dict: str, eln_dict: Dict
     ) -> None:
-        """Convert class instace as callable function.
+        """Convert class instace as a callable function.
 
         Parameters
         ----------
@@ -88,7 +84,7 @@ class StsNanonisGeneric5e:
     def __call__(
         self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict
     ) -> None:
-        """Convert class instace as callable function.
+        """Convert class instace as callable a function.
 
         Parameters
         ----------
@@ -122,8 +118,10 @@ class Spm:
     # parser navigate type
     par_nav_t = Dict[str, Union["par_nav_t", Callable]]
     __parser_navigation: Dict[str, par_nav_t] = {
-        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric5e}},
-        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric5e}},
+        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric5e,
+                            "Generic 4.5": StmNanonisGeneric5e}},
+        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric5e,
+                            "Generic 4.5": StsNanonisGeneric5e}},
     }
 
     def get_appropriate_parser(self, eln_dict: Dict) -> Callable:
@@ -151,7 +149,7 @@ class Spm:
             ) from exc
 
         vendor_key: str = (
-            "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/vendor"
+            "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
         )
         vendor_t: str = eln_dict[vendor_key]
         try:
@@ -163,7 +161,7 @@ class Spm:
             ) from exc
 
         software_v_key: str = (
-            "/ENTRY[entry]/INSTRUMENT[instrument]/SOFTWARE[software]/@version"
+            "/ENTRY[entry]/INSTRUMENT[instrument]/software/@version"
         )
         software_v: str = eln_dict[software_v_key]
         try:
@@ -220,7 +218,6 @@ class STMReader(BaseReader):
                             yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED
                         )
                     )
-
         # Get callable object that has parser inside
         parser = Spm().get_appropriate_parser(eln_dict)
         parser(template, data_file, config_dict, eln_dict)
