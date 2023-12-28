@@ -275,9 +275,9 @@ class BiasSpecData_Nanonis():
     def get_flip_number(self, eln_dict):
         """Get the number to flip the data plot from user defined eln."""
         seach_key = "/ENTRY[entry]/INSTRUMENT[instrument]/lock_in/lock_in_data_flip_number"
-        if seach_key in eln_dict:
-            return eln_dict[seach_key]
-
+        flip_num = eln_dict.get(seach_key, None)
+        if flip_num is not None:
+            return flip_num
         raise ValueError(f"To determine the plot fliping {seach_key} must be provided by eln.")
 
 
