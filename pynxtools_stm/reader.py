@@ -112,7 +112,7 @@ class Spm:
     ValueError
         if vendor's name is not in ['nanonis']
     ValueError
-        if software version is not in ['Generic 5e']
+        if software version is not in ['Generic 5e', 'Generic 4.5']
     """
 
     # parser navigate type
