@@ -26,6 +26,7 @@
 import logging
 import os
 from typing import Dict, Optional, Tuple, Union
+from matplotlib import axes
 
 import numpy as np
 
@@ -57,7 +58,6 @@ class BiasSpecData_Nanonis():
                                       date: ---,
                                       time: ---}
                     }
-
     """
 
     def __init__(self, file_name: str) -> None:
@@ -281,15 +281,59 @@ class BiasSpecData_Nanonis():
             return flip_num
         raise ValueError(f"To determine the plot fliping {seach_key} must be provided by eln.")
 
+def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
+    """Construct NXdata for dI/dV.
+    axis_and_field_data : dict
+        Dictionary that contains axes info (name, data, unit) and fields (name, data, unit) data.
+    
+    Field is a current data and axis is a voltage data.
+    """
 
+    axis_info = axis_and_field_data['axes']
+    fields_info = axis_and_field_data['fields']
+    extra_annot = axis_and_field_data['extra_annot']
+    a_data = axis_info['data']
+    a_name = axis_info['name']
+    a_unit = axis_info['unit']
+    # a_metadata = axes['metadata']
+    f_data = fields_info['data']
+    f_name = fields_info['name']
+    f_unit = fields_info['unit']
+    
+    if len(a_data) != 1 or len(a_name) != 1 or len(a_unit) != 1:
+        raise ValueError("There must be only one Bias axis.")
+    
+    for f_dat, f_mn, f_unt in zip(f_data, f_name, f_unit):
+        f_mn = 'driv_' + '_'.join(f_mn.lower().split(' '))
+        grp = f"/ENTRY[entry]/DATA[{f_mn}({extra_annot})]"
+        di_by_dv_nm = "dI_by_dV"
+        f_dat = f_dat * flip_num
+        template[grp + '/' + di_by_dv_nm] = dI_by_dX(f_dat, a_data[0], acc=acc)
+        dI_by_dV_u = f"{f_unt}/{a_unit[0]}"
+        template[grp + '/' + di_by_dv_nm + '/@units'] = dI_by_dV_u
+        template[grp + '/@signal'] = di_by_dv_nm
+        template[grp + '/' + di_by_dv_nm + '/@long_name'] = f"{di_by_dv_nm}({dI_by_dV_u})"
+        template[grp + '/@axes'] = a_name[0]
+        template[grp + '/' + a_name[0]] = a_data[0]
+        template[grp + '/' + a_name[0] + '/@units'] = a_unit[0]
+        template[grp + '/' + a_name[0] + '/@long_name'] = f"{a_name[0]}({a_unit[0]})"
+        
+# TODO: remove data_group_concept and use it from template
+# TODO: Accuracy must come from user or eln
 # pylint: disable=too-many-locals too-many-statements
 def construct_nxdata_for_dat(template,
+                             eln_dict,
                              data_dict,
                              sub_config_dict,
                              data_group_concept,
-                             flip_number):
+                             flip_number,
+                             acc=4):
     """
-    Construct NXdata that includes counts all the NXdata groups (Bais and current) and the analytical NXdata group (dI/dV) vs Bias.
+    Construct NXdata that includes counts all the NXdata groups (Bais and current) and 
+    the analytical NXdata group (dI/dV) vs Bias.
+
+    This function palces all the functions that required to filtter the data field and axes 
+    to construct NXdata group from raw file.
 
     Parameters:
     -----------
@@ -303,7 +347,11 @@ def construct_nxdata_for_dat(template,
         This dictionary is numerically data order to list (list of path to data elements in
         input file). Each order indicates a group of data set.
     data_group_concept : NeXus path for NXdata
-
+        This is the concept as /ENTRY[entry]/DATA[data]
+    flip_number : int
+        The number to multiply with current or field data
+    acc: 
+        The accuracy of the derivative calculation.
     Return:
     -------
     None
@@ -334,9 +382,9 @@ def construct_nxdata_for_dat(template,
         # list of paths e.g. "/dat_mat_components/Bias/value" comes from
         # dict value of /ENTRY[entry]/DATA[data] in config file.
         for path in dt_val:
-            # print('### path 1 : ', path)
             # TODO: user get functionaliry rather that `path not in data_dict`
-            if path not in data_dict:
+            path_data = data_dict.get(path, "")
+            if isinstance(path_data, str) and path_data == "":
                 continue
             # E.g. extra_annot:'filt', data_grp: LI Demod 1 X [filt]
             # trimed_path: /dat_mat_components/Bias [filt]/
@@ -347,7 +395,7 @@ def construct_nxdata_for_dat(template,
                 if axis + 'value' in trimed_path:
                     # removing forward slash
                     axes_name.append(axis[0:-1])
-                    axes_data.append(data_dict[path])
+                    axes_data.append(path_data)
                     axis_unit = path.replace('/value', '/unit')
                     axes_unit.append(data_dict[axis_unit] if axis_unit in data_dict else "")
                     axis_mtdt = path.replace('/value', '/metadata')
@@ -366,6 +414,11 @@ def construct_nxdata_for_dat(template,
                 unit_path = path.replace('/value', '/unit')
                 data_field_unit.append(data_dict.get(unit_path, ""))
             
+        if not axes_name and not axes_data:
+            axes_data = axs_dt
+            axes_name = axs_nm
+            axes_metadata = axs_mtdt
+            axes_unit = axs_unit
         return {"axes": {"name": axes_name,
                         "data": axes_data, 
                         "unit": axes_unit, 
@@ -386,18 +439,13 @@ def construct_nxdata_for_dat(template,
         axes = axis_and_field_data['axes']
         fields = axis_and_field_data['fields']
         extra_annot = axis_and_field_data['extra_annot']
-
-        if not axes['name'] and not fields['name']:
-            axes_data = axs_dt
-            axes_name = axs_nm
-            axes_metadata = axs_mtdt
-            axes_unit = axs_unit
-        else:
-            axes_data = axes['data']
-            axes_name = axes['name']
-            axes_metadata = axes['metadata']
-            axes_unit = axes['unit']
         
+        # Axes
+        axes_data = axes['data']
+        axes_name = axes['name']
+        axes_metadata = axes['metadata']
+        axes_unit = axes['unit']
+        # Fields
         data_field_nm = fields['name']
         data_field_dt = fields['data']
         data_field_unit = fields['unit']
@@ -413,15 +461,19 @@ def construct_nxdata_for_dat(template,
             template[temp_data_grp + '/@axes'] = axes_name
             # template[temp_data_grp + '/title'] =
             data_field = temp_data_grp + '/' + dt_fd
-            
+
+            if (template.get("/ENTRY[entry]/@default", None) == None and
+                eln_dict.get("/ENTRY[entry]/@default", None) == None):
+                template["/ENTRY[entry]/@default"] = dt_fd
+
             # To flip the data plot of Lock-in demodulated signal
             if "li_demod" in dt_fd:
-                template[data_field] = dat_ * flip_number
+                dat_ = dat_ * flip_number
+                template[data_field] = dat_
             else:
                 template[data_field] = dat_
-            for axis, data_, a_unit, _ in zip(axes_name, axes_data, axes_unit, axes_metadata):
-                print('### axis:', axis, 'data:', data_, 'unit:', a_unit, 'metadata:', _)
-                template[temp_data_grp + '/' + axis] = data_
+            for axis, a_data, a_unit, _ in zip(axes_name, axes_data, axes_unit, axes_metadata):
+                template[temp_data_grp + '/' + axis] = a_data
                 template[f"{temp_data_grp}/{axis}/@long_name"] = f"{axis}({a_unit})"
                 template[f"{temp_data_grp}/@{axis}_indices"] = 0
                 template[f"{temp_data_grp}/{axis}/@units"] = a_unit
@@ -471,51 +523,17 @@ def construct_nxdata_for_dat(template,
     axs_dt: Optional[list[str]] = []
     axes = ["Bias/", 'Bias calc/']
 
+    axis_and_field_data: Optional[dict] = None
+    
     for dt_key, dt_val in sub_config_dict.items():
         # There are several scan data gourp in the given file.
         if dt_key == '0':
             # This is top level Bias axis which is the same for all the Lock-in signals
             axs_nm, axs_dt, axs_unit, axs_mtdt = top_level_Bias_axis(dt_val, data_dict, axes)
         else:
-            # This is the data group for each field
             axis_and_field_data = get_axes_and_fields_data(dt_val, data_dict, axes)
             construct_data_group_for_each_field(axis_and_field_data)
-
-# def dI_dV_nxdata(template):
-#     """Construct dI/dV data for NXdata group."""
-
-#     nxdt_pattern = r'\/ENTRY\[entry\]\/DATA\[\w*\]\w*'
-#     # Collect all I and V data concept
-#     iv_group = {}
-#     # find the current and bias plot
-#     for key, val in template.items():
-#         if re.match(nxdt_pattern, key):
-#             dt_concept = key.split('/')[0:2].join('/')
-#             if dt_concept in iv_group:
-#                 iv_group[dt_concept][key] = val
-#             else:
-#                 iv_group[dt_concept] = {key: val}
-
-#     def construct_NXdata_for_di_by_dv(data_map):
-#         """Construct NXdata for dI/dV."""
-#         current : Optional[np.ndarray] = None 
-#         current_unit : Optional[str] = None
-#         voltage : Optional[np.ndarray] = None
-#         voltage_unit : Optional[str] = None
-#         for key, val in data_map.items():
-#             if key.endswith('units'):
-#                 current_key = key.rsplit('/', 1)[0]
-                
-            
-#             volt = 
-#             if 'Bias' in val:
-#                 dI_dV = dI_by_dX(val['Current'], val['Bias'])
-#                 template['dI/dV'] = dI_dV
-#                 template['dI/dV/@signal'] = 'dI/dV'
-#                 template['dI/dV/@axes'] = 'Bias'
-#                 template['dI/dV/Bias'] = val['Bias']
-#                 template['dI/dV/Bias/@long_name'] = 'Bias (V)'
-#                 template['dI/dV/@long_name'] = 'dI/dV (A/V)'
+    construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_number, acc=acc)
 
 def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
     """Pass metadata, current and voltage into template from file
@@ -525,26 +543,26 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
     dict_orig_key_to_mod_key: Dict[str, list] = {}
     b_s_d = BiasSpecData_Nanonis(dat_file)
     flattened_dict = {}
-    # TODO conbine the funciton nested_path_to_slash_separated_path and BiasSpecData_Nanonis to give slash separated path
+    # TODO: Conbine the funciton nested_path_to_slash_separated_path and 
+    # BiasSpecData_Nanonis to give slash separated path
     nested_path_to_slash_separated_path(
         b_s_d.get_data_nested_dict(),
         flattened_dict=flattened_dict)
-    # TODO : Collect defalut plat from ELN if it is not provided by user
-    fill_template_from_eln_data(eln_data_dict, template)
-
+    # TODO: Collect defalut plat from ELN if it is not provided by user
+    fill_template_from_eln_data(eln_data_dict, template)  
     data_group_concept = "/ENTRY[entry]/DATA[data]"
     for c_key, c_val in config_dict.items():
         if "@eln" in c_val:
             continue
         if c_val in ["", None, 'None', 'none']:
             continue
-        if isinstance(c_val, str) and c_val in flattened_dict:
+        if isinstance(c_val, str) and flattened_dict.get(c_val, ""):
             template[c_key] = to_intended_t(flattened_dict[c_val])
         if isinstance(c_val, dict) and c_val:
             if data_group_concept == c_key:
                 # pass exp. data section to NXdata group
                 flip_num = b_s_d.get_flip_number(eln_data_dict)
-                construct_nxdata_for_dat(template, flattened_dict,
+                construct_nxdata_for_dat(template, eln_data_dict, flattened_dict,
                                          c_val, data_group_concept, flip_num)
             else:
                 # pass other physical quantity that has muliple dimensions or type for
