@@ -38,6 +38,7 @@ CONVERT_DICT = {
     "Sample_bias": "SAMPLE_BIAS[sample_bias]",
     "unit": "@units",
     "version": "@version",
+    "default": "@default",
     "Sample": "SAMPLE[sample]",
     "User": "USER[user]",
     "Data": "DATA[data]",
