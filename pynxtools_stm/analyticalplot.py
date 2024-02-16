@@ -24,7 +24,8 @@ import numpy as np
 
 
 def dI_by_dX(current, volt, acc=4):
-    """Calculate dI/dX."""
+    """Calculate dI/dV."""
+
     if isinstance(volt, list) and len(volt) > 1:
         volt = np.array(volt)
     if isinstance(current, list) and len(current) > 1:
@@ -45,4 +46,5 @@ def dI_by_dX(current, volt, acc=4):
     
     d_dV = FinDiff(0, dv, acc=acc)
     dI_dV = d_dV(current)
+
     return dI_dV

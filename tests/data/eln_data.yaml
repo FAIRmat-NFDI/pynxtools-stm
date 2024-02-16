@@ -1,6 +1,6 @@
 # Note: _N should be replaced by x, y, z or 1, 2, etc according to meaning of N.
 # Fox axis or direction x,y,z and for number of channeltron 1,2,3... .
-Data: null
+default: li_demod_1_x
 Instrument:
   Environment:
     position:
