@@ -48,10 +48,12 @@ REPLACE_NESTED: Dict[str, str] = {}
 
 
 # pylint: disable=too-few-public-methods
-class StmNanonisGeneric5e:
+class StmNanonisGeneric:
     """Class to handle 'stm' experiment of software version 'Generic 5e' from 'nanonis'
     vendor.
     """
+
+    __version__ = ["Generic 5e", "Generic 4.5"]
 
     def __call__(
         self, template: Dict, data_file: str, config_dict: str, eln_dict: Dict
@@ -76,11 +78,13 @@ class StmNanonisGeneric5e:
 
 
 # pylint: disable=too-few-public-methods
-class StsNanonisGeneric5e:
+class StsNanonisGeneric:
     """Class to handle 'sts' experiment of software version 'Generic 5e' from 'nanonis'
     vendor.
     """
 
+    __version__ = ["Generic 5e", "Generic 4.5"]
+    
     def __call__(
         self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict
     ) -> None:
@@ -118,10 +122,10 @@ class Spm:
     # parser navigate type
     par_nav_t = Dict[str, Union["par_nav_t", Callable]]
     __parser_navigation: Dict[str, par_nav_t] = {
-        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric5e,
-                            "Generic 4.5": StmNanonisGeneric5e}},
-        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric5e,
-                            "Generic 4.5": StsNanonisGeneric5e}},
+        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric,
+                            "Generic 4.5": StmNanonisGeneric}},
+        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric,
+                            "Generic 4.5": StsNanonisGeneric}},
     }
 
     def get_appropriate_parser(self, eln_dict: Dict) -> Callable:
@@ -151,9 +155,9 @@ class Spm:
         vendor_key: str = (
             "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
         )
-        vendor_t: str = eln_dict[vendor_key]
+        vendor_n: str = eln_dict[vendor_key]
         try:
-            vendor_dict: Spm.par_nav_t = experiment_dict[vendor_t]  # type: ignore[assignment]
+            vendor_dict: Spm.par_nav_t = experiment_dict[vendor_n]  # type: ignore[assignment]
         except KeyError as exc:
             raise KeyError(
                 f"Add correct vendor name in ELN file "
