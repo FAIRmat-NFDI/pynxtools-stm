@@ -23,7 +23,7 @@ from findiff import FinDiff
 import numpy as np
 
 
-def dI_by_dX(current, volt, acc=4):
+def dY_by_dX(current, volt, acc=4):
     """Calculate dI/dV."""
 
     if isinstance(volt, list) and len(volt) > 1:
