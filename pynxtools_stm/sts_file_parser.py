@@ -287,7 +287,7 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         Dictionary that contains axes info (name, data, unit), fields (name, data, unit),
         and extra annotation e.g. filt, filt2.
     
-    Field is a current data and axis is a voltage data.
+    Field is a current and axis is a voltage data.
     """
 
     axis_info = axis_and_field_data['axes']
@@ -377,11 +377,10 @@ def construct_nxdata_for_dat(template,
         data_field_dt = []
         data_field_unit = []
 
-        # Below we are collecting: axes, and data field info.
-        # list of paths e.g. "/dat_mat_components/Bias/value" comes from
+        # Collects axes, and data field info.
+        # list of paths e.g. "/dat_mat_components/Bias/value" comes as
         # dict value of /ENTRY[entry]/DATA[data] in config file.
         for path in dt_val:
-            # TODO: user get functionaliry rather that `path not in data_dict`
             path_data = data_dict.get(path, "")
             if isinstance(path_data, str) and path_data == "":
                 continue
@@ -429,11 +428,8 @@ def construct_nxdata_for_dat(template,
                 "extra_annot": extra_annot
                 }
 
-    # Note: this value must come from ELN
-    # Note try to create link for axes
-    # Filling out field, axes, signal and so on of NXdata
     def construct_data_group_for_each_field(axis_and_field_data):
-        """Construct data group for each field."""
+        """Construct data group for each field which is  current."""
 
         axes = axis_and_field_data['axes']
         fields = axis_and_field_data['fields']
@@ -502,7 +498,7 @@ def construct_nxdata_for_dat(template,
 
     def top_level_Bias_axis(top_ax_list, data_dict, axes):
         """Sometimes Bias axis comes one with: /dat_mat_components/Bias calc/value.
-        Later on this bias will used as a Bias axis for all measurements.
+        Later on this bias will be used as a Bias axis for all measurements.
         """
         axs_nm = []
         axs_dt = []
@@ -542,19 +538,16 @@ def construct_nxdata_for_dat(template,
     construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_number, acc=acc)
 
 def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
-    """Pass metadata, current and voltage into template from file
-       with dat extension.
+    """Pass metadata, current and voltage into template from eln and dat file.
     """
     # To collect the concept if any nxdl concept is overwritten
     dict_orig_key_to_mod_key: Dict[str, list] = {}
     b_s_d = BiasSpecData_Nanonis(dat_file)
     flattened_dict = {}
-    # TODO: Conbine the funciton nested_path_to_slash_separated_path and 
     # BiasSpecData_Nanonis to give slash separated path
     nested_path_to_slash_separated_path(
         b_s_d.get_data_nested_dict(),
         flattened_dict=flattened_dict)
-    # TODO: Collect defalut plat from ELN if it is not provided by user
     fill_template_from_eln_data(eln_data_dict, template)  
     data_group_concept = "/ENTRY[entry]/DATA[data]"
     for c_key, c_val in config_dict.items():
@@ -582,7 +575,7 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
 
 
 def get_sts_raw_file_info(raw_file):
-    """Parse the raw_file into a organised dictionary. It helps users as well as developers
+    """Parse the raw_file into a plain (keys are organised) dictionary. It helps users as well as developers
     to understand how the reader works and modify the config file."""
 
     raw_file = os.path.basename(raw_file)
