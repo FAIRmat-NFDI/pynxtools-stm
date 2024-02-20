@@ -26,7 +26,6 @@
 import logging
 import os
 from typing import Dict, Optional, Tuple, Union
-from matplotlib import axes
 
 import numpy as np
 
@@ -37,8 +36,9 @@ from pynxtools_stm.helper import (
     nested_path_to_slash_separated_path,
     to_intended_t,
     work_out_overwriteable_field,
+    convert_data_dict_path_to_hdf5_path
 )
-from pynxtools_stm.analyticalplot import dI_by_dX
+from pynxtools_stm.analyticalplot import dY_by_dX as dI_by_dV
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
 
@@ -284,7 +284,8 @@ class BiasSpecData_Nanonis():
 def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
     """Construct NXdata for dI/dV.
     axis_and_field_data : dict
-        Dictionary that contains axes info (name, data, unit) and fields (name, data, unit) data.
+        Dictionary that contains axes info (name, data, unit), fields (name, data, unit),
+        and extra annotation e.g. filt, filt2.
     
     Field is a current data and axis is a voltage data.
     """
@@ -308,7 +309,7 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         grp = f"/ENTRY[entry]/DATA[{f_mn}({extra_annot})]"
         di_by_dv_nm = "dI_by_dV"
         f_dat = f_dat * flip_num
-        template[grp + '/' + di_by_dv_nm] = dI_by_dX(f_dat, a_data[0], acc=acc)
+        template[grp + '/' + di_by_dv_nm] = dI_by_dV(f_dat, a_data[0], acc=acc)
         dI_by_dV_u = f"{f_unt}/{a_unit[0]}"
         template[grp + '/' + di_by_dv_nm + '/@units'] = dI_by_dV_u
         template[grp + '/@signal'] = di_by_dv_nm
@@ -318,8 +319,6 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         template[grp + '/' + a_name[0] + '/@units'] = a_unit[0]
         template[grp + '/' + a_name[0] + '/@long_name'] = f"{a_name[0]}({a_unit[0]})"
         
-# TODO: remove data_group_concept and use it from template
-# TODO: Accuracy must come from user or eln
 # pylint: disable=too-many-locals too-many-statements
 def construct_nxdata_for_dat(template,
                              eln_dict,
@@ -459,12 +458,19 @@ def construct_nxdata_for_dat(template,
                 temp_data_grp = data_group_concept.replace("DATA[data", f"DATA[{dt_fd}")
             template[temp_data_grp + '/@signal'] = dt_fd
             template[temp_data_grp + '/@axes'] = axes_name
-            # template[temp_data_grp + '/title'] =
-            data_field = temp_data_grp + '/' + dt_fd
 
-            if (template.get("/ENTRY[entry]/@default", None) == None and
-                eln_dict.get("/ENTRY[entry]/@default", None) == None):
-                template["/ENTRY[entry]/@default"] = dt_fd
+            # Setting up the default plot for entry either from eln or first NXdataplot
+            data_field = temp_data_grp + '/' + dt_fd
+            if (template.get("/ENTRY[entry]/@default", "") in ["", None] and
+               eln_dict.get("/ENTRY[entry]/@default", None) in ["", None]):
+                template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
+            # Verify if data plot taken from ELN is correct or not
+            elif eln_dict.get("/ENTRY[entry]/@default", None) not in [None, ""]:
+                if dt_fd == template.get("/ENTRY[entry]/@default", ""):
+                    template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
+            
+            if template.get("/ENTRY[entry]/@default", "") in ["", None]:  
+                template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
 
             # To flip the data plot of Lock-in demodulated signal
             if "li_demod" in dt_fd:
