@@ -22,7 +22,8 @@
 
 import json
 from collections.abc import Callable
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union, Optional
+import re
 
 import yaml
 from pynxtools.dataconverter.readers.base.reader import BaseReader
@@ -181,6 +182,64 @@ class Spm:
 
         # Return callable function
         return parser
+    
+def set_default_group_for_each_group(template):
+    """Set default group for each group of data.
+    Each group will have a \@default attrubute refering the immediate child group in a NeXus chain.
+
+    Parameters
+    ----------
+    template : Template
+        Template from filled from datafile and eln.
+    eln_dict : _type_
+        _description_
+
+    Returns
+    -------
+    _type_
+        _description_
+
+    Raises
+    ------
+    ValueError
+        _description_
+    """
+    # defalut attribute key to the list of immediate child group 
+    dflt_key_to_grp_li: Optional[dict[str, list]] = {}
+    # defalut attribute key to the group set by reader
+    dflt_key_to_exist_grp: dict[str, str] = {}
+
+    # "/abc[DATA]/XYe[anything]/mnf[MNYZ]/anything" -> ['DATA', 'anything', 'MNYZ']
+    pattern = r'\[(.*?)\]'
+
+    for template_concept, val in template.items():
+        groups_list = template_concept.split('/')
+        last_default_key = ""
+        if template_concept.endswith('/@default') and val:
+            dflt_key_to_exist_grp[template_concept] = val
+
+        for group in groups_list:
+            if not group:
+                continue
+            modified_name = re.findall(pattern, group)
+            if modified_name:
+                modified_name = modified_name[0]
+            else:
+                modified_name = ""
+            # take only nxdata group
+            if group.startswith("DATA") or group.startswith("ENTRY"):
+                if not dflt_key_to_grp_li.get(f"{last_default_key}/@default", None):
+                    dflt_key_to_grp_li[f"{last_default_key}/@default"] = [modified_name]
+                else:
+                    dflt_key_to_grp_li[f"{last_default_key}/@default"].append(modified_name)
+            last_default_key = last_default_key + "/" + group
+    for deflt_key, value in dflt_key_to_grp_li.items():
+        pre_defalt_grp = dflt_key_to_exist_grp.get(deflt_key, None)
+
+        if not pre_defalt_grp or pre_defalt_grp not in value:
+            # Choose the first data or entry group for defalult view if not set by reader
+            # or if the group does not exist in the list of immediate child group
+            template[deflt_key] = value[0]
 
 
 # pylint: disable=invalid-name, too-few-public-methods
@@ -237,6 +296,7 @@ class STMReader(BaseReader):
                 "Reader could not read anything! Check for input files and the"
                 " corresponding extention."
             )
+        set_default_group_for_each_group(filled_template)
         return filled_template
 
 
