@@ -281,6 +281,7 @@ class BiasSpecData_Nanonis():
             return flip_num
         raise ValueError(f"To determine the plot fliping {seach_key} must be provided by eln.")
 
+
 def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
     """Construct NXdata for dI/dV.
     axis_and_field_data : dict
@@ -303,10 +304,11 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
     
     if len(a_data) != 1 or len(a_name) != 1 or len(a_unit) != 1:
         raise ValueError("There must be only one Bias axis.")
-    
+    if extra_annot:
+        extra_annot = f"({extra_annot})"
     for f_dat, f_mn, f_unt in zip(f_data, f_name, f_unit):
-        f_mn = 'driv_' + '_'.join(f_mn.lower().split(' '))
-        grp = f"/ENTRY[entry]/DATA[{f_mn}({extra_annot})]"
+        f_mn = 'grad_' + '_'.join(f_mn.lower().split(' '))
+        grp = f"/ENTRY[entry]/DATA[{f_mn}{extra_annot}]"
         di_by_dv_nm = "dI_by_dV"
         f_dat = f_dat * flip_num
         template[grp + '/' + di_by_dv_nm] = dI_by_dV(f_dat, a_data[0], acc=acc)
@@ -318,7 +320,8 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         template[grp + '/' + a_name[0]] = a_data[0]
         template[grp + '/' + a_name[0] + '/@units'] = a_unit[0]
         template[grp + '/' + a_name[0] + '/@long_name'] = f"{a_name[0]}({a_unit[0]})"
-        
+
+
 # pylint: disable=too-many-locals too-many-statements
 def construct_nxdata_for_dat(template,
                              eln_dict,
@@ -455,18 +458,7 @@ def construct_nxdata_for_dat(template,
             template[temp_data_grp + '/@signal'] = dt_fd
             template[temp_data_grp + '/@axes'] = axes_name
 
-            # Setting up the default plot for entry either from eln or first NXdataplot
             data_field = temp_data_grp + '/' + dt_fd
-            if (template.get("/ENTRY[entry]/@default", "") in ["", None] and
-               eln_dict.get("/ENTRY[entry]/@default", None) in ["", None]):
-                template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
-            # Verify if data plot taken from ELN is correct or not
-            elif eln_dict.get("/ENTRY[entry]/@default", None) not in [None, ""]:
-                if dt_fd == template.get("/ENTRY[entry]/@default", ""):
-                    template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
-            
-            if template.get("/ENTRY[entry]/@default", "") in ["", None]:  
-                template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(data_field)
 
             # To flip the data plot of Lock-in demodulated signal
             if "li_demod" in dt_fd:
@@ -535,7 +527,8 @@ def construct_nxdata_for_dat(template,
         else:
             axis_and_field_data = get_axes_and_fields_data(dt_val, data_dict, axes)
             construct_data_group_for_each_field(axis_and_field_data)
-    construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_number, acc=acc)
+            construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_number, acc=acc)
+
 
 def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
     """Pass metadata, current and voltage into template from eln and dat file.
@@ -548,6 +541,7 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
     nested_path_to_slash_separated_path(
         b_s_d.get_data_nested_dict(),
         flattened_dict=flattened_dict)
+    
     fill_template_from_eln_data(eln_data_dict, template)  
     data_group_concept = "/ENTRY[entry]/DATA[data]"
     for c_key, c_val in config_dict.items():
@@ -568,7 +562,6 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
                 # same physical quantity e.g. in drift_N N will be replaced X, Y and Z
                 work_out_overwriteable_field(template, flattened_dict, c_val, c_key,
                                              dict_orig_key_to_mod_key)
-                
     # The following function can be used if links in application come true
     # link_seperation(template, dict_orig_key_to_mod_key)
     link_seperation_from_hard_code(template, dict_orig_key_to_mod_key)
