@@ -22,6 +22,14 @@ classifiers = [
 dependencies = [
     "pynxtools",
     "nanonispy@git+https://github.com/ramav87/nanonispy.git@a0da87c58482d29624a2bf5deecb763dd1274212",
+    "pytest",
+]
+
+dev = [
+    "ruff",
+    "mypy",
+    "pip-tools",
+
 ]
 
 [project.entry-points."pynxtools.reader"]
