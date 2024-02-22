@@ -193,16 +193,6 @@ def set_default_group_for_each_group(template):
     ----------
     template : Template
         Template from filled from datafile and eln.
-
-    Returns
-    -------
-    _type_
-        _description_
-
-    Raises
-    ------
-    ValueError
-        _description_
     """
     # defalut attribute key to the list of immediate child group 
     dflt_key_to_grp_li: Optional[dict[str, list]] = {}
