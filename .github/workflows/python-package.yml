@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ main ]
     types: [opened, edited, sychronize, reopened]
-
+    # Check the features with opened, edited, synchronize and reopened
 jobs:
   build:
 
