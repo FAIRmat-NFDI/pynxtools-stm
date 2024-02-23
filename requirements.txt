@@ -77,6 +77,8 @@ fabio==2023.10.0
     #   silx
 fasteners==0.19
     # via zarr
+findiff==0.10.0
+    # via pynxtools-stm (pyproject.toml)
 flatdict==4.0.1
     # via pynxtools
 fonttools==4.49.0
@@ -246,6 +248,7 @@ numpy==1.26.4
     #   dask
     #   diffsims
     #   fabio
+    #   findiff
     #   h5py
     #   hyperspy
     #   ifes-apt-tc-data-modeling
@@ -411,6 +414,7 @@ scipy==1.12.0
     # via
     #   ase
     #   diffsims
+    #   findiff
     #   hyperspy
     #   kikuchipy
     #   lmfit
@@ -440,6 +444,7 @@ stack-data==0.6.3
     # via ipython
 sympy==1.12
     # via
+    #   findiff
     #   hyperspy
     #   radioactivedecay
 tables==3.9.2
