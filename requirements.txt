@@ -68,6 +68,7 @@ exceptiongroup==1.2.0
     # via
     #   cattrs
     #   ipython
+    #   pytest
 executing==2.0.1
     # via stack-data
 fabio==2023.10.0
@@ -127,6 +128,8 @@ importlib-metadata==7.0.1
     #   dask
     #   hyperspy
     #   pynxtools
+iniconfig==2.0.0
+    # via pytest
 ipykernel==6.29.2
     # via ipyparallel
 ipyparallel==8.6.1
@@ -289,6 +292,7 @@ packaging==23.2
     #   ipykernel
     #   matplotlib
     #   pooch
+    #   pytest
     #   scikit-image
     #   silx
     #   tables
@@ -319,6 +323,8 @@ platformdirs==4.2.0
     #   jupyter-core
     #   pooch
     #   requests-cache
+pluggy==1.4.0
+    # via pytest
 ply==3.11
     # via pycifrw
 pooch==1.8.1
@@ -353,6 +359,8 @@ pynxtools==0.0.10
     # via pynxtools-stm (pyproject.toml)
 pyparsing==3.1.1
     # via matplotlib
+pytest==8.0.1
+    # via pynxtools-stm (pyproject.toml)
 python-dateutil==2.8.2
     # via
     #   hyperspy
@@ -442,6 +450,8 @@ tifffile==2024.2.12
     # via
     #   hyperspy
     #   scikit-image
+tomli==2.0.1
+    # via pytest
 toolz==0.12.1
     # via
     #   dask
