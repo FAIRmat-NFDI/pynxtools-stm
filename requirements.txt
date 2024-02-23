@@ -136,11 +136,12 @@ ipykernel==6.29.2
     # via ipyparallel
 ipyparallel==8.6.1
     # via hyperspy
-ipython==8.22.1
+ipython==8.21.0
     # via
     #   hyperspy
     #   ipykernel
     #   ipyparallel
+    #   pynxtools-stm (pyproject.toml)
 jedi==0.19.1
     # via ipython
 jinja2==3.1.3

@@ -23,7 +23,8 @@ dependencies = [
     "pynxtools",
     "nanonispy@git+https://github.com/ramav87/nanonispy.git@a0da87c58482d29624a2bf5deecb763dd1274212",
     "pytest",
-    "findiff"
+    "findiff",    
+    "ipython<8.22.1" # python 3.9
 ]
 [project.urls]
 "GitHub page" = "https://github.com/FAIRmat-NFDI/pynxtools-stm"
@@ -37,3 +38,6 @@ dev = [
 
 [project.entry-points."pynxtools.reader"]
 sts = "pynxtools_stm.reader:STMReader"
+
+[tool.ruff.format]
+quote-style = "double"
