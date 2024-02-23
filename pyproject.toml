@@ -22,14 +22,15 @@ classifiers = [
 dependencies = [
     "pynxtools",
     "nanonispy@git+https://github.com/ramav87/nanonispy.git@a0da87c58482d29624a2bf5deecb763dd1274212",
-    "pytest",
 ]
-
+[project.urls]
+"GitHub page" = "https://github.com/FAIRmat-NFDI/pynxtools-stm"
+"Parent Project" =  "https://github.com/FAIRmat-NFDI"
+[project.optional-dependencies]
 dev = [
     "ruff",
     "mypy",
-    "pip-tools",
-
+    "pip-tools"
 ]
 
 [project.entry-points."pynxtools.reader"]
