@@ -297,7 +297,8 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
     a_data = axis_info['data']
     a_name = axis_info['name']
     a_unit = axis_info['unit']
-    # a_metadata = axes['metadata']
+    a_nx_path = axis_info['nx_path']
+    a_metadata = axis_info['metadata']
     f_data = fields_info['data']
     f_name = fields_info['name']
     f_unit = fields_info['unit']
@@ -306,6 +307,7 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         raise ValueError("There must be only one Bias axis.")
     if extra_annot:
         extra_annot = f"({extra_annot})"
+    axis_nm = a_name[0]
     for f_dat, f_mn, f_unt in zip(f_data, f_name, f_unit):
         f_mn = 'grad_' + '_'.join(f_mn.lower().split(' '))
         grp = f"/ENTRY[entry]/DATA[{f_mn}{extra_annot}]"
@@ -316,10 +318,10 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         template[grp + '/' + di_by_dv_nm + '/@units'] = dI_by_dV_u
         template[grp + '/@signal'] = di_by_dv_nm
         template[grp + '/' + di_by_dv_nm + '/@long_name'] = f"{di_by_dv_nm}({dI_by_dV_u})"
-        template[grp + '/@axes'] = a_name[0]
-        template[grp + '/' + a_name[0]] = a_data[0]
-        template[grp + '/' + a_name[0] + '/@units'] = a_unit[0]
-        template[grp + '/' + a_name[0] + '/@long_name'] = f"{a_name[0]}({a_unit[0]})"
+        template[grp + '/@axes'] = axis_nm
+        template[grp + '/' + axis_nm] = {'link': a_nx_path[0]}
+        template[grp + '/' + axis_nm + '/@units'] = a_unit[0]
+        template[grp + '/' + axis_nm + '/@long_name'] = f"{axis_nm}({a_unit[0]})"
 
 
 # pylint: disable=too-many-locals too-many-statements
@@ -467,6 +469,11 @@ def construct_nxdata_for_dat(template,
             else:
                 template[data_field] = dat_
             for axis, a_data, a_unit, _ in zip(axes_name, axes_data, axes_unit, axes_metadata):
+                axis_fd = temp_data_grp + '/' + axis
+                if axis_and_field_data['axes'].get('nx_path', None) is not None:
+                    axis_and_field_data['axes']['nx_path'].append(convert_data_dict_path_to_hdf5_path(axis_fd)) 
+                else:
+                    axis_and_field_data['axes']['nx_path'] = [convert_data_dict_path_to_hdf5_path(axis_fd)]
                 template[temp_data_grp + '/' + axis] = a_data
                 template[f"{temp_data_grp}/{axis}/@long_name"] = f"{axis}({a_unit})"
                 template[f"{temp_data_grp}/@{axis}_indices"] = 0
@@ -518,7 +525,10 @@ def construct_nxdata_for_dat(template,
     axes = ["Bias/", 'Bias calc/']
 
     axis_and_field_data: Optional[dict] = None
-    
+    # From config file
+    # 
+    # "/ENTRY[entry]/DATA[data]" : {"0": ["/dat_mat_components/Bias calc/value", ...],
+    #                               "1": ["/dat_mat_components/Current [filt]/value", ...]}
     for dt_key, dt_val in sub_config_dict.items():
         # There are several scan data gourp in the given file.
         if dt_key == '0':
