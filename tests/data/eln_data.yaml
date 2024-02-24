@@ -1,6 +1,6 @@
 # Note: _N should be replaced by x, y, z or 1, 2, etc according to meaning of N.
 # Fox axis or direction x,y,z and for number of channeltron 1,2,3... .
-Data: null
+default: li_demod_1_x
 Instrument:
   Environment:
     position:
@@ -69,15 +69,26 @@ Instrument:
   current_amplifier:
     hardware: "Name of hard ware xxxx"
     low_pass: null
-  Hardware:
-    vendor: "Name of hard ware"
-    version: "Version"
+  hardware:
+    name: "Nanonis BP5e"
+    vendor: Nanonis
+    version: "BP5e"
   lock_in:
-    lock_in_data_flip_number: -1
+    lock_in_data_flip_number: -1.0
+    modulation_amplitude:
+      unit: V
+      value: 0.002
+    modulation_frequency:
+      unit: Hz
+      value: 973.0
+    modulation_signal:
+      unit: V
+      value: 973.0
+    status: 'ON'
   output_cabling: null
   piezo_config:
     2nd_order_corr_N: null
-    active_calib: null
+    active_calib: LHe
     calib_N: null
     curvature_radius_N:
       value: null
@@ -90,20 +101,28 @@ Instrument:
       unit: null
   sample_bias:
     bias:
-      value: null
-      unit: null
-  Software:
+      value: o.1
+      unit: V
+    bias_calibration: 1.0
+    bias_offset:
+      unit: V
+      value: '0'
+  software:
     vendor: 'nanonis'
     version: "Generic 5e"
+    rt_release: '10771'
+    ui_release: '10771'
   stm_head_temp:
-    value: null
-    unit: null
+    value: 4.92997
+    unit: K
 alternative_plot: null
-collection_identifier: null
+collection_identifier: 221122_Au_5K
 definition: 'NXsts'
-entry_identifier: null
-experiment_description: "Comments from experimentalists."
-experiment_identifier: "Add full path of the experiment output file in local computer."
+entry_identifier: 221122_Au_5K00014
+experiment_description: "Bias Spectroscopy: SYNC & Filter LP 8order WITHDRAW             600
+  steps, locked Au(111), 50pA, 100 mV set point, 1mV DCA, 973Hz,138             1st
+  H, -84 2nd H"
+experiment_identifier: C:\Users\SPM-PEEM\Desktop\DATA_Nanonis\20220711_CreaTec_Service_Benchmarks_LHe\Nanonis-Session-PMD100-HVHU_CreaTec_Service_PalmaLabBerlin220711
 line_scan: null
 mesh_scan: null
 sample:

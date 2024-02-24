@@ -22,7 +22,8 @@
 
 import json
 from collections.abc import Callable
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, Tuple, Union, Optional
+import re
 
 import yaml
 from pynxtools.dataconverter.readers.base.reader import BaseReader
@@ -38,6 +39,7 @@ CONVERT_DICT = {
     "Sample_bias": "SAMPLE_BIAS[sample_bias]",
     "unit": "@units",
     "version": "@version",
+    "default": "@default",
     "Sample": "SAMPLE[sample]",
     "User": "USER[user]",
     "Data": "DATA[data]",
@@ -48,10 +50,12 @@ REPLACE_NESTED: Dict[str, str] = {}
 
 
 # pylint: disable=too-few-public-methods
-class StmNanonisGeneric5e:
+class StmNanonisGeneric:
     """Class to handle 'stm' experiment of software version 'Generic 5e' from 'nanonis'
     vendor.
     """
+
+    __version__ = ["Generic 5e", "Generic 4.5"]
 
     def __call__(
         self, template: Dict, data_file: str, config_dict: str, eln_dict: Dict
@@ -76,11 +80,13 @@ class StmNanonisGeneric5e:
 
 
 # pylint: disable=too-few-public-methods
-class StsNanonisGeneric5e:
+class StsNanonisGeneric:
     """Class to handle 'sts' experiment of software version 'Generic 5e' from 'nanonis'
     vendor.
     """
 
+    __version__ = ["Generic 5e", "Generic 4.5"]
+    
     def __call__(
         self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict
     ) -> None:
@@ -118,10 +124,10 @@ class Spm:
     # parser navigate type
     par_nav_t = Dict[str, Union["par_nav_t", Callable]]
     __parser_navigation: Dict[str, par_nav_t] = {
-        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric5e,
-                            "Generic 4.5": StmNanonisGeneric5e}},
-        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric5e,
-                            "Generic 4.5": StsNanonisGeneric5e}},
+        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric,
+                            "Generic 4.5": StmNanonisGeneric}},
+        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric,
+                            "Generic 4.5": StsNanonisGeneric}},
     }
 
     def get_appropriate_parser(self, eln_dict: Dict) -> Callable:
@@ -151,9 +157,9 @@ class Spm:
         vendor_key: str = (
             "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
         )
-        vendor_t: str = eln_dict[vendor_key]
+        vendor_n: str = eln_dict[vendor_key]
         try:
-            vendor_dict: Spm.par_nav_t = experiment_dict[vendor_t]  # type: ignore[assignment]
+            vendor_dict: Spm.par_nav_t = experiment_dict[vendor_n]  # type: ignore[assignment]
         except KeyError as exc:
             raise KeyError(
                 f"Add correct vendor name in ELN file "
@@ -176,6 +182,92 @@ class Spm:
 
         # Return callable function
         return parser
+    
+def set_default_group_for_each_group(template):
+    """Set default group for each group of Nexus file.
+    Each group will have a \@default attrubute refering the immediate child group in a NeXus chain.
+    e.g. /@default = "entry1"
+        /entry1/@default = "data1"
+    
+    Parameters
+    ----------
+    template : Template
+        Template from filled from datafile and eln.
+    """
+    # defalut attribute key to the list of immediate child group 
+    dflt_key_to_grp_li: Optional[dict[str, list]] = {}
+    # defalut attribute key to the group set by reader
+    dflt_key_to_exist_grp: dict[str, str] = {}
+
+    # "/abc[DATA]/XYe[anything]/mnf[MNYZ]/anything" -> ['DATA', 'anything', 'MNYZ']
+    pattern = r'\[(.*?)\]'
+
+    entry_data_rnd = ""
+    for template_concept, val in template.items():
+        groups_list = template_concept.split("/")
+        last_default_key = ""
+        if template_concept.endswith("/@default") and val:
+            dflt_key_to_exist_grp[template_concept] = val
+
+        for group in groups_list:
+            if not group:
+                continue
+            modified_name = re.findall(pattern, group)
+            if modified_name:
+                modified_name = modified_name[0]
+            else:
+                modified_name = group
+            last_default_atttr = f"{last_default_key}/@default"
+            if not dflt_key_to_grp_li.get(last_default_atttr, None):
+                dflt_key_to_grp_li[last_default_atttr] = {}
+                # Data groups
+                dflt_key_to_grp_li[last_default_atttr]['data'] = []
+                dflt_key_to_grp_li[last_default_atttr]['entry'] = []
+                # Other groupa
+                dflt_key_to_grp_li[last_default_atttr]['other'] = []
+            
+            if template_concept.endswith("/@default"):
+                dflt_key_to_exist_grp[template_concept] = val
+
+            # Entry
+            if group.startswith("ENTRY"):
+                dflt_key_to_grp_li[last_default_atttr]["entry"].append(modified_name)
+            # Data
+            elif group.startswith("DATA"):
+                dflt_key_to_grp_li[last_default_atttr]["data"].append(modified_name)
+                if not entry_data_rnd:
+                    entry_data_rnd = modified_name
+            else:
+                dflt_key_to_grp_li[last_default_atttr]["other"].append(modified_name)
+
+            last_default_key = last_default_key + "/" + group
+
+    for deflt_key, value in dflt_key_to_grp_li.items():
+        pre_defalt_grp = dflt_key_to_exist_grp.get(deflt_key, None)
+        # Verify if user added the group here
+        if not pre_defalt_grp:
+            if (pre_defalt_grp in value['entry']
+                or pre_defalt_grp in value["data"]
+                or pre_defalt_grp in value['other']):
+                continue
+
+        # Entry default group always a NXdata
+        entry_default = "/entry/@default"
+        if entry_default == deflt_key:
+            template[entry_default] = entry_data_rnd
+            continue
+
+        if value['entry']:
+            template[deflt_key] = value['entry'][0]
+        # Prioritize data group on other groups
+        elif value['data']:
+            template[deflt_key] = value['data'][0]
+            # Randomly choose a NXdata group for entry
+        elif value['other']:
+            template[deflt_key] = value['other'][0]
+        else:
+            template[deflt_key] = ""
+    
 
 
 # pylint: disable=invalid-name, too-few-public-methods
@@ -232,6 +324,7 @@ class STMReader(BaseReader):
                 "Reader could not read anything! Check for input files and the"
                 " corresponding extention."
             )
+        set_default_group_for_each_group(filled_template)
         return filled_template
 
 
