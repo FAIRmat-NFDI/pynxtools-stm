@@ -35,6 +35,7 @@ from pynxtools_stm.helper import (
     nested_path_to_slash_separated_path,
     to_intended_t,
     work_out_overwriteable_field,
+    convert_data_dict_path_to_hdf5_path
 )
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s - %(message)s')
@@ -181,7 +182,8 @@ class STM_Nanonis():
                                  data_dict,
                                  sub_config_dict,
                                  coor_info,
-                                 data_group):
+                                 data_group,
+                                 eln_data_dict):
         """
         Construct NXdata that includes all the groups, field and attributes. All the elements
         will be stored in template.
@@ -237,6 +239,16 @@ class STM_Nanonis():
                         axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
                     axes_units.append(coor_info[0][2])
                     template[temp_data_field] = scan_dt_arr
+                    # Setting up the default field for entry
+                    if (template.get("/ENTRY[entry]/@default", "") in ["", None] and
+                        eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]):
+                        template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(temp_data_field)
+                    elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in ["", None]:
+                        # Template already filled from eln_data_dict
+                        if field_name == template["/ENTRY[entry]/@default"]:
+                            template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(temp_data_field)
+                    if template.get("/ENTRY[entry]/@default", "") in ["", None]:
+                        template["/ENTRY[entry]/@default"] = convert_data_dict_path_to_hdf5_path(temp_data_field)
                 else:
                     # to clean up nxdata_grp and field_name from previous loop
                     nxdata_grp = ''
@@ -354,7 +366,8 @@ class STM_Nanonis():
                                                       data_dict,
                                                       c_val,
                                                       coor_info,
-                                                      data_group)
+                                                      data_group,
+                                                      eln_data_dict)
                     else:
                         work_out_overwriteable_field(template,
                                                      data_dict,
