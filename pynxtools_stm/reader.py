@@ -86,7 +86,7 @@ class StsNanonisGeneric:
     """
 
     __version__ = ["Generic 5e", "Generic 4.5"]
-    
+
     def __call__(
         self, template: Dict, data_file: str, config_dict: Dict, eln_dict: Dict
     ) -> None:
@@ -124,10 +124,18 @@ class Spm:
     # parser navigate type
     par_nav_t = Dict[str, Union["par_nav_t", Callable]]
     __parser_navigation: Dict[str, par_nav_t] = {
-        "stm": {"nanonis": {"Generic 5e": StmNanonisGeneric,
-                            "Generic 4.5": StmNanonisGeneric}},
-        "sts": {"nanonis": {"Generic 5e": StsNanonisGeneric,
-                            "Generic 4.5": StsNanonisGeneric}},
+        "stm": {
+            "nanonis": {
+                "Generic 5e": StmNanonisGeneric,
+                "Generic 4.5": StmNanonisGeneric,
+            }
+        },
+        "sts": {
+            "nanonis": {
+                "Generic 5e": StsNanonisGeneric,
+                "Generic 4.5": StsNanonisGeneric,
+            }
+        },
     }
 
     def get_appropriate_parser(self, eln_dict: Dict) -> Callable:
@@ -154,9 +162,7 @@ class Spm:
                 f" from {list(self.__parser_navigation.keys())}."
             ) from exc
 
-        vendor_key: str = (
-            "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
-        )
+        vendor_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
         vendor_n: str = eln_dict[vendor_key]
         try:
             vendor_dict: Spm.par_nav_t = experiment_dict[vendor_n]  # type: ignore[assignment]
@@ -166,9 +172,7 @@ class Spm:
                 f" from {list(experiment_dict.keys())}."
             ) from exc
 
-        software_v_key: str = (
-            "/ENTRY[entry]/INSTRUMENT[instrument]/software/@version"
-        )
+        software_v_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/software/@version"
         software_v: str = eln_dict[software_v_key]
         try:
             parser_cls: Callable = vendor_dict[software_v]  # type: ignore[assignment]
@@ -182,25 +186,26 @@ class Spm:
 
         # Return callable function
         return parser
-    
+
+
 def set_default_group_for_each_group(template):
     """Set default group for each group of Nexus file.
     Each group will have a \@default attrubute refering the immediate child group in a NeXus chain.
     e.g. /@default = "entry1"
         /entry1/@default = "data1"
-    
+
     Parameters
     ----------
     template : Template
         Template from filled from datafile and eln.
     """
-    # defalut attribute key to the list of immediate child group 
+    # defalut attribute key to the list of immediate child group
     dflt_key_to_grp_li: Optional[dict[str, list]] = {}
     # defalut attribute key to the group set by reader
     dflt_key_to_exist_grp: dict[str, str] = {}
 
     # "/abc[DATA]/XYe[anything]/mnf[MNYZ]/anything" -> ['DATA', 'anything', 'MNYZ']
-    pattern = r'\[(.*?)\]'
+    pattern = r"\[(.*?)\]"
 
     entry_data_rnd = ""
     for template_concept, val in template.items():
@@ -221,11 +226,11 @@ def set_default_group_for_each_group(template):
             if not dflt_key_to_grp_li.get(last_default_atttr, None):
                 dflt_key_to_grp_li[last_default_atttr] = {}
                 # Data groups
-                dflt_key_to_grp_li[last_default_atttr]['data'] = []
-                dflt_key_to_grp_li[last_default_atttr]['entry'] = []
+                dflt_key_to_grp_li[last_default_atttr]["data"] = []
+                dflt_key_to_grp_li[last_default_atttr]["entry"] = []
                 # Other groupa
-                dflt_key_to_grp_li[last_default_atttr]['other'] = []
-            
+                dflt_key_to_grp_li[last_default_atttr]["other"] = []
+
             if template_concept.endswith("/@default"):
                 dflt_key_to_exist_grp[template_concept] = val
 
@@ -246,9 +251,11 @@ def set_default_group_for_each_group(template):
         pre_defalt_grp = dflt_key_to_exist_grp.get(deflt_key, None)
         # Verify if user added the group here
         if not pre_defalt_grp:
-            if (pre_defalt_grp in value['entry']
+            if (
+                pre_defalt_grp in value["entry"]
                 or pre_defalt_grp in value["data"]
-                or pre_defalt_grp in value['other']):
+                or pre_defalt_grp in value["other"]
+            ):
                 continue
 
         # Entry default group always a NXdata
@@ -257,17 +264,16 @@ def set_default_group_for_each_group(template):
             template[entry_default] = entry_data_rnd
             continue
 
-        if value['entry']:
-            template[deflt_key] = value['entry'][0]
+        if value["entry"]:
+            template[deflt_key] = value["entry"][0]
         # Prioritize data group on other groups
-        elif value['data']:
-            template[deflt_key] = value['data'][0]
+        elif value["data"]:
+            template[deflt_key] = value["data"][0]
             # Randomly choose a NXdata group for entry
-        elif value['other']:
-            template[deflt_key] = value['other'][0]
+        elif value["other"]:
+            template[deflt_key] = value["other"][0]
         else:
             template[deflt_key] = ""
-    
 
 
 # pylint: disable=invalid-name, too-few-public-methods
