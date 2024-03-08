@@ -1,5 +1,5 @@
 """
-    Some generic function and class for on STM reader.
+Some generic function and class for on STM reader.
 """
 # Copyright The NOMAD Authors.
 #
