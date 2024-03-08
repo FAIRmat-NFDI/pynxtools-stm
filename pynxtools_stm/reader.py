@@ -1,5 +1,5 @@
 """
-    A short description on STS reader which also suitable for file from STM .
+A short description on STS reader which also suitable for file from STM .
 """
 
 # Copyright The NOMAD Authors.
@@ -18,7 +18,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 
 import json
 from collections.abc import Callable
@@ -189,7 +188,7 @@ class Spm:
 
 
 def set_default_group_for_each_group(template):
-    """Set default group for each group of Nexus file.
+    r"""Set default group for each group of Nexus file.
     Each group will have a \@default attrubute refering the immediate child group in a NeXus chain.
     e.g. /@default = "entry1"
         /entry1/@default = "data1"

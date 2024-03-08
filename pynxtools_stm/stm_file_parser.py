@@ -1,5 +1,5 @@
 """
-    A parser for files from stm experiment into a simple dict.
+A parser for files from stm experiment into a simple dict.
 """
 
 # Copyright The NOMAD Authors.
@@ -18,7 +18,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 
 import logging
 import os
@@ -87,17 +86,17 @@ class STM_Nanonis:
                     spreaded_dict[l_key][r_key] = d_val
                 else:
                     if l_key in spreaded_dict:
-                        spreaded_dict[
-                            l_key
-                        ] = self.get_nested_dict_from_concatenated_key(
-                            {r_key: d_val}, dict_to_map_path=spreaded_dict[l_key]
+                        spreaded_dict[l_key] = (
+                            self.get_nested_dict_from_concatenated_key(
+                                {r_key: d_val}, dict_to_map_path=spreaded_dict[l_key]
+                            )
                         )
                     else:
                         spreaded_dict[l_key]: Dict[str, Any] = {}
-                        spreaded_dict[
-                            l_key
-                        ] = self.get_nested_dict_from_concatenated_key(
-                            {r_key: d_val}, dict_to_map_path=spreaded_dict[l_key]
+                        spreaded_dict[l_key] = (
+                            self.get_nested_dict_from_concatenated_key(
+                                {r_key: d_val}, dict_to_map_path=spreaded_dict[l_key]
+                            )
                         )
             else:
                 spreaded_dict[d_key] = d_val
@@ -247,22 +246,22 @@ class STM_Nanonis:
                         "",
                         None,
                     ] and eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template[
-                            "/ENTRY[entry]/@default"
-                        ] = convert_data_dict_path_to_hdf5_path(temp_data_field)
+                        template["/ENTRY[entry]/@default"] = (
+                            convert_data_dict_path_to_hdf5_path(temp_data_field)
+                        )
                     elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in [
                         "",
                         None,
                     ]:
                         # Template already filled from eln_data_dict
                         if field_name == template["/ENTRY[entry]/@default"]:
-                            template[
-                                "/ENTRY[entry]/@default"
-                            ] = convert_data_dict_path_to_hdf5_path(temp_data_field)
+                            template["/ENTRY[entry]/@default"] = (
+                                convert_data_dict_path_to_hdf5_path(temp_data_field)
+                            )
                     if template.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template[
-                            "/ENTRY[entry]/@default"
-                        ] = convert_data_dict_path_to_hdf5_path(temp_data_field)
+                        template["/ENTRY[entry]/@default"] = (
+                            convert_data_dict_path_to_hdf5_path(temp_data_field)
+                        )
                 else:
                     # to clean up nxdata_grp and field_name from previous loop
                     nxdata_grp = ""

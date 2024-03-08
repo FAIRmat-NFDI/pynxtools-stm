@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-    To collect data from Bias Spectroscopy output file that is mainly a
-    file with dat extension.
+To collect data from Bias Spectroscopy output file that is mainly a
+file with dat extension.
 """
 # -*- coding: utf-8 -*-
 #
@@ -21,7 +21,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 
 from pynxtools_stm.stm_file_parser import get_stm_raw_file_info
 

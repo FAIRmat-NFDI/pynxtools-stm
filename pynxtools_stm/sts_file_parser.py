@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-    To collect data from Bias Spectroscopy output file that is mainly a
-    file with dat extension.
+To collect data from Bias Spectroscopy output file that is mainly a
+file with dat extension.
 """
 # -*- coding: utf-8 -*-
 #
@@ -21,7 +21,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 
 import logging
 import os
@@ -331,9 +330,9 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         dI_by_dV_u = f"{f_unt}/{a_unit[0]}"
         template[grp + "/" + di_by_dv_nm + "/@units"] = dI_by_dV_u
         template[grp + "/@signal"] = di_by_dv_nm
-        template[
-            grp + "/" + di_by_dv_nm + "/@long_name"
-        ] = f"{di_by_dv_nm}({dI_by_dV_u})"
+        template[grp + "/" + di_by_dv_nm + "/@long_name"] = (
+            f"{di_by_dv_nm}({dI_by_dV_u})"
+        )
         template[grp + "/@axes"] = axis_nm
         template[grp + "/" + axis_nm] = {"link": a_nx_path[0]}
         template[grp + "/" + axis_nm + "/@units"] = a_unit[0]
