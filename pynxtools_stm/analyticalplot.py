@@ -30,20 +30,24 @@ def dY_by_dX(current, volt, acc=4):
         volt = np.array(volt)
     if isinstance(current, list) and len(current) > 1:
         current = np.array(current)
-    
+
     # validate input
-    if (not isinstance(current, np.ndarray)
+    if (
+        not isinstance(current, np.ndarray)
         and not isinstance(volt, np.ndarray)
         and current.ndim != 1
-        and volt.ndim != 1 
-        and current.size != volt.size):
-        raise ValueError("Current and voltage are not 1D numpy arrays or not of same size.")
+        and volt.ndim != 1
+        and current.size != volt.size
+    ):
+        raise ValueError(
+            "Current and voltage are not 1D numpy arrays or not of same size."
+        )
 
     if isinstance(volt, np.ndarray) and volt.ndim == 1 and volt.size > 1:
         dv = volt[1] - volt[0]
     else:
         raise ValueError("Voltage is not a list or 1D numpy array.")
-    
+
     d_dV = FinDiff(0, dv, acc=acc)
     dI_dV = d_dV(current)
 
