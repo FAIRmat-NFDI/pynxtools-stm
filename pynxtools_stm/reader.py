@@ -21,10 +21,10 @@ A short description on STS reader which also suitable for file from STM .
 
 import json
 from collections.abc import Callable
-from typing import Any, Dict, Tuple, Union, Optional
+from typing import Dict, Union, Tuple, Any, Optional
+import yaml
 import re
 
-import yaml
 from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
 from pynxtools.dataconverter.template import Template
@@ -187,16 +187,16 @@ class Spm:
         return parser
 
 
-def set_default_group_for_each_group(template):
-    r"""Set default group for each group of Nexus file.
-    Each group will have a \@default attrubute refering the immediate child group in a NeXus chain.
+def set_default_for_each_group(template):
+    """Set default attribute for each group of Nexus file.
+    Each group will have a /@default attrubute refering the immediate child group or field in a NeXus definition chain.
     e.g. /@default = "entry1"
-        /entry1/@default = "data1"
+        /entry1/data/@default = "field1"
 
     Parameters
     ----------
     template : Template
-        Template from filled from datafile and eln.
+        Template from filled with datafile and eln.
     """
     # defalut attribute key to the list of immediate child group
     dflt_key_to_grp_li: Optional[dict[str, list]] = {}
@@ -221,6 +221,8 @@ def set_default_group_for_each_group(template):
                 modified_name = modified_name[0]
             else:
                 modified_name = group
+            if modified_name.startswith("@"):
+                continue
             last_default_atttr = f"{last_default_key}/@default"
             if not dflt_key_to_grp_li.get(last_default_atttr, None):
                 dflt_key_to_grp_li[last_default_atttr] = {}
@@ -329,7 +331,7 @@ class STMReader(BaseReader):
                 "Reader could not read anything! Check for input files and the"
                 " corresponding extention."
             )
-        set_default_group_for_each_group(filled_template)
+        set_default_for_each_group(filled_template)
         return filled_template
 
 
