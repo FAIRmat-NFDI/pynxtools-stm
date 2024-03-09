@@ -221,6 +221,8 @@ def set_default_group_for_each_group(template):
                 modified_name = modified_name[0]
             else:
                 modified_name = group
+            if modified_name.startswith("@"):
+                continue
             last_default_atttr = f"{last_default_key}/@default"
             if not dflt_key_to_grp_li.get(last_default_atttr, None):
                 dflt_key_to_grp_li[last_default_atttr] = {}
