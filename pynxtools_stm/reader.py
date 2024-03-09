@@ -21,7 +21,9 @@ A short description on STS reader which also suitable for file from STM .
 
 import json
 from collections.abc import Callable
-from typing import Dict, Union
+from typing import Dict, Union, Tuple, Any, Optional
+import yaml
+import re
 
 from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
@@ -183,13 +185,14 @@ class Spm:
 
         # Return callable function
         return parser
-    
+
+
 def set_default_for_each_group(template):
     """Set default attribute for each group of Nexus file.
-    Each group will have a \@default attrubute refering the immediate child group or field in a NeXus definition chain.
+    Each group will have a /@default attrubute refering the immediate child group or field in a NeXus definition chain.
     e.g. /@default = "entry1"
         /entry1/data/@default = "field1"
-    
+
     Parameters
     ----------
     template : Template
