@@ -24,9 +24,9 @@ import os
 import re
 from typing import Any, Dict
 
-import nanonispy as nap
 import numpy as np
 
+import pynxtools_stm.nanonispy as nap
 from pynxtools_stm.helper import (
     UNIT_TO_SKIP,
     fill_template_from_eln_data,
