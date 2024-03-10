@@ -46,7 +46,7 @@ sts = "pynxtools_stm.reader:STMReader"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["pynxtools_stm", "nanonispy"]
+include = ["pynxtools_stm"]
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"
