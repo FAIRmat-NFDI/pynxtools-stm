@@ -536,11 +536,11 @@ def _parse_3ds_header(header_raw, header_override):
 
         # channel names
         header_dict["channels"] = raw_dict["Channels"]
-        if type(header_dict["channels"]) == str:
+        if isinstance(header_dict["channels"], str):
             # will be str if only one channel, make list of str so number of channels can be counted properly
-            l = []
-            l.append(header_dict["channels"])
-            header_dict["channels"] = l
+            chnl = []
+            chnl.append(header_dict["channels"])
+            header_dict["channels"] = chnl
         header_dict["num_channels"] = len(header_dict["channels"])
         raw_dict.pop("Channels")
 
