@@ -27,7 +27,6 @@ from math import e
 import os
 from typing import Dict, Optional, Tuple, Union
 
-from matplotlib import axis
 import numpy as np
 
 from pynxtools_stm.helper import (
@@ -321,12 +320,12 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
     if len(a_data) != 1 or len(a_name) != 1 or len(a_unit) != 1:
         raise ValueError("There must be only one Bias axis.")
     if extra_annot:
-        extra_annot = f"({extra_annot})"
-    axis_nm = a_name[0]
+        extra_annot = f"_{extra_annot}"
+    axis_nm = [a_name[0]] if len(a_name) > 1 else a_name
     for f_dat, f_mn, f_unt in zip(f_data, f_name, f_unit):
         f_mn = "grad_" + "_".join(f_mn.lower().split(" "))
         grp = f"/ENTRY[entry]/DATA[{f_mn}{extra_annot}]"
-        di_by_dv_nm = "dI_by_dV"
+        di_by_dv_nm = "di_by_dv"
         f_dat = f_dat * flip_num
         template[grp + "/" + di_by_dv_nm] = dI_by_dV(f_dat, a_data[0], acc=acc)
         dI_by_dV_u = f"{f_unt}/{a_unit[0]}"
@@ -336,15 +335,14 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
             f"{di_by_dv_nm}({dI_by_dV_u})"
         )
         template[grp + "/@axes"] = axis_nm
-        template[grp + "/" + axis_nm] = {"link": a_nx_path[0]}
-        template[grp + "/" + axis_nm + "/@units"] = a_unit[0]
-        template[grp + "/" + axis_nm + "/@long_name"] = f"{axis_nm}({a_unit[0]})"
+        template[grp + "/" + axis_nm[0]] = {"link": a_nx_path[0]}
+        template[grp + "/" + axis_nm[0] + "/@units"] = a_unit[0]
+        template[grp + "/" + axis_nm[0] + "/@long_name"] = f"{axis_nm}({a_unit[0]})"
 
 
 # pylint: disable=too-many-locals too-many-statements
 def construct_nxdata_for_dat(
     template,
-    eln_dict,
     data_dict,
     sub_config_dict,
     data_group_concept,
@@ -416,7 +414,7 @@ def construct_nxdata_for_dat(
             for axis in axes:
                 if axis + "value" in trimed_path:
                     # removing forward slash
-                    axes_name.append(axis[0:-1])
+                    axes_name.append(axis[0:-1].lower())
                     axes_data.append(path_data)
                     axis_unit = path.replace("/value", "/unit")
                     axes_unit.append(
@@ -436,14 +434,14 @@ def construct_nxdata_for_dat(
                 else:
                     field = dt_grp
                 data_field_dt.append(data_dict[path])
-                data_field_nm.append(field)
+                data_field_nm.append(field.lower())
                 unit_path = path.replace("/value", "/unit")
                 data_field_unit.append(data_dict.get(unit_path, ""))
-        # If axes data is not found than assumes all the generated fields usages single 
+        # If axes data is not found than assumes all the generated fields usages single
         # common axes data
         if not axes_name and not axes_data:
             axes_data = axs_dt
-            axes_name = axs_nm
+            axes_name = [ax.lower() for ax in axs_nm]
             axes_metadata = axs_mtdt
             axes_unit = axs_unit
         # No field data is found
@@ -485,7 +483,7 @@ def construct_nxdata_for_dat(
             dt_fd = "_".join(dt_fd.lower().split(" "))
             if extra_annot:
                 temp_data_grp = data_group_concept.replace(
-                    "DATA[data", f"DATA[{dt_fd}" f"({extra_annot})"
+                    "DATA[data", f"DATA[{dt_fd}" f"_{extra_annot}"
                 )
             else:
                 temp_data_grp = data_group_concept.replace("DATA[data", f"DATA[{dt_fd}")
@@ -614,7 +612,6 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
                 flip_num = b_s_d.get_flip_number(eln_data_dict)
                 construct_nxdata_for_dat(
                     template,
-                    eln_data_dict,
                     flattened_dict,
                     c_val,
                     data_group_concept,
