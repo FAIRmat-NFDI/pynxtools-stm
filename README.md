@@ -4,6 +4,7 @@
 The prime purpose of the reader is to transform lab-defined data into community-defined concepts constructed by the SPM community which allows experimentalists to store, organize, search, analyze, and share experiments data (only with the help of NOMAD) within the scientific community. To utilize the reader one needs a data file from the experiment, a config file (to connect concepts and raw data from the experimental data file), and an eln file (to add user-defined data that does not come along the experimental data file).
 ## Contact persion in FAIRmat for this reader
 **Rubel Mozumder (mozumder@physik.hu-berlin.de)**
+
 ## Reader Notes:
 - Reader builds on [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) application definition
 - Needs an experimental file, a config file and a eln file
