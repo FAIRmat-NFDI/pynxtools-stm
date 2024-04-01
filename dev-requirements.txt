@@ -10,7 +10,7 @@ ase==3.22.1
     # via
     #   ifes-apt-tc-data-modeling
     #   pynxtools
-asteval==0.9.31
+asteval==0.9.32
     # via lmfit
 asttokens==2.4.1
     # via stack-data
@@ -29,13 +29,13 @@ click==8.1.7
     #   pynxtools
 cloudpickle==3.0.0
     # via dask
-comm==0.2.1
+comm==0.2.2
     # via ipykernel
 contourpy==1.2.0
     # via matplotlib
 cycler==0.12.1
     # via matplotlib
-dask[array]==2024.2.0
+dask[array]==2024.3.1
     # via
     #   dask
     #   hyperspy
@@ -79,9 +79,9 @@ findiff==0.10.0
     #   pynxtools-stm (pyproject.toml)
 flatdict==4.0.1
     # via pynxtools
-fonttools==4.49.0
+fonttools==4.50.0
     # via matplotlib
-fsspec==2024.2.0
+fsspec==2024.3.1
     # via
     #   dask
     #   hyperspy
@@ -89,7 +89,7 @@ future==1.0.0
     # via uncertainties
 gitdb==4.0.11
     # via gitpython
-gitpython==3.1.42
+gitpython==3.1.43
     # via pynxtools
 h5py==3.10.0
     # via
@@ -123,7 +123,7 @@ imageio==2.27.0
     #   nionswift-io
     #   nionui
     #   scikit-image
-importlib-metadata==7.0.1
+importlib-metadata==7.1.0
     # via
     #   build
     #   dask
@@ -134,9 +134,9 @@ importlib-resources==6.4.0
     # via matplotlib
 iniconfig==2.0.0
     # via pytest
-ipykernel==6.29.2
+ipykernel==6.29.4
     # via ipyparallel
-ipyparallel==8.6.1
+ipyparallel==8.7.0
     # via hyperspy
 ipython==8.18.1
     # via
@@ -149,11 +149,11 @@ jinja2==3.1.3
     # via hyperspy
 joblib==1.3.2
     # via scikit-learn
-jupyter-client==8.6.0
+jupyter-client==8.6.1
     # via
     #   ipykernel
     #   ipyparallel
-jupyter-core==5.7.1
+jupyter-core==5.7.2
     # via
     #   ipykernel
     #   jupyter-client
@@ -169,7 +169,7 @@ lmfit==1.2.2
     # via pyxem
 locket==1.0.0
     # via partd
-lxml==5.1.0
+lxml==5.2.0
     # via fabio
 markupsafe==2.1.5
     # via jinja2
@@ -196,7 +196,7 @@ mpmath==1.3.0
     # via
     #   -r requirements.txt
     #   sympy
-msgpack==1.0.7
+msgpack==1.0.8
     # via blosc2
 mypy==1.8.0
     # via pynxtools-stm (pyproject.toml)
@@ -228,7 +228,7 @@ nionutils==0.4.10
     #   nionswift
     #   nionswift-io
     #   nionui
-numba==0.59.0
+numba==0.59.1
     # via
     #   diffsims
     #   hyperspy
@@ -285,14 +285,14 @@ numpy==1.26.4
     #   tifffile
     #   xarray
     #   zarr
-numpy-quaternion==2023.0.2
+numpy-quaternion==2023.0.3
     # via orix
 orix==0.11.1
     # via
     #   diffsims
     #   kikuchipy
     #   pyxem
-packaging==23.2
+packaging==24.0
     # via
     #   build
     #   dask
@@ -305,7 +305,7 @@ packaging==23.2
     #   silx
     #   tables
     #   xarray
-pandas==2.2.0
+pandas==2.2.1
     # via
     #   ifes-apt-tc-data-modeling
     #   pynxtools
@@ -366,7 +366,7 @@ pygments==2.17.2
     # via ipython
 pynxtools==0.1.1
     # via pynxtools-stm (pyproject.toml)
-pyparsing==3.1.1
+pyparsing==3.1.2
     # via matplotlib
 pyproject-hooks==1.0.0
     # via
@@ -374,7 +374,7 @@ pyproject-hooks==1.0.0
     #   pip-tools
 pytest==8.0.2
     # via pynxtools-stm (pyproject.toml)
-python-dateutil==2.8.2
+python-dateutil==2.9.0.post0
     # via
     #   hyperspy
     #   ipyparallel
@@ -437,7 +437,7 @@ scipy==1.12.0
     #   scikit-image
     #   scikit-learn
     #   sparse
-silx==2.0.0
+silx==2.0.1
     # via pyfai
 six==1.16.0
     # via
@@ -458,7 +458,7 @@ sympy==1.12
     #   radioactivedecay
 tables==3.9.2
     # via ifes-apt-tc-data-modeling
-threadpoolctl==3.3.0
+threadpoolctl==3.4.0
     # via scikit-learn
 tifffile==2024.2.12
     # via
@@ -489,7 +489,7 @@ tqdm==4.66.2
     #   kikuchipy
     #   orix
     #   pyxem
-traitlets==5.14.1
+traitlets==5.14.2
     # via
     #   comm
     #   ipykernel
@@ -506,7 +506,7 @@ transforms3d==0.4.1
     # via
     #   diffsims
     #   pyxem
-typing-extensions==4.9.0
+typing-extensions==4.10.0
     # via
     #   ipython
     #   mypy
@@ -529,13 +529,13 @@ wcwidth==0.2.13
     #   prompt-toolkit
 wheel==0.42.0
     # via pip-tools
-xarray==2024.2.0
+xarray==2024.3.0
     # via pynxtools
-zarr==2.17.0
+zarr==2.17.1
     # via hyperspy
 zipfile37==0.1.3
     # via pynxtools
-zipp==3.17.0
+zipp==3.18.1
     # via
     #   importlib-metadata
     #   importlib-resources
