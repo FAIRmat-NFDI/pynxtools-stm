@@ -23,9 +23,11 @@ file with dat extension.
 #
 
 import logging
+from math import e
 import os
 from typing import Dict, Optional, Tuple, Union
 
+from matplotlib import axis
 import numpy as np
 
 from pynxtools_stm.helper import (
@@ -399,7 +401,6 @@ def construct_nxdata_for_dat(
         data_field_nm = []
         data_field_dt = []
         data_field_unit = []
-
         # Collects axes, and data field info.
         # list of paths e.g. "/dat_mat_components/Bias/value" comes as
         # dict value of /ENTRY[entry]/DATA[data] in config file.
@@ -438,12 +439,16 @@ def construct_nxdata_for_dat(
                 data_field_nm.append(field)
                 unit_path = path.replace("/value", "/unit")
                 data_field_unit.append(data_dict.get(unit_path, ""))
-
+        # If axes data is not found than assumes all the generated fields usages single 
+        # common axes data
         if not axes_name and not axes_data:
             axes_data = axs_dt
             axes_name = axs_nm
             axes_metadata = axs_mtdt
             axes_unit = axs_unit
+        # No field data is found
+        if not data_field_dt or not data_field_nm:
+            return {}
         return {
             "axes": {
                 "name": axes_name,
@@ -523,7 +528,7 @@ def construct_nxdata_for_dat(
         """
         data_grp = key.split("/")[-2]
         extra_annot = data_grp.split("[")[-1] if "[" in data_grp else ""
-        extra_annot = extra_annot.split("]")[0].strip()
+        extra_annot = extra_annot.split("]")[0].strip() if extra_annot else ""
         tmp_grp_nm = (
             data_grp[0 : data_grp.index("[")].strip() if "[" in data_grp else data_grp
         )
@@ -532,7 +537,7 @@ def construct_nxdata_for_dat(
 
     def top_level_Bias_axis(top_ax_list, data_dict, axes):
         """Sometimes Bias axis comes one with: /dat_mat_components/Bias calc/value.
-        Later on this bias will be used as a Bias axis for all measurements.
+        Later on this bias will be used as a Bias axis for afterward measurements.
         """
         axs_nm = []
         axs_dt = []
@@ -574,6 +579,9 @@ def construct_nxdata_for_dat(
             )
         else:
             axis_and_field_data = get_axes_and_fields_data(dt_val, data_dict, axes)
+            # No field data is found
+            if not axis_and_field_data:
+                continue
             construct_data_group_for_each_field(axis_and_field_data)
             construct_nxdata_for_dIbydV(
                 axis_and_field_data, template, flip_number, acc=acc
