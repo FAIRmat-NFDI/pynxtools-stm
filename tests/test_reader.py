@@ -2,7 +2,6 @@
 Basic example based test for the stm reader
 """
 
-import logging
 import os
 import pytest
 import xml.etree.ElementTree as ET
@@ -19,22 +18,22 @@ from pynxtools.nexus.nxdl_utils import get_nexus_definitions_path
 from pynxtools_stm.reader import STMReader
 
 
-@pytest.mark.parametrize(
-    "nxdl,example_data",
-    [
-        ("NXsts", "data/sts_nanonis_5e"),
-        ("NXsts", "data/sts_nanonis_4_5"),
-        ("NXsts", "data/stm_nanonis_5e"),
-    ],
-)
 class TestSTMReader:
     # Try with convert()
+    @pytest.mark.parametrize(
+    "nxdl,example_data",
+    [
+        ("NXsts", "data/in_sts_nanonis_5e"),
+        ("NXsts", "data/in_sts_nanonis_4_5"),
+        ("NXsts", "data/in_stm_nanonis_5e"),
+    ],
+)
     def test_example_data(self, nxdl, example_data, tmp_path, caplog):
         """
         Test the example data for the stm reader
         """
 
-        tmp_output = f"{tmp_path}/{os.sep}/output"
+        tmp_output = f"{tmp_path}/{os.sep}/output.nxs"
         reader = STMReader
         assert callable(reader.read)
 
