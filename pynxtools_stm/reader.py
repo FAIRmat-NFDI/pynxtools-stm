@@ -28,6 +28,7 @@ import re
 from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
 from pynxtools.dataconverter.template import Template
+from pynxtools import get_nexus_version
 
 from pynxtools_stm.stm_file_parser import STM_Nanonis
 from pynxtools_stm.sts_file_parser import from_dat_file_into_template
@@ -326,6 +327,8 @@ class STMReader(BaseReader):
                 del template[key]
             else:
                 filled_template[key] = val
+        # Set nexus def version
+        filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
         if not filled_template.keys():
             raise ValueError(
                 "Reader could not read anything! Check for input files and the"

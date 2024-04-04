@@ -28,7 +28,7 @@ from pynxtools_stm.reader import STMReader
 )
 class TestSTMReader:
     # Try with convert()
-    def test_example_data(self, nxdl, example_data, tmp_path):
+    def test_example_data(self, nxdl, example_data, tmp_path, caplog):
         """
         Test the example data for the stm reader
         """
@@ -53,5 +53,11 @@ class TestSTMReader:
         )
 
         assert isinstance(read_data, Template)
-        assert validate_data_dict(template, read_data, root)
+        # 30 -> WARNING, 40 -> ERROR
+        with caplog.at_level(30, 40):
+            is_success = validate_data_dict(template, read_data, root)
+        assert is_success, "Validation failed"
+        for record in caplog.records:
+            if record.levelname == "WARNING" or record.levelname == "ERROR":
+                assert False, record.message
         Writer(read_data, nxdl_file, tmp_output).write()
