@@ -2,6 +2,7 @@
 Basic example based test for the stm reader
 """
 
+import logging
 import os
 import pytest
 import xml.etree.ElementTree as ET
@@ -54,7 +55,7 @@ class TestSTMReader:
 
         assert isinstance(read_data, Template)
         # 30 -> WARNING, 40 -> ERROR
-        with caplog.at_level(30, 40):
+        with caplog.at_level('ERROR', 'WARNING'):
             is_success = validate_data_dict(template, read_data, root)
         assert is_success, "Validation failed"
         for record in caplog.records:
