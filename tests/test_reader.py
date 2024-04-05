@@ -101,7 +101,9 @@ class TestSTMReader:
         for ind, (gen_l, ref_l) in enumerate(zip(gen_lines, ref_lines)):
             if gen_l != ref_l:
                 # skip version conflicts
-                if gen_l.startswith('DEBUG - value: v') and ref_l.startswith('DEBUG - value: v'):
+                if gen_l.startswith("DEBUG - value: v") and ref_l.startswith(
+                    "DEBUG - value: v"
+                ):
                     continue
                 assert False, (
                     f"Log files are different at line {ind}"
