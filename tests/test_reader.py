@@ -100,4 +100,7 @@ class TestSTMReader:
             assert False, "Log files are different"
         for ind, (gen_l, ref_l) in enumerate(zip(gen_lines, ref_lines)):
             if gen_l != ref_l:
-                assert False, f"Log files are different at line {ind}"
+                assert False, (
+                    f"Log files are different at line {ind}"
+                    f"generated: {gen_l} referencedgit : {ref_l}"
+                )
