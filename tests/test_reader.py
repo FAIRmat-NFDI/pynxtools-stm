@@ -100,7 +100,10 @@ class TestSTMReader:
             assert False, "Log files are different"
         for ind, (gen_l, ref_l) in enumerate(zip(gen_lines, ref_lines)):
             if gen_l != ref_l:
+                # skip version conflicts
+                if gen_l.startswith('DEBUG - value: v') and ref_l.startswith('DEBUG - value: v'):
+                    continue
                 assert False, (
                     f"Log files are different at line {ind}"
-                    f"generated: {gen_l} referencedgit : {ref_l}"
+                    f" generated: {gen_l} \n referenced : {ref_l}"
                 )
