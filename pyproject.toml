@@ -22,9 +22,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "pynxtools>=0.0.10",
     "findiff",
-    "ipython<8.22.1" # python 3.9
 ]
 
 [project.urls]
@@ -36,8 +34,11 @@ dev = [
     "mypy",
     "ruff",
     "pytest",
-    "types-pyyaml",
     "pip-tools",
+]
+
+consistency_with_pynxtools = [
+    "pynxtools>=0.1.1",
 ]
 
 [project.entry-points."pynxtools.reader"]

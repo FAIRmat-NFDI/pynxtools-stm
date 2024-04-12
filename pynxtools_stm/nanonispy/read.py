@@ -356,11 +356,10 @@ class Scan(NanonisFile):
         data_dict = dict()
 
         # open and seek to start of data
-        f = open(self.fname, "rb")
-        f.seek(self.byte_offset)
-        data_format = self.data_format
-        scandata = np.fromfile(f, dtype=data_format)
-        f.close()
+        with open(self.fname, "rb") as f:
+            f.seek(self.byte_offset)
+            data_format = self.data_format
+            scandata = np.fromfile(f, dtype=data_format)
 
         # reshape
         scandata_shaped = scandata.reshape(nchanns, ndir, ny, nx)
