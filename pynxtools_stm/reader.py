@@ -28,6 +28,7 @@ import re
 from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
 from pynxtools.dataconverter.template import Template
+from pynxtools import get_nexus_version
 
 from pynxtools_stm.stm_file_parser import STM_Nanonis
 from pynxtools_stm.sts_file_parser import from_dat_file_into_template
@@ -208,7 +209,15 @@ def set_default_for_each_group(template):
 
     entry_data_rnd = ""
     for template_concept, val in template.items():
+        # skip the last part which is field
         groups_list = template_concept.split("/")
+        # Cancel out the attribuutes
+        if groups_list[-1].startswith("@"):
+            continue
+        # Cancel out the fields
+        groups_list = groups_list[0:-1]
+        if not groups_list:
+            continue
         last_default_key = ""
         if template_concept.endswith("/@default") and val:
             dflt_key_to_exist_grp[template_concept] = val
@@ -326,6 +335,8 @@ class STMReader(BaseReader):
                 del template[key]
             else:
                 filled_template[key] = val
+        # Set nexus def version
+        filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
         if not filled_template.keys():
             raise ValueError(
                 "Reader could not read anything! Check for input files and the"
