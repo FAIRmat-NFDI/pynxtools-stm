@@ -1,6 +1,7 @@
 """
 Basic example based test for the stm reader
 """
+
 import logging
 import os
 import pytest
@@ -15,7 +16,7 @@ from pynxtools.nexus import nexus
 from pynxtools.dataconverter.writer import Writer
 from pynxtools.dataconverter.template import Template
 
-from pynxtools.definitions.dev_tools.utils.nxdl_utils import   get_nexus_definitions_path
+from pynxtools.definitions.dev_tools.utils.nxdl_utils import get_nexus_definitions_path
 from pynxtools_stm.reader import STMReader
 
 
