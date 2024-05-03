@@ -198,6 +198,7 @@ cython_debug/
 .mypy_cache/
 .pyenv
 *.pyc
+*.txt
 !requirements.txt
 !dev-requirements.txt
 build/
