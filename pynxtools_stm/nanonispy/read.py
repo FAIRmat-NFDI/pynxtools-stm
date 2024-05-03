@@ -484,9 +484,9 @@ def _parse_3ds_header(header_raw, header_override):
 
     if header_override is not None:
         for key, val in header_override.items():
-            raw_dict[
-                key
-            ] = val  # creates new entry if key doesn't match key in raw_dict
+            raw_dict[key] = (
+                val  # creates new entry if key doesn't match key in raw_dict
+            )
 
     # Transfer parameters from raw_dict to header_dict
     # Get the expected parameters first
