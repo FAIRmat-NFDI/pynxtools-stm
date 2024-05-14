@@ -172,7 +172,9 @@ class Spm:
                 f" from {list(experiment_dict.keys())}."
             ) from exc
 
-        software_v_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/software/@version"
+        software_v_key: str = (
+            "/ENTRY[entry]/INSTRUMENT[instrument]/software/model/@version"
+        )
         software_v: str = eln_dict[software_v_key]
         try:
             parser_cls: Callable = vendor_dict[software_v]  # type: ignore[assignment]

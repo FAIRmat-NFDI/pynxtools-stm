@@ -131,7 +131,7 @@ pyyaml==6.0.1
     # via
     #   -r requirements.txt
     #   pynxtools
-ruff==0.2.2
+ruff==0.3.4
     # via pynxtools-stm (pyproject.toml)
 scipy==1.12.0
     # via
