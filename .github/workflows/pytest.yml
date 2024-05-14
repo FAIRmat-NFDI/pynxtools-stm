@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
       - name: Install package
         run: |
-          pip install ".[dev,consistency_with_pynxtools]"
+          pip install ".[dev]"
       - name: Test with pytest
         run: |
           pytest tests
