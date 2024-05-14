@@ -23,6 +23,7 @@ classifiers = [
     "Pynxtools :: 0.1.1"
 ]
 dependencies = [
+    "pytest",
     "findiff",
     "pynxtools>=0.1.1"
 ]

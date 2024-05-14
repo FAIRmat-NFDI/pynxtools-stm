@@ -439,7 +439,7 @@ def construct_nxdata_for_dat(
                 data_field_nm.append(field)
                 unit_path = path.replace("/value", "/unit")
                 data_field_unit.append(data_dict.get(unit_path, ""))
-        # If axes data is not found than assumes all the generated fields usages single
+        # If axes data is not found than assumes all the generated fields usages single 
         # common axes data
         if not axes_name and not axes_data:
             axes_data = axs_dt
