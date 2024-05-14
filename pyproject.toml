@@ -24,6 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
+    "pynxtools>=0.1.1"
 ]
 
 [project.urls]
@@ -36,10 +37,6 @@ dev = [
     "ruff",
     "pytest",
     "pip-tools",
-]
-
-consistency_with_pynxtools = [
-    "pynxtools>=0.1.1",
 ]
 
 [project.entry-points."pynxtools.reader"]
