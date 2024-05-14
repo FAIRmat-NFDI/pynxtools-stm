@@ -109,7 +109,9 @@ Instrument:
       value: '0'
   software:
     vendor: 'nanonis'
-    version: "Generic 4.5"
+    model: 
+      value: Generic
+      version: "Generic 4.5"
     rt_release: '10771'
     ui_release: '10771'
   stm_head_temp:

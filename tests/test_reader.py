@@ -1,6 +1,7 @@
 """
 Basic example based test for the stm reader
 """
+
 import logging
 import os
 import pytest
@@ -14,8 +15,8 @@ from pynxtools.dataconverter.helpers import (
 from pynxtools.nexus import nexus
 from pynxtools.dataconverter.writer import Writer
 from pynxtools.dataconverter.template import Template
-from pynxtools.definitions.dev_tools.utils.nxdl_utils import get_nexus_definitions_path
 
+from pynxtools.definitions.dev_tools.utils.nxdl_utils import get_nexus_definitions_path
 from pynxtools_stm.reader import STMReader
 
 
@@ -42,17 +43,22 @@ class TestSTMReader:
             (
                 "NXsts",
                 "data/in_sts_nanonis_5e",
-                "data/out_sts_nanonis_5e/sts_nanonis_5e.nxs",
+                "data/out_sts_nanonis_5e/sts_nanonis_generic_5e.nxs",
             ),
             (
                 "NXsts",
                 "data/in_sts_nanonis_4_5",
-                "data/out_sts_nanonis_4_5/sts_nanonis_4_5.nxs",
+                "data/out_sts_nanonis_4_5/sts_nanonis_generic_4_5.nxs",
             ),
             (
                 "NXsts",
                 "data/in_stm_nanonis_5e",
-                "data/out_stm_nanonis_5e/stm_nanonis_5e.nxs",
+                "data/out_stm_nanonis_5e/stm_nanonis_generic_5e.nxs",
+            ),
+            (
+                "NXsts",
+                "data/in_stm_nanonis_4_5",
+                "data/out_stm_nanonis_4_5/stm_nanonis_generic_4_5.nxs",
             ),
         ],
     )
