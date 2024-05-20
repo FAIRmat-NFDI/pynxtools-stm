@@ -24,6 +24,7 @@ from collections.abc import Callable
 from typing import Dict, Union, Tuple, Any, Optional
 import yaml
 import re
+import copy
 
 from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
@@ -288,6 +289,21 @@ def set_default_for_each_group(template):
             template[deflt_key] = ""
 
 
+def manually_filter_data_type(template):
+    """Check for the data with key type and fix it"""
+    nexus_key_to_dt = {
+        "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/current_sensor/current_gain": float,
+    }
+    template_copy = copy.deepcopy(template)
+    for key, val in template_copy.items():
+        dt = nexus_key_to_dt.get(key, None)
+        if dt:
+            try:
+                template[key] = dt(val)
+            except (ValueError, TypeError):
+                del template[key]
+
+
 # pylint: disable=invalid-name, too-few-public-methods
 class STMReader(BaseReader):
     """Reader for XPS."""
@@ -332,19 +348,19 @@ class STMReader(BaseReader):
         parser = Spm().get_appropriate_parser(eln_dict)
         parser(template, data_file, config_dict, eln_dict)
 
+        set_default_for_each_group(template)
+        manually_filter_data_type(template)
         for key, val in template.items():
-            if val is None:
-                del template[key]
-            else:
+            if val is not None:
                 filled_template[key] = val
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
+
         if not filled_template.keys():
             raise ValueError(
                 "Reader could not read anything! Check for input files and the"
                 " corresponding extention."
             )
-        set_default_for_each_group(filled_template)
         return filled_template
 
 

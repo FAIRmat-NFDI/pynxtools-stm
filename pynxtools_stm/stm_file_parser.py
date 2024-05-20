@@ -277,12 +277,12 @@ class STM_Nanonis:
                 axes = f"{nxdata_grp}/@axes"
                 signal_attr = f"{nxdata_grp}/@signal"
                 template[auxiliary_signals_attr] = []
-                template[axes] = axes_name
+                template[axes] = [ax.lower() for ax in axes_name]
                 for ind, data_field_nm in enumerate(signals):
                     if ind == 0:
-                        template[signal_attr] = data_field_nm
+                        template[signal_attr] = data_field_nm.lower()
                     else:
-                        template[auxiliary_signals_attr].append(data_field_nm)
+                        template[auxiliary_signals_attr].append(data_field_nm.lower())
                 for axis, axis_data in zip(axes_name, axes_data):
                     template[f"{nxdata_grp}/{axis}"] = axis_data
 
@@ -410,8 +410,8 @@ def get_stm_raw_file_info(raw_file):
     """Parse the raw_file into a organised dictionary. It helps users as well as developers
     to understand how the reader works and modify the config file."""
 
-    raw_file = os.path.basename(raw_file)
-    raw_name = raw_file.rsplit(".")[0]
+    base_name = os.path.basename(raw_file)
+    raw_name = base_name.rsplit(".")[0]
     data_dict = STM_Nanonis(raw_file).get_SPM_metadata_dict_and_signal()
     temp_file = f"{raw_name}.txt"
     with open(temp_file, mode="w", encoding="utf-8") as txt_f:
