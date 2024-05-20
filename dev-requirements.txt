@@ -4,6 +4,14 @@
 #
 #    pip-compile --all-extras --output-file=dev-requirements.txt pyproject.toml requirements.txt
 #
+annotated-types==0.6.0
+    # via
+    #   -r requirements.txt
+    #   pydantic
+anytree==2.12.1
+    # via
+    #   -r requirements.txt
+    #   pynxtools
 ase==3.22.1
     # via
     #   -r requirements.txt
@@ -104,7 +112,15 @@ pip-tools==7.4.0
     # via pynxtools-stm (pyproject.toml)
 pluggy==1.4.0
     # via pytest
-pynxtools==0.2.1
+pydantic==2.7.1
+    # via
+    #   -r requirements.txt
+    #   pynxtools
+pydantic-core==2.18.2
+    # via
+    #   -r requirements.txt
+    #   pydantic
+pynxtools==0.3.0
     # via
     #   -r requirements.txt
     #   pynxtools-stm (pyproject.toml)
@@ -141,6 +157,7 @@ scipy==1.12.0
 six==1.16.0
     # via
     #   -r requirements.txt
+    #   anytree
     #   python-dateutil
 sympy==1.12
     # via
@@ -153,8 +170,12 @@ tomli==2.0.1
     #   pip-tools
     #   pyproject-hooks
     #   pytest
-typing-extensions==4.10.0
-    # via mypy
+typing-extensions==4.11.0
+    # via
+    #   -r requirements.txt
+    #   mypy
+    #   pydantic
+    #   pydantic-core
 tzdata==2024.1
     # via
     #   -r requirements.txt
