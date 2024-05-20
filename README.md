@@ -34,24 +34,24 @@ It returns a text file in working directory.
     !dataconverter \
     --reader sts \
     --nxdl NXsts \
-    --input-file STM_nanonis_generic_5e.sxm \
-    --input-file ../config_file_for_sxm.json \
-    --input-file ./Nanonis_Eln.yaml \
-    --output final_stm_dev_.nxs
+    --output final_stm_dev_.nxs \
+    STM_nanonis_generic_5e.sxm \
+    ../config_file_for_sxm.json \
+    ./Nanonis_Eln.yaml 
     ```
 
 - Run STS reader for STS experiment file using the following code
-    ```
-    # Run STS reader
+  ```
+  # Run STS reader
 
     !dataconverter \
     --reader sts \
     --nxdl NXsts \
-    --input-file ./STS_nanonis_generic_5e_1.dat \
-    --input-file ../config_file_for_dat.json \
-    --input-file Nanonis_Eln.yaml \
-    --output ./final_sts_dev.nxs
-    ```
+    --output ./final_sts_dev.nxs \
+    ./STS_nanonis_generic_5e_1.dat \
+    ../config_file_for_dat.json \
+    ./Nanonis_Eln.yaml \
+  ```
 
 - Utilization of ELN:
 
@@ -116,7 +116,6 @@ It returns a text file in working directory.
                           defaultDisplayUnit: m
                       description: |
                         The scanning area in x position in the frame. (e.g. 130.5E-9).
-
         ```
 ## Config file:
 - To update (if needed) the config file please follow the rules:

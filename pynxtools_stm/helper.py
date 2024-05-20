@@ -91,7 +91,7 @@ def work_out_overwriteable_field(
     # sub_config_dict contains key that repalce the overwritable (upper case part)
     # part from nexus path
     for ch_to_replace, data_path in sub_config_dict.items():
-        modified_field = field_to_replace.replace(overwrite_part, ch_to_replace)
+        modified_field = field_to_replace.replace(overwrite_part, ch_to_replace.lower())
         # Considering renamed field
         new_temp_key = nexus_path.replace(
             field_to_replace, f"{field_to_replace}[{modified_field}]"
@@ -173,7 +173,7 @@ def link_seperation_from_hard_code(template, link_modified_dict):
         "/ENTRY[entry]/reproducibility_indicators/final_z": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/record_final_z",
         "/ENTRY[entry]/reproducibility_indicators/first_settling_time": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/first_settling_time",
         "/ENTRY[entry]/reproducibility_indicators/max_slew_rate": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/max_slew_rate",
-        "/ENTRY[entry]/reproducibility_indicators/settling_time": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/",
+        "/ENTRY[entry]/reproducibility_indicators/settling_time": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/settling_time",
         "/ENTRY[entry]/reproducibility_indicators/y_control_p_gain": "/NXentry/NXinstrument/NXenvironment/NXposition/NXz_controller/p_gain",
         "/ENTRY[entry]/reproducibility_indicators/z_control_hold": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/z_ccontroller_hold",
         "/ENTRY[entry]/reproducibility_indicators/z_control_i_gain": "/NXentry/NXinstrument/NXenvironment/NXposition/NXz_controller/i_gain",
@@ -202,15 +202,27 @@ def link_seperation_from_hard_code(template, link_modified_dict):
         "/ENTRY[entry]/resolution_indicators/sweep_start": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/sweep_start",
         "/ENTRY[entry]/resolution_indicators/z_avg_time": "/NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/z_avg_time",
     }
+    # temp_template = copy.deepcopy(template)
+    # for key, _ in temp_template.items():
+    #     if key in concept_to_data_link:
+    #         concept = concept_to_data_link[key]
+    #         concept = concept.replace("NX", "")
+    #         # check concept already modified before
+    #         if concept in link_modified_dict:
+    #             concept = link_modified_dict[concept]
+    #         template[key] = {"link": concept}
+
     temp_template = copy.deepcopy(template)
     for key, _ in temp_template.items():
-        if key in concept_to_data_link:
-            concept = concept_to_data_link[key]
-            concept = concept.replace("NX", "")
-            # check concept already modified before
-            if concept in link_modified_dict:
-                concept = link_modified_dict[concept]
-            template[key] = {"link": concept}
+        concept_to_be_linked = concept_to_data_link.get(key, "")
+        # e.g. /NXentry/NXinstrument/NXenvironment/NXsweep_control/NXbias_spectroscopy/z_avg_time
+        concept_to_be_linked = concept_to_be_linked.replace("NX", "")
+
+        # check concept already modified before
+        if concept_to_be_linked:
+            rl_concept_in_templt = link_modified_dict.get(concept_to_be_linked, "")
+            if rl_concept_in_templt:
+                template[key] = {"link": rl_concept_in_templt}
 
 
 def cal_dx_by_dy(x_val: np.ndarray, y_val: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
