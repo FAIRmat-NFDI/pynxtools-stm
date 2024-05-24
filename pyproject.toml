@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
-    "pynxtools>=0.3.0"
+    "pynxtools>=0.3.1"
 ]
 
 [project.urls]
@@ -39,7 +39,7 @@ dev = [
 ]
 
 [project.entry-points."pynxtools.reader"]
-sts = "pynxtools_stm.reader:STMReader"
+stm = "pynxtools_stm.reader:STMReader"
 
 [tool.setuptools.packages.find]
 where = ["."]
