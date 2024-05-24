@@ -39,7 +39,7 @@ dev = [
 ]
 
 [project.entry-points."pynxtools.reader"]
-stm = "pynxtools_stm.reader:STMReader"
+sts = "pynxtools_stm.reader:STMReader"
 
 [tool.setuptools.packages.find]
 where = ["."]
