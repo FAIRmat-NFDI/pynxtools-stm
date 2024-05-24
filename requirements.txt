@@ -4,8 +4,6 @@
 #
 #    pip-compile --output-file=requirements.txt pyproject.toml
 #
-annotated-types==0.6.0
-    # via pydantic
 anytree==2.12.1
     # via pynxtools
 ase==3.22.1
@@ -59,11 +57,7 @@ pandas==2.2.2
     #   xarray
 pillow==10.3.0
     # via matplotlib
-pydantic==2.7.1
-    # via pynxtools
-pydantic-core==2.18.2
-    # via pydantic
-pynxtools==0.3.0
+pynxtools==0.3.1
     # via pynxtools-stm (pyproject.toml)
 pyparsing==3.1.2
     # via matplotlib
@@ -85,10 +79,6 @@ six==1.16.0
     #   python-dateutil
 sympy==1.12
     # via findiff
-typing-extensions==4.11.0
-    # via
-    #   pydantic
-    #   pydantic-core
 tzdata==2024.1
     # via pandas
 xarray==2024.5.0
