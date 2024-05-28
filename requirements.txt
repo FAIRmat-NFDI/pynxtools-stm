@@ -57,7 +57,7 @@ pandas==2.2.2
     #   xarray
 pillow==10.3.0
     # via matplotlib
-pynxtools==0.3.1
+pynxtools @ git+https://github.com/FAIRmat-NFDI/pynxtools.git@master
     # via pynxtools-stm (pyproject.toml)
 pyparsing==3.1.2
     # via matplotlib
