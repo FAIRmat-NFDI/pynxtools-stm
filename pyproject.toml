@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
-    "pynxtools>=0.3.1"
+    "pynxtools@git+https://github.com/FAIRmat-NFDI/pynxtools.git@master",
 ]
 
 [project.urls]
