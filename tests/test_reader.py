@@ -42,5 +42,5 @@ def test_stm_reader(nxdl, reader_name, files_or_dir, tmp_path, caplog):
     "Generic test from pynxtools."
     # test plugin reader
     test = ReaderTest(nxdl, reader_name, files_or_dir, tmp_path, caplog)
-    test.convert_to_nexus(log_level="ERROR", ignore_undocumented=True)
+    test.convert_to_nexus(caplog_level="ERROR", ignore_undocumented=True)
     test.check_reproducibility_of_nexus()
