@@ -32,10 +32,10 @@ The following command can be used to run the `STS` reader from your python envir
 (.pyenv) <user>$ dataconverter \
 --reader sts \
 --nxdl NXsts \
+--output ./output.nxs \ 
 <path-to STS_nanonis_generic_5e_1.dat> \
 <path-to config_file_for_dat.json> \
-<path-to Nanonis_Eln.yaml> \
---output ./output.nxs
+<path-to Nanonis_Eln.yaml>
 ```
 
 ## Run STM Reader
@@ -44,10 +44,10 @@ Use the following command to run the `STM` reader from your python environment:
 (.pyenv) <user>$ dataconverter \
 --reader sts \
 --nxdl NXsts \
+--output ./output.nxs \
 <path-to STM_nanonis_generic_5e.sxm> \
 <path-to config_file_for_sxm.json> \
 <path-to Nanonis_Eln.yaml> \
---output ./output.nxs
 ```
 ## Want to Contribute or Extend the Reader Functionality
 We appreciate any comments, extentions or improvements on the existing reader from users. Currently the reader supports the versions `4.5`, `5e` from `Generic` model of `Nanonis` vendor. To include the other versions of the `Generic` model, extend the class `StmNanonisGeneric` and `StsNanonisGeneric` by including versions in `__version__` attribute. Also include the model and version of the brand in `Spm` class. 
