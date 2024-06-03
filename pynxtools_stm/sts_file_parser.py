@@ -632,8 +632,8 @@ def get_sts_raw_file_info(raw_file):
     """Parse the raw_file into a plain (keys are organised) dictionary. It helps users as well as developers
     to understand how the reader works and modify the config file."""
 
-    raw_file = os.path.basename(raw_file)
-    raw_name = raw_file.split(".")[0]
+    base_file = os.path.basename(raw_file)
+    raw_name = base_file.split(".")[0]
     temp_file = f"{raw_name}.txt"
     b_s_d = BiasSpecData_Nanonis(raw_file)
     flattened_dict = {}

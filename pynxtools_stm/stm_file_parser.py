@@ -272,19 +272,26 @@ class STM_Nanonis:
             This function fills template with first level of descendent fields and attributes
             of NXdata but not the fields and attributes under child of NXdata.
             """
+            # Some NXdata group may not want to have data axes data, e.g. NXdata group "z"
+            grp_to_skip_axis = ["z"]
+            skip_axes = False
+            for grp_name in grp_to_skip_axis:
+                if f"[{grp_name}]" in nxdata_grp:
+                    skip_axes = True
+                    break
             if nxdata_grp:
                 auxiliary_signals_attr = f"{nxdata_grp}/@auxiliary_signals"
                 axes = f"{nxdata_grp}/@axes"
                 signal_attr = f"{nxdata_grp}/@signal"
                 template[auxiliary_signals_attr] = []
-                template[axes] = [ax.lower() for ax in axes_name]
+                template[axes] = None if skip_axes else [ax.lower() for ax in axes_name]
                 for ind, data_field_nm in enumerate(signals):
                     if ind == 0:
                         template[signal_attr] = data_field_nm.lower()
                     else:
                         template[auxiliary_signals_attr].append(data_field_nm.lower())
                 for axis, axis_data in zip(axes_name, axes_data):
-                    template[f"{nxdata_grp}/{axis}"] = axis_data
+                    template[f"{nxdata_grp}/{axis}"] = None if skip_axes else axis_data
 
         def find_nxdata_group_and_name(key):
             """Find data group name from a data path in file.
