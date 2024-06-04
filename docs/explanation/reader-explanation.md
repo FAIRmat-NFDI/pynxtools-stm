@@ -1,4 +1,18 @@
-# Introduction to the Different Input Files
+# STS Reader
+The prime purpose of the reader is to transform data from measurement files into community-defined concepts constructed by the SPM community which allows experimentalists to store, organize, search, analyze, and share experimental data (only within the [NOMAD](https://nomad-lab.eu/nomad-lab/) platform) among the scientific communities. 
+
+## Supproted Files and File Versions
+- Reader builds on [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) application definition
+- Needs an experimental file, a config file and a eln file
+- Can parse Scanning Tunneling Spectroscopy (STS) from
+    - Nanonis: Generic 5e, Generic 4.5
+- Can parse Scanning Tunneling Microscopy (STM) from
+    - Nanonis: Generic 5e, Generic 4.5
+
+## NeXus Application Definition
+To define a standarized schema, we choose NeXus ontology and we defined a application definition `NXsts` for reading and standarizing `STM` as well as `STS` experimental data. To get the application definition and other related base classes please follow NeXus-FAIRmat page for [Scanning Tunneling Spectroscopy](https://fairmat-nfdi.github.io/nexus_definitions/sts-structure.html). There you will get application definition `NXsts` and other base classed used to construct the application defintion.
+
+## Introduction to the Different Input Files
 To utilize or reuse or extend the reader, motivation behind the reader input files must be understood. The files are using specific semantics rules so that reader can understand the files and work with the content of files.
 The input files are:
 
@@ -6,7 +20,7 @@ The input files are:
 2. ELN (Electronic Lab Notebook) to collect user input data
 3. Config files that connects the data to NeXus application concept.
 
-## Raw File
+### Raw File
 This type of file (such as `example.dat` or `example.sxm`) just comes from the experiment. 
 ### ELN (Electronic Lab Notebook)
 This file supports user input data that is not part of the experimental data file. There are two ways to define or write ELN files. The first one can be distinguished, for sake of explanation, as **command line ELN**. This should be a YAML file (with `.yaml` file extension ). Such type of ELN needs to be used to run the reader from the command line. The second one can be called, for sake of explanation, **NOMAD Schema ELN**. This is also a YAML file, but with the extension `.scheme.archive.yaml`. This ELN is needed if the reader is being used from NOMAD. Note that NOMAD will parse the NOMAD Schema ELN into a YAML file of the first type.
@@ -130,7 +144,7 @@ experiment_type: stm
 type: background
 ```
 This type of ELN needs to be used if the reader is run from the command line. To know what fields and groups refer which type of data, one needs to read the NeXus definition on the [FAIRmat NeXus Proposal](https://fairmat-nfdi.github.io/nexus_definitions/classes/contributed_definitions/NXsts.html#nxsts) page or in the [GitHub repository](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml). 
-## Config File
+### Config File
 The config file is used to map the raw data coming from the STS experiment file and the user input data (from the ELN) to the concepts defined in the NeXus definitions.
 
 ```json
@@ -235,3 +249,26 @@ The config file is used to map the raw data coming from the STS experiment file 
     For different type of software versions the raw data path could be different for the same concept. For example, Nanonis software `generic 5e` has `/Piezo Configuration/Active Calib.` and generic 4.5 has `/Piezo Calibration/Active Calib.` for the same concept `/ENTRY[entry]/INSTRUMENT[instrument]/piezo_config/active_calib`.
   - In the config file, the concept that takes data from ELN is denoted by `@eln`. Otherwise, data will come from experimental raw files.
   - Importantly one should note that the `NXdata` concept `/ENTRY[entry]/DATA[data]` takes a dict of lists. Each key (`0`, `1` ...) of the dict refers to an NXdata group of with fields `bias` and `current` for multiple given setups, i.e, with and without `filter` check points. For another setup, one can extend the dict following the same convention used here.
+
+
+
+## Useful Functions:
+There are a few functions that you can utilize to make this reader compatible with your data:
+
+- **Function get_stm_raw_file_info()**: For `STM` experiment the function can return you the slash separated dict in a text file. This dict helps to write or modify the config file according to your raw data file. 
+
+  ```python
+  from pynxtools_stm import get_stm_raw_file_info
+
+  # for stm (.sxm) file
+  get_stm_raw_file_info('STM_nanonis_generic_5e.sxm')
+  ```
+
+- **get_sts_raw_file_info**: For `STS` experiment to get the slash separated dict from the `STS` raw file one can use this function. It will write a txt file in the working directory.
+
+  ```python
+  from pynxtools_stm import get_sts_raw_file_info
+
+  # for sts (.dat) file
+  get_sts_raw_file_info('STS_nanonis_generic_5e_1.dat')
+  ```

@@ -1,44 +1,45 @@
-# STS reader
-***Note: Though the reader name is STS reader, it also supports STM experiment species. This is the first version of the reader according to the NeXus application definition [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) which is a generic template of concept definitions for STS and STM experiments. Later on, the application definitions and readers specific to STM, STS and AFM will be available. To stay up-to-date, keep visiting this page from time to time. From now onwards, when we mention STS, we are referring to both STM and STS techniques.***
+---
+hide: toc
+---
+# STS reader documentation
+***Note: Though the reader name is STS reader, it also supports STM experiment species. This is the first version of the reader according to the NeXus application definition [NXsts](https://fairmat-nfdi.github.io/nexus_definitions/classes/contributed_definitions/NXsts.html#nxsts) ([GitHub page](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml)) which is a generic template of concept definitions for STS and STM experiments. Later on, the application definitions and readers specific to STM, STS and AFM will be available. To stay up-to-date, keep visiting this page from time to time. From now onwards, when we mention STS, we are referring to both STM and STS techniques.***
 
-The prime purpose of the reader is to transform data from measurement files into community-defined concepts constructed by the SPM community which allows experimentalists to store, organize, search, analyze, and share experimental data (only within the [NOMAD](https://nomad-lab.eu/nomad-lab/) platform) among the scientific communities. To utilize the reader one needs:  
+<div markdown="block" class="home-grid"> 
+<div markdown="block">
 
-1. A data file from the experiment
-2. An ELN (Electronic Lab Notebook) file (to add user-provided data that does not come along with the experimental data file)
-3. A config file that maps the raw data coming from both the experimental data file and the ELN to the corresponding NeXus concepts.
+###  Explanation
+  
+  - [Reader Explanation](explanation/reader-explanation.md)  
+</div>
+<div markdown="block">
 
-**TODO: Here discuss about NXsts NeXus application definition**
+### Tutorial
 
-## Reader Notes:
-- Reader builds on [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) application definition
-- Needs an experimental file, a config file and a eln file
-- Can parse Scanning Tunneling Spectroscopy (STS) from
-    - Nanonis: Generic 5e, Generic 4.5
-- Can parse Scanning Tunneling Microscopy (STM) from
-    - Nanonis: Generic 5e, Generic 4.5
+  - [Reader Tutorial](tutorial/reader-tutorial.md)
+  - [Nomad Tutorial](tutorial/nomad-tutorial.md)
 
+</div>
+<div markdown="block">
 
-## Useful Functions:
-There are a few functions that you can utilize to make this reader compatible with your data:
+### How-To-Guide
 
-- **Function get_stm_raw_file_info()**: For `STM` experiment the function can return you the slash separated dict in a text file. This dict helps to write or modify the config file according to your raw data file. 
+  - [How to Use reader](how-to-guides/how-to-interact-with-reader.md)
 
-  ```python
-  from pynxtools_stm import get_stm_raw_file_info
+</div>
+<div markdown="block">
 
-  # for stm (.sxm) file
-  get_stm_raw_file_info('STM_nanonis_generic_5e.sxm')
-  ```
+### Reference
+  - [Reader in Nomad](reference/reference.md#nomad)
+  - [NeXus application definition in Reader](reference/reference.md#nexus)
 
-- **get_sts_raw_file_info**: For `STS` experiment to get the slash separated dict from the `STS` raw file one can use this function. It will write a txt file in the working directory.
-
-  ```python
-  from pynxtools_stm import get_sts_raw_file_info
-
-  # for sts (.dat) file
-  get_sts_raw_file_info('STS_nanonis_generic_5e_1.dat')
-  ```
+</div>
+</div>
 
 
-## Contact Person in FAIRmat for this Reader
-**Rubel Mozumder (mozumder@physik.hu-berlin.de)**
+## Project and Community
+The reader is the part of project [FAIRmat](https://www.fairmat-nfdi.eu/fairmat) a FAIR data infrastructure for condensed-matter physics and the chemical physics of solids. The FAIRmat project is funded by [NFDI](https://www.nfdi.de/).
+
+- Reach NOMAD via [MATSCI community discourse](https://matsci.org/c/nomad/32)
+- Reach reader developers via [GitHub issue tracker](https://github.com/FAIRmat-NFDI/pynxtools-stm/issues)
+- Reach pynxtools developers via [GitHub issue tracker](https://github.com/FAIRmat-NFDI/pynxtools/issues)
+- Reach NeXus-FAIRmat commutninty via [webpage](https://fairmat-nfdi.github.io/nexus_definitions/) or [GitHub issue tracker](https://fairmat-nfdi.github.io/nexus_definitions/) 

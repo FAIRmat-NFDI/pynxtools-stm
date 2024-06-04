@@ -1,5 +1,5 @@
-# How-To-Guide
-## How-To Install STM Reader
+# Use of STM Reader
+## How To Install STM Reader
 Installing STM reader is as simple as installing python package from PyPI. We recommend to install the reader in a python virtual environment.
 ### Installation of STM reader in python virtual envrironment
 Run the followoing command step-by-step on your linux terminal
@@ -24,9 +24,9 @@ Install `STM` reader to develop according to you own expectation
 (.pyenv) <user>$ pip install -e ".[dev]"
 ```
 
-## How-To Run the Reader from CLI
+## How to Run the Reader from CLI
 In the command line interface, input files can be passed as positional arguments. Other arguments like the `reader` and the `nxdl` shall be given as keyword arguments.
-## Run STS Reader
+### Run STS Reader
 The following command can be used to run the `STS` reader from your python environment:
 ```bash
 (.pyenv) <user>$ dataconverter \
@@ -38,7 +38,7 @@ The following command can be used to run the `STS` reader from your python envir
 <path-to Nanonis_Eln.yaml>
 ```
 
-## Run STM Reader
+### Run STM Reader
 Use the following command to run the `STM` reader from your python environment:
 ```bash
 (.pyenv) <user>$ dataconverter \
