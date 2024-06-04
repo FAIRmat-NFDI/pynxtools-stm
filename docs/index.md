@@ -1,7 +1,7 @@
 ---
 hide: toc
 ---
-# STS reader documentation
+# STS Reader Documentation
 ***Note: Though the reader name is STS reader, it also supports STM experiment species. This is the first version of the reader according to the NeXus application definition [NXsts](https://fairmat-nfdi.github.io/nexus_definitions/classes/contributed_definitions/NXsts.html#nxsts) ([GitHub page](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml)) which is a generic template of concept definitions for STS and STM experiments. Later on, the application definitions and readers specific to STM, STS and AFM will be available. To stay up-to-date, keep visiting this page from time to time. From now onwards, when we mention STS, we are referring to both STM and STS techniques.***
 
 <div markdown="block" class="home-grid"> 
@@ -23,7 +23,7 @@ hide: toc
 
 ### How-To-Guide
 
-  - [How to Use reader](how-to-guides/how-to-interact-with-reader.md)
+  - [How to Use Reader](how-to-guides/how-to-interact-with-reader.md)
 
 </div>
 <div markdown="block">

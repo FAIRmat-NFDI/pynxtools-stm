@@ -1,4 +1,4 @@
-# Know more about reader
+# Know More About Reader
 
 !!! warning "Work in progress"
 
