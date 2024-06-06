@@ -348,7 +348,7 @@ class STMReader(BaseReader):
         parser = Spm().get_appropriate_parser(eln_dict)
         parser(template, data_file, config_dict, eln_dict)
 
-        set_default_for_each_group(template)
+        # set_default_for_each_group(template)
         manually_filter_data_type(template)
         for key, val in template.items():
             if val is not None:
@@ -361,6 +361,7 @@ class STMReader(BaseReader):
                 "Reader could not read anything! Check for input files and the"
                 " corresponding extention."
             )
+
         return filled_template
 
 

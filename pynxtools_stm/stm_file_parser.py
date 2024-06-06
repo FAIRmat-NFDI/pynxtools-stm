@@ -248,27 +248,27 @@ class STM_Nanonis:
                         axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
                     axes_units.append(coor_info[0][2])
                     template[temp_data_field] = scan_dt_arr
-                    # Setting up the default field for entry
-                    if template.get("/ENTRY[entry]/@default", "") in [
-                        "",
-                        None,
-                    ] and eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template["/ENTRY[entry]/@default"] = (
-                            convert_data_dict_path_to_hdf5_path(temp_data_field)
-                        )
-                    elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in [
-                        "",
-                        None,
-                    ]:
-                        # Template already filled from eln_data_dict
-                        if field_name == template["/ENTRY[entry]/@default"]:
-                            template["/ENTRY[entry]/@default"] = (
-                                convert_data_dict_path_to_hdf5_path(temp_data_field)
-                            )
-                    if template.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template["/ENTRY[entry]/@default"] = (
-                            convert_data_dict_path_to_hdf5_path(temp_data_field)
-                        )
+                    # # Setting up the default field for entry
+                    # if template.get("/ENTRY[entry]/@default", "") in [
+                    #     "",
+                    #     None,
+                    # ] and eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]:
+                    #     template["/ENTRY[entry]/@default"] = (
+                    #         convert_data_dict_path_to_hdf5_path(temp_data_field)
+                    #     )
+                    # elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in [
+                    #     "",
+                    #     None,
+                    # ]:
+                    #     # Template already filled from eln_data_dict
+                    #     if field_name == template["/ENTRY[entry]/@default"]:
+                    #         template["/ENTRY[entry]/@default"] = (
+                    #             convert_data_dict_path_to_hdf5_path(temp_data_field)
+                    #         )
+                    # if template.get("/ENTRY[entry]/@default", "") in ["", None]:
+                    #     template["/ENTRY[entry]/@default"] = (
+                    #         convert_data_dict_path_to_hdf5_path(temp_data_field)
+                    #     )
                 else:
                     # to clean up nxdata_grp and field_name from previous loop
                     nxdata_grp = ""
@@ -411,6 +411,7 @@ class STM_Nanonis:
         # The following function can be used later it link come true in application def.
         # link_implementation(template, nxdl_key_to_modified_key)
         link_seperation_from_hard_code(template, nxdl_key_to_modified_key)
+        self.set_default_values(template)
 
     @staticmethod
     def fill_temp_with_required_metadata(template, data_dict, config_dict):
@@ -472,6 +473,17 @@ class STM_Nanonis:
                 return scan_dt_arr
             elif fld_name == "backward":
                 return scan_dt_arr[:, ::-1]
+
+    @staticmethod
+    def set_default_values(template):
+        """Set up some default values from template."""
+
+        deflts = {
+            "/ENTRY[entry]/@default": "/ENTRY[entry]/DATA[z]",
+        }
+        for key, val in deflts.items():
+            if template.get(key, None) is None:
+                template[key] = convert_data_dict_path_to_hdf5_path(val)
 
 
 def get_stm_raw_file_info(raw_file):

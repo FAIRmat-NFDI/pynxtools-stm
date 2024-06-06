@@ -45,7 +45,7 @@ Instrument:
     unit: K
     value: 5.04866
 collection_identifier: TiSe2_2303a_annealing_300C_5min_evaporate_Pyrene_1_
-default: backward
+default: 
 definition: NXsts
 entry_identifier: TiSe2_2303a_annealing_300C_5min_evaporate_Pyrene_1_0070
 experiment_description: A new TiSe2, annealed at 300 C for 5 min, then cool down to   RT,
