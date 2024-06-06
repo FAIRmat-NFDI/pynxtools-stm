@@ -37,8 +37,9 @@ hide: toc
 
 
 ## Project and Community
-The reader is the part of project [FAIRmat](https://www.fairmat-nfdi.eu/fairmat) a FAIR data infrastructure for condensed-matter physics and the chemical physics of solids. The FAIRmat project is funded by [NFDI](https://www.nfdi.de/).
+The reader is the part of project [FAIRmat](https://www.fairmat-nfdi.eu/fairmat) a FAIR data infrastructure for condensed-matter physics and the chemical physics of solids. 
 
+- [FAIRmat project](https://gepris.dfg.de/gepris/projekt/460197019?language=en) which is funded by [NFDI](https://www.nfdi.de/)
 - Reach NOMAD via [MATSCI community discourse](https://matsci.org/c/nomad/32)
 - Reach reader developers via [GitHub issue tracker](https://github.com/FAIRmat-NFDI/pynxtools-stm/issues)
 - Reach pynxtools developers via [GitHub issue tracker](https://github.com/FAIRmat-NFDI/pynxtools/issues)
