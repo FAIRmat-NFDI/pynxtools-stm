@@ -23,6 +23,7 @@
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_range/@units": "@eln",
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_offset": "/SCAN/OFFSET",
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_offset/@units": "@eln",
+    "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction": "/SCAN/DIR",
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/circuit/channels_current": "/Bias Spectroscopy/Channels",
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/positioner/lines": "/Scan/lines",
     "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/positioner/pixels_line": "/Scan/pixels/line",

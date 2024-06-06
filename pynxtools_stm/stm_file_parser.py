@@ -40,6 +40,10 @@ from pynxtools_stm.helper import (
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 
 
+# some Global variables to reduce the run time
+SCAN_SIDE = None
+
+
 def has_separator_char(key, sep_char_li):
     """
     Check string or key whether the separator char provided in
@@ -232,7 +236,10 @@ class STM_Nanonis:
                     nxdata_grp = data_group.replace("DATA[data", f"DATA[{grp_name}")
                     temp_data_field = nxdata_grp + "/" + field_name
                     scan_dt_arr = to_intended_t(data_dict[path])
-                    x_cor_len, y_cor_len = scan_dt_arr.shape
+                    scan_dt_arr = self.flip_scan_data_properly(
+                        template, scan_dt_arr, field_name
+                    )
+                    y_cor_len, x_cor_len = scan_dt_arr.shape
                     # collect for only one data field e.g. forward or backward, as all the data
                     # fields must have the same length of co-ordinate
                     if not axes_data:
@@ -272,26 +279,19 @@ class STM_Nanonis:
             This function fills template with first level of descendent fields and attributes
             of NXdata but not the fields and attributes under child of NXdata.
             """
-            # Some NXdata group may not want to have data axes data, e.g. NXdata group "z"
-            grp_to_skip_axis = ["z"]
-            skip_axes = False
-            for grp_name in grp_to_skip_axis:
-                if f"[{grp_name}]" in nxdata_grp:
-                    skip_axes = True
-                    break
             if nxdata_grp:
                 auxiliary_signals_attr = f"{nxdata_grp}/@auxiliary_signals"
                 axes = f"{nxdata_grp}/@axes"
                 signal_attr = f"{nxdata_grp}/@signal"
                 template[auxiliary_signals_attr] = []
-                template[axes] = None if skip_axes else [ax.lower() for ax in axes_name]
+                template[axes] = [ax.lower() for ax in axes_name]
                 for ind, data_field_nm in enumerate(signals):
                     if ind == 0:
                         template[signal_attr] = data_field_nm.lower()
                     else:
                         template[auxiliary_signals_attr].append(data_field_nm.lower())
                 for axis, axis_data in zip(axes_name, axes_data):
-                    template[f"{nxdata_grp}/{axis}"] = None if skip_axes else axis_data
+                    template[f"{nxdata_grp}/{axis}"] = axis_data
 
         def find_nxdata_group_and_name(key):
             """Find data group name from a data path in file.
@@ -300,8 +300,7 @@ class STM_Nanonis:
             """
             tmp_key = key.split("/", 1)[1]
             grp_name, data_field_name = tmp_key.split("/", 1)
-            grp_name = grp_name.upper()
-            return grp_name, data_field_name
+            return grp_name.lower(), data_field_name.lower()
 
         for _, dt_path_list in sub_config_dict.items():
             signals = []
@@ -369,6 +368,7 @@ class STM_Nanonis:
         data_dict = self.get_SPM_metadata_dict_and_signal()
 
         fill_template_from_eln_data(eln_data_dict, template)
+        self.fill_temp_with_required_metadata(template, data_dict, config_dict)
         # Fill out template from config file
         temp_keys = template.keys()
         for c_key, c_val in config_dict.items():
@@ -411,6 +411,67 @@ class STM_Nanonis:
         # The following function can be used later it link come true in application def.
         # link_implementation(template, nxdl_key_to_modified_key)
         link_seperation_from_hard_code(template, nxdl_key_to_modified_key)
+
+    @staticmethod
+    def fill_temp_with_required_metadata(template, data_dict, config_dict):
+        """
+        Set required metadata for the STM reader that must be known before
+        filling up template in general.
+
+        Parameters:
+        -----------
+        template : dict
+            A pynxtools template.
+        data_dict : dict
+            A dictionarry mapping data path to data value from raw file.
+        config_dict : dict
+            A dictionary mapping nexus concept path to data path from raw file.
+        """
+
+        temp_key_to_deflt_val = {
+            "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction": "down"
+        }
+
+        for key, deflt_val in temp_key_to_deflt_val.items():
+            raw_data_path = config_dict.get(key, None)
+            template[key] = to_intended_t(data_dict.get(raw_data_path, deflt_val))
+
+    @staticmethod
+    def flip_scan_data_properly(template, scan_dt_arr, fld_name):
+        """Flip 2d scan data according to the scan direction.
+
+        Parameters:
+        -----------
+        template : dict
+            A pynxtools template.
+        scan_array : array
+            A 2d scan data array.
+        file_name : str
+            The name of the data field of NXdata.
+
+        Return:
+        -------
+        array
+            A 2d scan data array.
+        """
+        global SCAN_SIDE
+        if not SCAN_SIDE:
+            SCAN_SIDE = template[
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction"
+            ].lower()
+        if SCAN_SIDE in ("down", "bottom"):
+            # Forwaard: Flip array along y-axis (e.g. y[0, :] -> y[n-1, :])
+            # Backward: Flip array along x & y-axis (e.g. x[:, 0] -> x[:, n-1]
+            #                                    and  y[0,:] -> y[n-1, :])
+            if fld_name == "forward":
+                return scan_dt_arr[::-1, :]
+            elif fld_name == "backward":
+                return scan_dt_arr[::-1, ::-1]
+        elif SCAN_SIDE in ("up", "top"):
+            if fld_name == "forward":
+                return scan_dt_arr
+            elif fld_name == "backward":
+                return scan_dt_arr[:, ::-1]
 
 
 def get_stm_raw_file_info(raw_file):
