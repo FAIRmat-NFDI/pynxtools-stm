@@ -478,12 +478,13 @@ class STM_Nanonis:
     def set_default_values(template):
         """Set up some default values from template."""
 
+        # concept key to active or renamed group name.
         deflts = {
-            "/ENTRY[entry]/@default": "/ENTRY[entry]/DATA[z]",
+            "/ENTRY[entry]/@default": "z",
         }
         for key, val in deflts.items():
             if template.get(key, None) is None:
-                template[key] = convert_data_dict_path_to_hdf5_path(val)
+                template[key] = val
 
 
 def get_stm_raw_file_info(raw_file):
