@@ -248,27 +248,6 @@ class STM_Nanonis:
                         axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
                     axes_units.append(coor_info[0][2])
                     template[temp_data_field] = scan_dt_arr
-                    # # Setting up the default field for entry
-                    # if template.get("/ENTRY[entry]/@default", "") in [
-                    #     "",
-                    #     None,
-                    # ] and eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]:
-                    #     template["/ENTRY[entry]/@default"] = (
-                    #         convert_data_dict_path_to_hdf5_path(temp_data_field)
-                    #     )
-                    # elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in [
-                    #     "",
-                    #     None,
-                    # ]:
-                    #     # Template already filled from eln_data_dict
-                    #     if field_name == template["/ENTRY[entry]/@default"]:
-                    #         template["/ENTRY[entry]/@default"] = (
-                    #             convert_data_dict_path_to_hdf5_path(temp_data_field)
-                    #         )
-                    # if template.get("/ENTRY[entry]/@default", "") in ["", None]:
-                    #     template["/ENTRY[entry]/@default"] = (
-                    #         convert_data_dict_path_to_hdf5_path(temp_data_field)
-                    #     )
                 else:
                     # to clean up nxdata_grp and field_name from previous loop
                     nxdata_grp = ""
@@ -290,8 +269,15 @@ class STM_Nanonis:
                         template[signal_attr] = data_field_nm.lower()
                     else:
                         template[auxiliary_signals_attr].append(data_field_nm.lower())
-                for axis, axis_data in zip(axes_name, axes_data):
+
+                if len(axes_data) != len(axes_units):
+                    missing = len(axes_data) - len(axes_units)
+                    axes_units.extend([""] * missing)
+                for axis, axis_data, unit in zip(axes_name, axes_data, axes_units):
                     template[f"{nxdata_grp}/{axis}"] = axis_data
+                    template[f"{nxdata_grp}/{axis}"] = axis_data
+                    template[f"{nxdata_grp}/{axis}/@unit"] = unit
+                    template[f"{nxdata_grp}/{axis}/@long_name"] = f"{axis}({unit})"
 
         def find_nxdata_group_and_name(key):
             """Find data group name from a data path in file.
@@ -323,6 +309,9 @@ class STM_Nanonis:
             length on (x, y)-dimenstion and one last unknown values.
         """
         scanfield: str = ""
+        scan_range: str = ""
+        scan_offset: str = ""
+        scintific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
         for key, val in config_dict.items():
             if (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/"
@@ -330,11 +319,23 @@ class STM_Nanonis:
             ) == key:
                 if val in data_dict:
                     scanfield = data_dict[val]
-                else:
-                    raise ValueError(
-                        "Scanfield data missing: /ENTRY[entry]/INSTRUMENT[instrument]"
-                        "/ENVIRONMENT[environment]/scan_control/positioner/scanfield"
-                    )
+            elif(
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+                "/scan_control/scan_range") == key:
+            
+                scan_range = data_dict.get(val, None)
+                if scan_range:
+                    scan_range = re.findall(scintific_num_pattern, scan_range)
+            elif(
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+                "/scan_control/scan_offset") == key:
+                scan_offset = data_dict.get(val, None)
+                if scan_offset:
+                    scan_offset = re.findall(scintific_num_pattern, scan_offset)
+        if (not scan_offset or not scan_range) and not scanfield:
+            raise KeyError(
+                "Scanfield, scan_range and scan_offset are not found in raw data file."
+            )
         conf_unit_key = "unit_of_x_y_coordinate"
         try:
             unit_info = data_dict[config_dict[conf_unit_key]]
@@ -344,17 +345,20 @@ class STM_Nanonis:
                 f"key {conf_unit_key}"
             ) from exc
         for sep in [";"]:
-            if sep in scanfield:
-                # parts are X_cor, Y_cor, X_len, Y_len and one unkown value
+            if scan_offset and scan_range:
+                scanfield_parts = scan_offset + scan_range
+            elif sep in scanfield:
+                # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
                 scanfield_parts = scanfield.split(sep)
 
-                x_start = to_intended_t(scanfield_parts[0])
-                x_len = to_intended_t(scanfield_parts[2])
-                x_cor = [x_start, x_start + x_len, unit_info]
-                y_start = to_intended_t(scanfield_parts[1])
-                y_len = to_intended_t(scanfield_parts[3])
-                y_cor = [y_start, y_start + y_len, unit_info]
-                return (x_cor, y_cor)
+
+            x_start = to_intended_t(scanfield_parts[0])
+            x_len = to_intended_t(scanfield_parts[2])
+            x_cor = [x_start, x_start + x_len, unit_info]
+            y_start = to_intended_t(scanfield_parts[1])
+            y_len = to_intended_t(scanfield_parts[3])
+            y_cor = [y_start, y_start + y_len, unit_info]
+            return (x_cor, y_cor)
         return ()
 
     # pylint: disable=too-many-branches
