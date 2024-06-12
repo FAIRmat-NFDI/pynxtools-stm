@@ -13,7 +13,7 @@ Run the followoing command step-by-step on your linux terminal
 That's it! You can run the `STM` reader from command line.
 
 ### Installation of STM reader in development mode in python virtual environment
-If you want to make changes to the `STM` reader, you can install in in to development mode
+If you want to make changes to the `STM` reader, you can install in to development mode
 ```bash
 <user>$ vitualenv --python=3.10 .pyenv
 <user>$ source activate .pyenv/bin/activate
