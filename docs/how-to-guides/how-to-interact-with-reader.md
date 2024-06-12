@@ -1,6 +1,6 @@
-# Use of STM Reader
-## How To Install STM Reader
-Installing STM reader is as simple as installing python package from PyPI. We recommend to install the reader in a python virtual environment.
+# How to Use the STM Reader
+## How To Install the STM Reader
+The STM reader can be installed as a python package from PyPI. We recommend to install the reader in a python virtual environment.
 ### Installation of STM reader in python virtual envrironment
 Run the followoing command step-by-step on your linux terminal
 
@@ -13,7 +13,7 @@ Run the followoing command step-by-step on your linux terminal
 That's it! You can run the `STM` reader from command line.
 
 ### Installation of STM reader in development mode in python virtual environment
-Install `STM` reader to develop according to you own expectation
+If you want to make changes to the `STM` reader, you can install in in to development mode
 ```bash
 <user>$ vitualenv --python=3.10 .pyenv
 <user>$ source activate .pyenv/bin/activate
