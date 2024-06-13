@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - fix_github_doc_publicattion
 permissions:
   contents: write
 jobs:
