@@ -36,10 +36,14 @@ dev = [
     "ruff==0.3.4",
     "pytest",
     "pip-tools",
+]
+
+docs = [
     "mkdocs",
     "mkdocs-mermaid2-plugin",
     "mkdocstrings",
-    "mkdocs-material"
+    "mkdocs-material",
+    "mkdocs-macros-plugin"
 ]
 
 [project.entry-points."pynxtools.reader"]
