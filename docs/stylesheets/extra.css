@@ -9,13 +9,15 @@
   color: #2A4CDF;
 }
 
-.md-header[data-md-state=shadow] {
-  box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+
+.md-header--shadow {
+  box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, .12);
   transition: box-shadow 200ms linear;
 }
 
+
 .md-header__inner {
-  height: 80px;
+  height: 72px;
 }
 
 .md-header__topic {
@@ -66,4 +68,25 @@
 .home-grid h3 {
   margin-top: 0;
   font-weight: 700;
+}
+
+.nomad-button {
+  display: inline-block;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px !important;
+  background-color: #2A4CDF;
+  color: #ffffff !important;
+  border: none !important;
+  margin: 0;
+
+  letter-spacing: normal;
+  text-transform: none;
+} */
+
+.nomad-button--card-action {
+  margin: 1em 0 0 0 !important;
 }
