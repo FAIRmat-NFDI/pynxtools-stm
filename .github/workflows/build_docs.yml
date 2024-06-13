@@ -8,7 +8,7 @@ on:
   push:
     branches:
       - main
-      - Fix_github_doc_publication
+      - fix_github_doc_publicattion
 permissions:
   contents: write
 jobs:
