@@ -1,4 +1,9 @@
-name: Buikd Docs
+site_name: Documentation
+site_description: |
+  The documentation for NOMAD.
+site_author: The NOMAD Authors
+repo_url: https://github.com/FAIRmat-NFDI/pynxtools-stm
+edit_uri: ""
 on:
   push:
     branches:

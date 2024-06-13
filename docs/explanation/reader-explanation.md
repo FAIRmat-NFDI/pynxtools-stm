@@ -254,7 +254,7 @@ The config file is used to map the raw data coming from the STS experiment file 
 ## Useful Functions:
 There are a few functions that you can utilize to make this reader compatible with your data:
 
-- **Function `get_stm_raw_file_info()`**: For `STM` experiments, the function can return the slash separated dict in a text file. This dict helps to write or modify the config file according to the raw data file. 
+- **get_stm_raw_file_info()**: For `STM` experiments, the function can return the slash separated dict in a text file. This dict helps to write or modify the config file according to the raw data file. 
 
   ```python
   from pynxtools_stm import get_stm_raw_file_info
