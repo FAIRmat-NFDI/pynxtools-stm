@@ -3,6 +3,7 @@ Instrument:
     scan_control:
       scan_offset/@units: m
       scan_range/@units: m
+      scan_angle/@units: deg
     Current_sensor: {}
     Position:
       z_controller: {}
