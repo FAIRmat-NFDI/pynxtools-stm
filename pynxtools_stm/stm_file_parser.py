@@ -351,7 +351,7 @@ class STM_Nanonis:
             elif sep in scanfield:
                 # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
                 scanfield_parts = scanfield.split(sep)
-                
+
             x_start = to_intended_t(scanfield_parts[0])
             x_len = to_intended_t(scanfield_parts[2])
             x_cor = [x_start, x_start + x_len, unit_info]
