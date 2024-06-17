@@ -263,11 +263,19 @@ class STMReader(BaseReader):
             elif val not in (None, ""):
                 try:
                     # Handle numpy array, list, tuple, etc.
-                    if str(val) not in ('Infinity', '-Infinity', 'NaN', 'nan',
-                       'inf', '-inf', 'infinity', '-infinity'):
+                    if str(val) not in (
+                        "Infinity",
+                        "-Infinity",
+                        "NaN",
+                        "nan",
+                        "inf",
+                        "-inf",
+                        "infinity",
+                        "-infinity",
+                    ):
                         filled_template[key] = val
                 except ValueError:
-                    pass # invalid data
+                    pass  # invalid data
 
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()

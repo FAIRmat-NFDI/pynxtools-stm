@@ -319,16 +319,18 @@ class STM_Nanonis:
             ) == key:
                 if val in data_dict:
                     scanfield = data_dict[val]
-            elif(
+            elif (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
-                "/scan_control/scan_range") == key:
+                "/scan_control/scan_range"
+            ) == key:
                 scan_range = data_dict.get(val, None)
                 if scan_range:
                     scan_range = re.findall(scintific_num_pattern, scan_range)
                     template[key] = to_intended_t(scan_range)
-            elif(
+            elif (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
-                "/scan_control/scan_offset") == key:
+                "/scan_control/scan_offset"
+            ) == key:
                 scan_offset = data_dict.get(val, None)
                 if scan_offset:
                     scan_offset = re.findall(scintific_num_pattern, scan_offset)
@@ -390,7 +392,9 @@ class STM_Nanonis:
                 if isinstance(c_val, dict):
                     data_group = "/ENTRY[entry]/DATA[data]"
                     if c_key == data_group:
-                        coor_info = self.get_dimension_info(config_dict, data_dict, template)
+                        coor_info = self.get_dimension_info(
+                            config_dict, data_dict, template
+                        )
                         self.construct_nxdata_for_sxm(
                             template,
                             data_dict,
