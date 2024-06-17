@@ -281,7 +281,12 @@ def to_intended_t(str_value):
 
     if isinstance(str_value, np.ndarray):
         return str_value
+    
     if isinstance(str_value, str):
+
+        if str_value in ('infinitiy', '-infinity' 'Infinity', '-Infinity',
+                         'inf', '-inf', 'INF', '-INF'):
+            return ""
         try:
             transformed = int(str_value)
             return transformed
@@ -336,7 +341,7 @@ def set_default_attr_in_group(template):
         # Skip the attributes other than default attribute
         elif bool(re.search(r'.*/@.*$', template_concept)):
             continue
-         
+
         for group in groups_list:
             if not group:
                 continue

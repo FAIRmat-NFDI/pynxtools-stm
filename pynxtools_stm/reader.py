@@ -21,9 +21,9 @@ A short description on STS reader which also suitable for file from STM .
 
 import json
 from collections.abc import Callable
-from typing import Dict, Union, Tuple, Any, Optional
+from typing import Dict, Union, Tuple, Any
+import numpy as np
 import yaml
-import re
 import copy
 
 from pynxtools.dataconverter.readers.base.reader import BaseReader
@@ -253,9 +253,22 @@ class STMReader(BaseReader):
         set_default_attr_in_group(template)
 
         manually_filter_data_type(template)
+        # for key, val in template.items():
+        #     if val is not None:
+        #         filled_template[key] = val
+
         for key, val in template.items():
-            if val is not None:
+            if isinstance(val, np.ndarray):
                 filled_template[key] = val
+            elif val not in (None, ""):
+                try:
+                    # Handle numpy array, list, tuple, etc.
+                    if str(val) not in ('Infinity', '-Infinity', 'NaN', 'nan',
+                       'inf', '-inf', 'infinity', '-infinity'):
+                        filled_template[key] = val
+                except ValueError:
+                    pass # invalid data
+
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
 

@@ -34,7 +34,6 @@ from pynxtools_stm.helper import (
     nested_path_to_slash_separated_path,
     to_intended_t,
     work_out_overwriteable_field,
-    convert_data_dict_path_to_hdf5_path,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -224,6 +223,7 @@ class STM_Nanonis:
             """Fill up template's indivisual data field and the descendant attribute.
             e.g. /Entry[ENTRY]/data/DATA,
             /Entry[ENTRY]/data/DATA/@axes and so on
+            note: Add filtration for data array
             """
             # To define a variable on global namespace
             global nxdata_grp, field_name
@@ -300,7 +300,7 @@ class STM_Nanonis:
             fill_out_NXdata_group()
 
     # pylint: disable=too-many-locals
-    def get_dimension_info(self, config_dict, data_dict):
+    def get_dimension_info(self, config_dict, data_dict, template):
         """
         Extract dimension info from scanfield.
 
@@ -322,16 +322,17 @@ class STM_Nanonis:
             elif(
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
                 "/scan_control/scan_range") == key:
-            
                 scan_range = data_dict.get(val, None)
                 if scan_range:
                     scan_range = re.findall(scintific_num_pattern, scan_range)
+                    template[key] = to_intended_t(scan_range)
             elif(
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
                 "/scan_control/scan_offset") == key:
                 scan_offset = data_dict.get(val, None)
                 if scan_offset:
                     scan_offset = re.findall(scintific_num_pattern, scan_offset)
+                    template[key] = to_intended_t(scan_offset)
         if (not scan_offset or not scan_range) and not scanfield:
             raise KeyError(
                 "Scanfield, scan_range and scan_offset are not found in raw data file."
@@ -350,8 +351,7 @@ class STM_Nanonis:
             elif sep in scanfield:
                 # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
                 scanfield_parts = scanfield.split(sep)
-
-
+                
             x_start = to_intended_t(scanfield_parts[0])
             x_len = to_intended_t(scanfield_parts[2])
             x_cor = [x_start, x_start + x_len, unit_info]
@@ -390,7 +390,7 @@ class STM_Nanonis:
                 if isinstance(c_val, dict):
                     data_group = "/ENTRY[entry]/DATA[data]"
                     if c_key == data_group:
-                        coor_info = self.get_dimension_info(config_dict, data_dict)
+                        coor_info = self.get_dimension_info(config_dict, data_dict, template)
                         self.construct_nxdata_for_sxm(
                             template,
                             data_dict,
