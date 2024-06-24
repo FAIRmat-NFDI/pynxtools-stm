@@ -14,7 +14,11 @@ hide: toc
 
 ###  Explanation
   
-  - [Reader Explanation](explanation/reader-explanation.md)  
+  - [Reader Explanation](explanation/reader-explanation.md)
+    - [Supproted File Formats and File Versions](explanation/reader-explanation.md#supported-file-formats-and-file-versions) 
+    - [NeXus Application Definition](explanation/reader-explanation.md#nexus-application-definition)
+    - [Introduction to Reader Input Files](explanation/reader-explanation.md#introduction-to-reader-input-files)
+    - [Useful Functions](explanation/reader-explanation.md#useful-functions)
 </div>
 <div markdown="block">
 

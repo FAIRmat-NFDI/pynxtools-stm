@@ -4,14 +4,16 @@ The prime purpose of the reader is to transform data from measurement files into
 ## Supproted File Formats and File Versions
 
 - Can parse Scanning Tunneling Spectroscopy (STS) from
-    - Nanonis: Generic 5e, Generic 4.5
+    - `.dat` file format from Nanonis: 
+        - Versions: Generic 5e, Generic 4.5
 - Can parse Scanning Tunneling Microscopy (STM) from
-    - Nanonis: Generic 5e, Generic 4.5
+    - `.sxm` file format from Nanonis: 
+        - Versions: Generic 5e, Generic 4.5
 
 ## NeXus Application Definition
 To define a standardized schema, we chose the [NeXus format](https://www.nexusformat.org/) and we defined an application definition `NXsts` for standardizing data from `STM` as well as `STS` experiments. You can find the application definition and information on related NeXus base classes on the NeXus-FAIRmat page for [Scanning Tunneling Spectroscopy](https://fairmat-nfdi.github.io/nexus_definitions/sts-structure.html).
 
-## Introduction to the Different Input Files
+## Introduction to Reader Input Files
 To utilize, reuse, or extend the reader, the different reader input files must be understood. The files are using specific semantic rules so that reader can understand the files and work with their content.
 The input files are:
 

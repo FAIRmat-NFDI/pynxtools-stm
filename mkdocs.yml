@@ -7,8 +7,7 @@ site_url: https://nomad-lab.eu/prod/v1/docs/index.html
 edit_uri: ""
 use_directory_urls: false
 nav:
-  - Home: 
-      - index.md
+  - Home: index.md
   - Explanation: 
       - explanation/reader-explanation.md
   - Tutorial:
