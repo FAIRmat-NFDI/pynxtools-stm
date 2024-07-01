@@ -253,30 +253,14 @@ class STMReader(BaseReader):
         set_default_attr_in_group(template)
 
         manually_filter_data_type(template)
-        # for key, val in template.items():
-        #     if val is not None:
-        #         filled_template[key] = val
 
         for key, val in template.items():
             if isinstance(val, np.ndarray):
                 filled_template[key] = val
-            elif val not in (None, ""):
-                try:
-                    # Handle numpy array, list, tuple, etc.
-                    if str(val) not in (
-                        "Infinity",
-                        "-Infinity",
-                        "NaN",
-                        "nan",
-                        "inf",
-                        "-inf",
-                        "infinity",
-                        "-infinity",
-                    ):
-                        filled_template[key] = val
-                except ValueError:
-                    pass  # invalid data
+            elif val in (None, "") :
+                continue
 
+            filled_template[key] = val
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
 

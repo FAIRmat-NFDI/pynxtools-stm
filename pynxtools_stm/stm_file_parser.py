@@ -275,7 +275,6 @@ class STM_Nanonis:
                     axes_units.extend([""] * missing)
                 for axis, axis_data, unit in zip(axes_name, axes_data, axes_units):
                     template[f"{nxdata_grp}/{axis}"] = axis_data
-                    template[f"{nxdata_grp}/{axis}"] = axis_data
                     template[f"{nxdata_grp}/{axis}/@unit"] = unit
                     template[f"{nxdata_grp}/{axis}/@long_name"] = f"{axis}({unit})"
 
@@ -311,7 +310,7 @@ class STM_Nanonis:
         scanfield: str = ""
         scan_range: str = ""
         scan_offset: str = ""
-        scintific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
+        scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
         for key, val in config_dict.items():
             if (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/"
@@ -325,7 +324,7 @@ class STM_Nanonis:
             ) == key:
                 scan_range = data_dict.get(val, None)
                 if scan_range:
-                    scan_range = re.findall(scintific_num_pattern, scan_range)
+                    scan_range = re.findall(scientific_num_pattern, scan_range)
                     template[key] = to_intended_t(scan_range)
             elif (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
@@ -333,11 +332,11 @@ class STM_Nanonis:
             ) == key:
                 scan_offset = data_dict.get(val, None)
                 if scan_offset:
-                    scan_offset = re.findall(scintific_num_pattern, scan_offset)
+                    scan_offset = re.findall(scientific_num_pattern, scan_offset)
                     template[key] = to_intended_t(scan_offset)
         if (not scan_offset or not scan_range) and not scanfield:
             raise KeyError(
-                "Scanfield, scan_range and scan_offset are not found in raw data file."
+                "Scanfield, scan_range, and scan_offset are not available in raw data file."
             )
         conf_unit_key = "unit_of_x_y_coordinate"
         try:
@@ -425,7 +424,7 @@ class STM_Nanonis:
     def fill_temp_with_required_metadata(template, data_dict, config_dict):
         """
         Set required metadata for the STM reader that must be known before
-        filling up template in general.
+        filling up template in general. This method works with hard coded concepts.
 
         Parameters:
         -----------

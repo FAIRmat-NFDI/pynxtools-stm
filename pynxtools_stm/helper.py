@@ -285,14 +285,21 @@ def to_intended_t(str_value):
     if isinstance(str_value, str):
         if str_value in (
             "infinitiy",
-            "-infinity" "Infinity",
+            "-infinity",
+            "Infinity",
             "-Infinity",
+            "INFINITY",
+            "-INFINITY",
             "inf",
             "-inf",
+            "Inf",
+            "-Inf",
             "INF",
             "-INF",
+            "NaN",
+            "nan",
         ):
-            return ""
+            return None
         try:
             transformed = int(str_value)
             return transformed
