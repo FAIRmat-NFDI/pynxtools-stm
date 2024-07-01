@@ -257,7 +257,7 @@ class STMReader(BaseReader):
         for key, val in template.items():
             if isinstance(val, np.ndarray):
                 filled_template[key] = val
-            elif val in (None, "") :
+            elif val in (None, ""):
                 continue
 
             filled_template[key] = val
