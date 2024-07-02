@@ -23,7 +23,6 @@ file with dat extension.
 #
 
 import logging
-from math import e
 import os
 from typing import Dict, Optional, Tuple, Union
 
@@ -321,7 +320,7 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         raise ValueError("There must be only one Bias axis.")
     if extra_annot:
         extra_annot = f"_{extra_annot}"
-    axis_nm = [a_name[0]] if len(a_name) > 1 else a_name
+
     for f_dat, f_mn, f_unt in zip(f_data, f_name, f_unit):
         f_mn = "grad_" + "_".join(f_mn.lower().split(" "))
         grp = f"/ENTRY[entry]/DATA[{f_mn}{extra_annot}]"
@@ -334,10 +333,10 @@ def construct_nxdata_for_dIbydV(axis_and_field_data, template, flip_num, acc=4):
         template[grp + "/" + di_by_dv_nm + "/@long_name"] = (
             f"{di_by_dv_nm}({dI_by_dV_u})"
         )
-        template[grp + "/@axes"] = axis_nm
-        template[grp + "/" + axis_nm[0]] = {"link": a_nx_path[0]}
-        template[grp + "/" + axis_nm[0] + "/@units"] = a_unit[0]
-        template[grp + "/" + axis_nm[0] + "/@long_name"] = f"{axis_nm}({a_unit[0]})"
+        template[grp + "/@axes"] = a_name[0]
+        template[grp + "/" + a_name[0]] = {"link": a_nx_path[0]}
+        template[grp + "/" + a_name[0] + "/@units"] = a_unit[0]
+        template[grp + "/" + a_name[0] + "/@long_name"] = f"{a_name[0]}({a_unit[0]})"
 
 
 # pylint: disable=too-many-locals too-many-statements
@@ -629,11 +628,12 @@ def from_dat_file_into_template(template, dat_file, config_dict, eln_data_dict):
 
 
 def get_sts_raw_file_info(raw_file):
-    """Parse the raw_file into a plain (keys are organised) dictionary. It helps users as well as developers
-    to understand how the reader works and modify the config file."""
+    """Parse the raw_file into a plain (keys are organised) dictionary. It helps users as well
+    as developers to understand how the reader works and modify the config file.
+    """
 
-    raw_file = os.path.basename(raw_file)
-    raw_name = raw_file.split(".")[0]
+    base_file = os.path.basename(raw_file)
+    raw_name = base_file.split(".")[0]
     temp_file = f"{raw_name}.txt"
     b_s_d = BiasSpecData_Nanonis(raw_file)
     flattened_dict = {}

@@ -17,10 +17,11 @@ Some generic function and class for on STM reader.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Tuple
+from typing import Tuple, Optional
 import copy
 import json
 import numpy as np
+import re
 from pynxtools.dataconverter.helpers import convert_data_dict_path_to_hdf5_path
 
 
@@ -280,7 +281,25 @@ def to_intended_t(str_value):
 
     if isinstance(str_value, np.ndarray):
         return str_value
+
     if isinstance(str_value, str):
+        if str_value in (
+            "infinitiy",
+            "-infinity",
+            "Infinity",
+            "-Infinity",
+            "INFINITY",
+            "-INFINITY",
+            "inf",
+            "-inf",
+            "Inf",
+            "-Inf",
+            "INF",
+            "-INF",
+            "NaN",
+            "nan",
+        ):
+            return None
         try:
             transformed = int(str_value)
             return transformed
@@ -302,3 +321,102 @@ def to_intended_t(str_value):
                 return modified_parts
 
     return str_value
+
+
+def set_default_attr_in_group(template):
+    """Set default attribute for each group of Nexus file.
+    Each group will have a /@default attrubute refering the immediate child group.
+    e.g. /@default = "entry1"
+         /entry1/@default = "data_group_1"
+        /entry1/instrument/@default = "group1"
+    Parameters
+    ----------
+    template : Template
+        Template from filled with datafile and eln.
+    """
+    # defalut attribute key to the list of immediate child group
+    dflt_key_to_grp_li: Optional[dict[str, list]] = {}
+    # defalut attribute key to the group set by reader
+    dflt_key_to_exist_grp: Optional[dict[str, str]] = {}
+
+    # "/abc[DATA]/XYe[anything]/mnf[MNYZ]/anything" -> ['DATA', 'anything', 'MNYZ']
+    pattern = r"\[(.*?)\]"
+
+    entry_data_rnd = ""
+    for template_concept, val in template.items():
+        # skip the last part which is field
+        # Cancel out the fields and end groups without fields
+        groups_list = template_concept.split("/")[0:-1]
+        if not groups_list:
+            continue
+        last_default_key = ""
+        if template_concept.endswith("/@default") and val:
+            dflt_key_to_exist_grp[template_concept] = val
+        # Skip the attributes other than default attribute
+        elif bool(re.search(r".*/@.*$", template_concept)):
+            continue
+
+        for group in groups_list:
+            if not group:
+                continue
+            modified_name = re.findall(pattern, group)
+            if modified_name:
+                modified_name = modified_name[0]
+            else:
+                modified_name = group
+            # skip sttributes
+            if modified_name.startswith("@"):
+                continue
+            last_default_atttr = f"{last_default_key}/@default"
+            if not dflt_key_to_grp_li.get(last_default_atttr, None):
+                dflt_key_to_grp_li[last_default_atttr] = {}
+                # Data groups
+                dflt_key_to_grp_li[last_default_atttr]["data"] = []
+                # Entry groups
+                dflt_key_to_grp_li[last_default_atttr]["entry"] = []
+                # Other groups
+                dflt_key_to_grp_li[last_default_atttr]["other"] = []
+
+            if template_concept.endswith("/@default"):
+                dflt_key_to_exist_grp[template_concept] = val
+
+            # Entry
+            if group.startswith("ENTRY"):
+                dflt_key_to_grp_li[last_default_atttr]["entry"].append(modified_name)
+            # Data
+            elif group.startswith("DATA"):
+                dflt_key_to_grp_li[last_default_atttr]["data"].append(modified_name)
+                if not entry_data_rnd:
+                    entry_data_rnd = modified_name
+            else:
+                dflt_key_to_grp_li[last_default_atttr]["other"].append(modified_name)
+
+            last_default_key = last_default_key + "/" + group
+
+    for deflt_key, value in dflt_key_to_grp_li.items():
+        pre_defalt_grp = dflt_key_to_exist_grp.get(deflt_key, None)
+        # Verify if user has added the group in default attribute
+        if pre_defalt_grp:
+            if (
+                pre_defalt_grp in value["entry"]
+                or pre_defalt_grp in value["data"]
+                or pre_defalt_grp in value["other"]
+            ):
+                continue
+
+        # Entry default group always a NXdata
+        entry_default = "/entry/@default"
+        if entry_default == deflt_key:
+            template[entry_default] = entry_data_rnd
+            continue
+
+        if value["entry"]:
+            template[deflt_key] = value["entry"][0]
+        # Prioritize data group on other groups
+        elif value["data"]:
+            template[deflt_key] = value["data"][0]
+            # Randomly choose a NXdata group for entry
+        elif value["other"]:
+            template[deflt_key] = value["other"][0]
+        else:
+            template[deflt_key] = ""

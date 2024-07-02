@@ -34,10 +34,13 @@ from pynxtools_stm.helper import (
     nested_path_to_slash_separated_path,
     to_intended_t,
     work_out_overwriteable_field,
-    convert_data_dict_path_to_hdf5_path,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
+
+
+# some Global variables to reduce the run time
+SCAN_SIDE = None
 
 
 def has_separator_char(key, sep_char_li):
@@ -220,6 +223,7 @@ class STM_Nanonis:
             """Fill up template's indivisual data field and the descendant attribute.
             e.g. /Entry[ENTRY]/data/DATA,
             /Entry[ENTRY]/data/DATA/@axes and so on
+            note: Add filtration for data array
             """
             # To define a variable on global namespace
             global nxdata_grp, field_name
@@ -232,7 +236,10 @@ class STM_Nanonis:
                     nxdata_grp = data_group.replace("DATA[data", f"DATA[{grp_name}")
                     temp_data_field = nxdata_grp + "/" + field_name
                     scan_dt_arr = to_intended_t(data_dict[path])
-                    x_cor_len, y_cor_len = scan_dt_arr.shape
+                    scan_dt_arr = self.flip_scan_data_properly(
+                        template, scan_dt_arr, field_name
+                    )
+                    y_cor_len, x_cor_len = scan_dt_arr.shape
                     # collect for only one data field e.g. forward or backward, as all the data
                     # fields must have the same length of co-ordinate
                     if not axes_data:
@@ -241,27 +248,6 @@ class STM_Nanonis:
                         axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
                     axes_units.append(coor_info[0][2])
                     template[temp_data_field] = scan_dt_arr
-                    # Setting up the default field for entry
-                    if template.get("/ENTRY[entry]/@default", "") in [
-                        "",
-                        None,
-                    ] and eln_data_dict.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template["/ENTRY[entry]/@default"] = (
-                            convert_data_dict_path_to_hdf5_path(temp_data_field)
-                        )
-                    elif eln_data_dict.get("/ENTRY[entry]/@default", "") not in [
-                        "",
-                        None,
-                    ]:
-                        # Template already filled from eln_data_dict
-                        if field_name == template["/ENTRY[entry]/@default"]:
-                            template["/ENTRY[entry]/@default"] = (
-                                convert_data_dict_path_to_hdf5_path(temp_data_field)
-                            )
-                    if template.get("/ENTRY[entry]/@default", "") in ["", None]:
-                        template["/ENTRY[entry]/@default"] = (
-                            convert_data_dict_path_to_hdf5_path(temp_data_field)
-                        )
                 else:
                     # to clean up nxdata_grp and field_name from previous loop
                     nxdata_grp = ""
@@ -283,8 +269,14 @@ class STM_Nanonis:
                         template[signal_attr] = data_field_nm.lower()
                     else:
                         template[auxiliary_signals_attr].append(data_field_nm.lower())
-                for axis, axis_data in zip(axes_name, axes_data):
+
+                if len(axes_data) != len(axes_units):
+                    missing = len(axes_data) - len(axes_units)
+                    axes_units.extend([""] * missing)
+                for axis, axis_data, unit in zip(axes_name, axes_data, axes_units):
                     template[f"{nxdata_grp}/{axis}"] = axis_data
+                    template[f"{nxdata_grp}/{axis}/@unit"] = unit
+                    template[f"{nxdata_grp}/{axis}/@long_name"] = f"{axis}({unit})"
 
         def find_nxdata_group_and_name(key):
             """Find data group name from a data path in file.
@@ -293,8 +285,7 @@ class STM_Nanonis:
             """
             tmp_key = key.split("/", 1)[1]
             grp_name, data_field_name = tmp_key.split("/", 1)
-            grp_name = grp_name.upper()
-            return grp_name, data_field_name
+            return grp_name.lower(), data_field_name.lower()
 
         for _, dt_path_list in sub_config_dict.items():
             signals = []
@@ -308,7 +299,7 @@ class STM_Nanonis:
             fill_out_NXdata_group()
 
     # pylint: disable=too-many-locals
-    def get_dimension_info(self, config_dict, data_dict):
+    def get_dimension_info(self, config_dict, data_dict, template):
         """
         Extract dimension info from scanfield.
 
@@ -317,6 +308,9 @@ class STM_Nanonis:
             length on (x, y)-dimenstion and one last unknown values.
         """
         scanfield: str = ""
+        scan_range: str = ""
+        scan_offset: str = ""
+        scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
         for key, val in config_dict.items():
             if (
                 "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/"
@@ -324,11 +318,26 @@ class STM_Nanonis:
             ) == key:
                 if val in data_dict:
                     scanfield = data_dict[val]
-                else:
-                    raise ValueError(
-                        "Scanfield data missing: /ENTRY[entry]/INSTRUMENT[instrument]"
-                        "/ENVIRONMENT[environment]/scan_control/positioner/scanfield"
-                    )
+            elif (
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+                "/scan_control/scan_range"
+            ) == key:
+                scan_range = data_dict.get(val, None)
+                if scan_range:
+                    scan_range = re.findall(scientific_num_pattern, scan_range)
+                    template[key] = to_intended_t(scan_range)
+            elif (
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+                "/scan_control/scan_offset"
+            ) == key:
+                scan_offset = data_dict.get(val, None)
+                if scan_offset:
+                    scan_offset = re.findall(scientific_num_pattern, scan_offset)
+                    template[key] = to_intended_t(scan_offset)
+        if (not scan_offset or not scan_range) and not scanfield:
+            raise KeyError(
+                "Scanfield, scan_range, and scan_offset are not available in raw data file."
+            )
         conf_unit_key = "unit_of_x_y_coordinate"
         try:
             unit_info = data_dict[config_dict[conf_unit_key]]
@@ -338,17 +347,19 @@ class STM_Nanonis:
                 f"key {conf_unit_key}"
             ) from exc
         for sep in [";"]:
-            if sep in scanfield:
-                # parts are X_cor, Y_cor, X_len, Y_len and one unkown value
+            if scan_offset and scan_range:
+                scanfield_parts = scan_offset + scan_range
+            elif sep in scanfield:
+                # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
                 scanfield_parts = scanfield.split(sep)
 
-                x_start = to_intended_t(scanfield_parts[0])
-                x_len = to_intended_t(scanfield_parts[2])
-                x_cor = [x_start, x_start + x_len, unit_info]
-                y_start = to_intended_t(scanfield_parts[1])
-                y_len = to_intended_t(scanfield_parts[3])
-                y_cor = [y_start, y_start + y_len, unit_info]
-                return (x_cor, y_cor)
+            x_start = to_intended_t(scanfield_parts[0])
+            x_len = to_intended_t(scanfield_parts[2])
+            x_cor = [x_start, x_start + x_len, unit_info]
+            y_start = to_intended_t(scanfield_parts[1])
+            y_len = to_intended_t(scanfield_parts[3])
+            y_cor = [y_start, y_start + y_len, unit_info]
+            return (x_cor, y_cor)
         return ()
 
     # pylint: disable=too-many-branches
@@ -362,6 +373,7 @@ class STM_Nanonis:
         data_dict = self.get_SPM_metadata_dict_and_signal()
 
         fill_template_from_eln_data(eln_data_dict, template)
+        self.fill_temp_with_required_metadata(template, data_dict, config_dict)
         # Fill out template from config file
         temp_keys = template.keys()
         for c_key, c_val in config_dict.items():
@@ -379,7 +391,9 @@ class STM_Nanonis:
                 if isinstance(c_val, dict):
                     data_group = "/ENTRY[entry]/DATA[data]"
                     if c_key == data_group:
-                        coor_info = self.get_dimension_info(config_dict, data_dict)
+                        coor_info = self.get_dimension_info(
+                            config_dict, data_dict, template
+                        )
                         self.construct_nxdata_for_sxm(
                             template,
                             data_dict,
@@ -404,6 +418,80 @@ class STM_Nanonis:
         # The following function can be used later it link come true in application def.
         # link_implementation(template, nxdl_key_to_modified_key)
         link_seperation_from_hard_code(template, nxdl_key_to_modified_key)
+        self.set_default_values(template)
+
+    @staticmethod
+    def fill_temp_with_required_metadata(template, data_dict, config_dict):
+        """
+        Set required metadata for the STM reader that must be known before
+        filling up template in general. This method works with hard coded concepts.
+
+        Parameters:
+        -----------
+        template : dict
+            A pynxtools template.
+        data_dict : dict
+            A dictionarry mapping data path to data value from raw file.
+        config_dict : dict
+            A dictionary mapping nexus concept path to data path from raw file.
+        """
+
+        temp_key_to_deflt_val = {
+            "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction": "down"
+        }
+
+        for key, deflt_val in temp_key_to_deflt_val.items():
+            raw_data_path = config_dict.get(key, None)
+            template[key] = to_intended_t(data_dict.get(raw_data_path, deflt_val))
+
+    @staticmethod
+    def flip_scan_data_properly(template, scan_dt_arr, fld_name):
+        """Flip 2d scan data according to the scan direction.
+
+        Parameters:
+        -----------
+        template : dict
+            A pynxtools template.
+        scan_array : array
+            A 2d scan data array.
+        file_name : str
+            The name of the data field of NXdata.
+
+        Return:
+        -------
+        array
+            A 2d scan data array.
+        """
+        global SCAN_SIDE
+        if not SCAN_SIDE:
+            SCAN_SIDE = template[
+                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction"
+            ].lower()
+        if SCAN_SIDE in ("down", "bottom"):
+            # Forwaard: Flip array along y-axis (e.g. y[0, :] -> y[n-1, :])
+            # Backward: Flip array along x & y-axis (e.g. x[:, 0] -> x[:, n-1]
+            #                                    and  y[0,:] -> y[n-1, :])
+            if fld_name == "forward":
+                return scan_dt_arr[::-1, :]
+            elif fld_name == "backward":
+                return scan_dt_arr[::-1, ::-1]
+        elif SCAN_SIDE in ("up", "top"):
+            if fld_name == "forward":
+                return scan_dt_arr
+            elif fld_name == "backward":
+                return scan_dt_arr[:, ::-1]
+
+    @staticmethod
+    def set_default_values(template):
+        """Set up some default values from template."""
+
+        # concept key to active or renamed group name.
+        deflts = {
+            "/ENTRY[entry]/@default": "z",
+        }
+        for key, val in deflts.items():
+            if template.get(key, None) is None:
+                template[key] = val
 
 
 def get_stm_raw_file_info(raw_file):
