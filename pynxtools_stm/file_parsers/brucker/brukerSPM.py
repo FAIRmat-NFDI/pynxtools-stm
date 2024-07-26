@@ -11,7 +11,7 @@ class BrukerSPM(Bruker):
         last_admin_key_order = ["", 0]
         got_leaf_key = False
 
-        self.parsed_data: dict[str, Any]  = {}
+        self.parsed_data: dict[str, Any] = {}
         with open(self.path, "rb") as file:
             self.layers = []
             self.scanners = []
@@ -51,23 +51,32 @@ class BrukerSPM(Bruker):
                         got_leaf_key = False
                         parent_key = ""
                     # Track how to admistrative name like: \*Ciao image list
-                    last_admin_key_order = ([key_val[0], 0] if last_admin_key_order[0] != key_val[0] 
-                                                      else [last_admin_key_order[0], last_admin_key_order[1] + 1])
-                    
+                    last_admin_key_order = (
+                        [key_val[0], 0]
+                        if last_admin_key_order[0] != key_val[0]
+                        else [last_admin_key_order[0], last_admin_key_order[1] + 1]
+                    )
+
                     # If only one administrative key is found not extension otherwise exntend the key by order
-                    parent_key = (parent_key + '/' + (key_val[0] + "_" + str(last_admin_key_order[1]) if last_admin_key_order[1] > 0 
-                                                                                                 else key_val[0]))
+                    parent_key = (
+                        parent_key
+                        + "/"
+                        + (
+                            key_val[0] + "_" + str(last_admin_key_order[1])
+                            if last_admin_key_order[1] > 0
+                            else key_val[0]
+                        )
+                    )
                 else:
                     got_leaf_key = True
-                    self.parsed_data[parent_key +'/' + key_val[0]] = key_val[1]
+                    self.parsed_data[parent_key + "/" + key_val[0]] = key_val[1]
 
-    
     def _get_bpp(self, i):
         return super(BrukerSPM, self)._get_bpp(i)
 
     def _get_raw_layer(self, i, debug=False, mock_data=False):
         return super(BrukerSPM, self)._get_raw_layer(i, debug, mock_data)
-    
+
     def list_channels(self, encoding="latin1"):
         super(BrukerSPM, self).list_channels(encoding)
 
@@ -81,14 +90,16 @@ class BrukerSPM(Bruker):
         return super(BrukerSPM, self)._get_layer_size(layer_index, encoding, debug)
 
     def get_channel(
-            self,
-            channel="Height Sensor",
-            backward=False,
-            corr=None,
-            debug=False,
-            encoding="latin1",
-            lazy=True,
-            mfm=False,
-            mock_data=False,
-        ):
-        return super(BrukerSPM, self).get_channel(channel, backward, corr, debug, encoding, lazy, mfm, mock_data)
+        self,
+        channel="Height Sensor",
+        backward=False,
+        corr=None,
+        debug=False,
+        encoding="latin1",
+        lazy=True,
+        mfm=False,
+        mock_data=False,
+    ):
+        return super(BrukerSPM, self).get_channel(
+            channel, backward, corr, debug, encoding, lazy, mfm, mock_data
+        )
