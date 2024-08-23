@@ -1,11 +1,17 @@
 from pySPM.Bruker import Bruker
+import contextlib
 import pySPM
 
 import re
 from typing import Any
 
+__all__ = ["BrukerSPM"]
+
 
 class BrukerSPM(Bruker):
+    # TODO: Recheck the functionality of the
+    __all__ = ["list_channels", "get_channel_data", "get_channel_image"]
+
     def __init__(self, path):
         self.path = path
         # After with the parent pat the leaf key will be added.
@@ -14,6 +20,7 @@ class BrukerSPM(Bruker):
         last_admin_key_order = ["", 0]
         got_leaf_key = False
         # Includes also all the metadata
+        # TODO: rename the parse_data to metadata
         self.parsed_data: dict[str, Any] = {}
         with open(self.path, "rb") as file:
             self.layers = []
@@ -84,7 +91,31 @@ class BrukerSPM(Bruker):
         return super(BrukerSPM, self)._get_raw_layer(i, debug, mock_data)
 
     def list_channels(self, encoding="latin1"):
-        super(BrukerSPM, self).list_channels(encoding)
+        # super(BrukerSPM, self).list_channels(encoding)
+        print("Channels")
+        print("========")
+        channel_list = []
+        for layer in self.layers:
+            with contextlib.suppress(KeyError):
+                key = b"@2:Image Data"
+                channel = (
+                    key.decode(encoding=encoding)
+                    + ": "
+                    + layer[key][0].decode(encoding)
+                )
+                channel_list.append(channel)
+                print(channel)
+        for layer in self.layers:
+            with contextlib.suppress(KeyError):
+                key = b"@3:Image Data"
+                channel = (
+                    key.decode(encoding=encoding)
+                    + ": "
+                    + layer[key][0].decode(encoding)
+                )
+                channel_list.append(channel)
+                print(layer[key][0].decode(encoding) + " (MFM)")
+        return channel_list
 
     def _get_layer_val(self, index: int, name: str, first=True):
         return super(BrukerSPM, self)._get_layer_val(index, name, first)
