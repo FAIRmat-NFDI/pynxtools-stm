@@ -39,9 +39,9 @@ jobs:
     - name: Package version
       id: package_version
       run: |
-        PACKAGE_VERSION=$(python setup.py --version)
+        PACKAGE_VERSION=$(python -c "import my_package; print(my_package.__version__)")
         echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
-        echo "Version from setup.py: $PACKAGE_VERSION"
+        echo "Version from __init__.py: $PACKAGE_VERSION"
 
     - name: Citation version
       id: citation_version
