@@ -1,4 +1,4 @@
-cff-version: 1.0.5
+cff-version: "1.0.5"
 title: A pynxtools plugin for STM (Scanning Tunneling Microscopy) data readers
 message: >-
   If you use this software, please cite it using the
@@ -8,7 +8,7 @@ authors:
   - given-names: Rubel
     family-names: Mozumder
     orcid: 'https://orcid.org/0009-0007-5926-6646'
-  - given-names: 	Yichen 
+  - given-names: Yichen 
     family-names: Jin
     orcid: 'https://orcid.org/0000-0001-9546-1202'
   - given-names: Florian
