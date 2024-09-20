@@ -30,6 +30,9 @@ authors:
   - given-names: Tamás
     family-names: Haraszti
     orcid: 'https://orcid.org/0000-0002-7095-4358'
+  - given-names: Markus
+    family-names: Kühbach
+    orcid: 'https://orcid.org/0000-0002-7117-5196'
 # doi: 10.5281/zenodo.13799111
 repository-code: 'https://github.com/FAIRmat-NFDI/pynxtools-stm'
 url: 'https://fairmat-nfdi.github.io/pynxtools-stm/'
