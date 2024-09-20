@@ -1,4 +1,4 @@
-cff-version: "1.0.5"
+cff-version: 1.0.5
 title: A pynxtools plugin for STM (Scanning Tunneling Microscopy) data readers
 message: >-
   If you use this software, please cite it using the

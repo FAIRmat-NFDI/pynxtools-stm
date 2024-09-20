@@ -37,7 +37,7 @@ jobs:
           echo "Version from CITATION.cff: $CITATION_VERSION"
       - name: Compare versions
         run: |
-          if [ "$ GIT_TAG_VERSION" != "$ CITATION_VERSION" ]; then
+          if [ "$GIT_TAG_VERSION" != "$CITATION_VERSION" ]; then
             echo "Version mismatch: Git tag version is $ GIT_TAG_VERSION, CITATION.cff version is $ CITATION_VERSION"
             exit 1
           fi

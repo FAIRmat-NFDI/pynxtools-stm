@@ -45,7 +45,7 @@ jobs:
 
     - name: Compare versions
       run: |
-        if [ "$ PACKAGE_VERSION" != "$ CITATION_VERSION" ]; then
+        if [ "$PACKAGE_VERSION" != "$CITATION_VERSION" ]; then
           echo "Version mismatch: package version is $ PACKAGE_VERSION, CITATION.cff version is $ CITATION_VERSION"
           exit 1
         fi
