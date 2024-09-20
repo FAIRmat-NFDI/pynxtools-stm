@@ -1,0 +1,41 @@
+cff-version: 1.0.5
+title: A pynxtools plugin for STM (Scanning Tunneling Microscopy) data readers
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Rubel
+    family-names: Mozumder
+    orcid: 'https://orcid.org/0009-0007-5926-6646'
+  - given-names: 	Yichen 
+    family-names: Jin
+    orcid: 'https://orcid.org/0000-0001-9546-1202'
+  - given-names: Florian
+    family-names: Dobener
+    orcid: 'https://orcid.org/0000-0003-1987-6224'
+  - given-names: Lukas
+    family-names: Pielsticker
+    orcid: 'https://orcid.org/0000-0001-9361-8333'
+  - given-names: Sanbrock
+    family-names: Brockhauser
+    orcid: 'https://orcid.org/0000-0002-9700-4803'
+  - given-names: Carlos-Andres
+    family-names: Palma
+    orcid: 'https://orcid.org/0000-0001-5576-8496'
+doi: 10.5281/zenodo.13799111
+repository-code: 'https://github.com/FAIRmat-NFDI/pynxtools-stm'
+url: 'https://fairmat-nfdi.github.io/pynxtools-stm/'
+abstract:
+  The pynxtools-stm is python package evolved as a plugin of pynxtools,
+  which is in turn a plugin of NOMAD. The plugin pynxtools-stm is designed 
+  to read and process the data and metadata from STM (Scanning Tunneling 
+  Microscopy) and STS (Scanning Tunneling Spectroscopy) experimental data 
+  files and connect the data to the standard schema (NXsts), designed under 
+  the NeXus data format. As the part of the data reading and processing, 
+  the plugin pynxtools-stm describes experiment setup and the details of the
+  specific measurements. Though, the plugin can be used as a standalone 
+  package, but for full benifits of the pynxtools-stm, we recommended to use
+  in research data management platform NOMAD.
+
+license: Apache-2.0

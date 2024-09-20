@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
-    "pynxtools>=0.3.3",
+    "pynxtools>=0.7.1",
 ]
 
 [project.urls]
