@@ -26,8 +26,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install .
-
+        pip install .[dev]
+      
+    # Check if the CITATION.cff file is valid
+    - name: Validate CITATION.cff
+      run: |
+        cffconvert --validate
     - name: Package version
       id: package_version
       run: |

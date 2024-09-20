@@ -36,6 +36,7 @@ dev = [
     "ruff==0.3.4",
     "pytest",
     "pip-tools",
+    "cffconvert", # To validate a CITATION.cff file 
 ]
 
 docs = [
