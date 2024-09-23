@@ -55,8 +55,8 @@ docs = [
 spm = "pynxtools_stm.reader:SPMReader"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["pynxtools_stm"]
+where = ["src"]
+# include = ["src/pynxtools_stm"]
 
 [tool.setuptools_scm]
 version_scheme = "no-guess-dev"

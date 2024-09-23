@@ -31,7 +31,6 @@ from pynxtools.dataconverter.template import Template
 from pynxtools import get_nexus_version
 # from pynxtools_stm.helper import set_default_attr_in_group
 
-from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
 
 CONVERT_DICT = {
     "Instrument": "INSTRUMENT[instrument]",
