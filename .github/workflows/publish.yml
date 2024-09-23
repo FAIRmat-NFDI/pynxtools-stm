@@ -26,7 +26,7 @@ jobs:
           ls -R
           f_d_list=$(ls -R)
           echo "List of all files and directories: $f_d_list"
-          $(cat CITATION.cff)
+          cat CITATION.cff
       - name: Git tag version
         id: git_tag_version
         run: |
