@@ -35,17 +35,7 @@ jobs:
         ls -R
         f_d_list=$(ls -R)
         echo "List of all files and directories: $f_d_list"
-<<<<<<< HEAD
-<<<<<<< HEAD
         cat CITATION.cff
-=======
-        cat_out = $(cat CITATION.cff)
-        echo "CITATION.cff content: $cat_out"
->>>>>>> 7785c07 (debug-1)
-=======
-        $(cat CITATION.cff)
-        
->>>>>>> 0195da6 (debug-2)
     - name: Package version
       id: package_version
       run: |
