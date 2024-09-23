@@ -1,17 +1,39 @@
 from pynxtools_stm.nxformatter.base_formatter import SPMformatter
 from typing import Dict, Optional, Union
 from pathlib import Path
+import re
+from pynxtools.dataconverter.template import Template
+from pynxtools_stm.nxformatters.helpers import (
+    __get_data_unit_and_others,
+    __arange_axes,
+    _scientific_num_pattern,
+)
 
 
 class NanonisSXMSTM(SPMformatter):
     def __init__(
         self,
+        # TODO: fix the type of template
+        template: Template,
         raw_file: Union[str, Path],
         eln_dict: Dict,
         config_file: str = None,  # Incase it is not provided by users
         entry: Optional[str] = None,
     ):
         super().__init__(raw_file, eln_dict, config_file, entry)
+
+    def get_nxformatted_template(self):
+        parent_path = "/ENTRY[entry]/experiment_instrument/scan_environment"
+        scan_control_dict = self.config_dict["ENTRY[entry]"]["experiment_instrument"][
+            "scan_environment"
+        ]["SCAN_CONTROL[scan_control]"]
+        self.construct_scan_control_grp(
+            template=self.template,
+            partial_conf_dict=scan_control_dict,
+            parent_path=parent_path,
+            data_dict=self.raw_data,
+            group_name="scan_control",
+        )
 
     def construct_scan_control_grp(
         self,
@@ -20,9 +42,9 @@ class NanonisSXMSTM(SPMformatter):
         parent_path: str,
         data_dict,
         group_name="scan_control",
-        layer_dict=None,
     ):
         global gbl_scan_points, gbl_scan_ranges
+        axes = ["x", "y", "z"]
 
         # gbl_scan_ranges = None
         # gbl_scan_points = None
@@ -71,7 +93,6 @@ class NanonisSXMSTM(SPMformatter):
             parent_path: str,
             data_dict,
             group_name="scan_mesh",
-            layer_dict=None,
         ):
             """To construct the scan pattern like scan_mesh, scan_spiral (group) etc."""
 
@@ -83,6 +104,7 @@ class NanonisSXMSTM(SPMformatter):
                 partial_conf_dict=partial_conf_dict,
                 concept_field=scan_point,
             )
+            # TODO remove the global variables
             global gbl_scan_points, gbl_scan_ranges
             gbl_scan_points = re.findall(_scientific_num_pattern, scan_points)
             if gbl_scan_points:
@@ -91,9 +113,7 @@ class NanonisSXMSTM(SPMformatter):
                 template[f"{parent_path}/{group_name}/scan_points_{axes[ind]}"] = point
             # step_size
             if len(gbl_scan_points) == len(gbl_scan_ranges):
-                for find, (rng, pnt) in enumerate(
-                    zip(gbl_scan_ranges, gbl_scan_points)
-                ):
+                for ind, (rng, pnt) in enumerate(zip(gbl_scan_ranges, gbl_scan_points)):
                     template[f"{parent_path}/{group_name}/step_size_{axes[ind]}"] = (
                         rng / pnt
                     )

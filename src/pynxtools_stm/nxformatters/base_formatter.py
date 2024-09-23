@@ -27,6 +27,10 @@ from dataclasses import dataclass
 from pynxtools_stm.parsers import SPMParser
 import pynxtools_stm.nxformatters.helpers as fhs
 from pynxtools_stm.configs.nanonis_sxm_generic_stm import __config_stm_generic
+from pynxtools.dataconverter.template import Template
+
+
+_scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
 
 
 @dataclass
@@ -46,6 +50,7 @@ class NXdata:
 class SPMformatter(ABC):
     def __init__(
         self,
+        template: Template,
         raw_file: Union[str, Path],
         eln_dict: Dict,
         config_file: str = None,  # Incase it is not provided by users
