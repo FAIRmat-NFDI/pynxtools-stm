@@ -9,4 +9,4 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1323437.svg)](https://doi.org/10.5281/zenodo.13827673)
 
  # STS reader 
- For proper docs please follow the link in [GitHub documentation page](https://FAIRmat-NFDI.github.io/pynxtools-stm/)
+ For full documentation please visit [GitHub documentation page](https://FAIRmat-NFDI.github.io/pynxtools-stm/)
