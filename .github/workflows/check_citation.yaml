@@ -30,6 +30,13 @@ jobs:
     - name: Validate CITATION.cff
       run: |
         cffconvert --validate
+    - name: Debug (Show  list of all files and dirrectories recursively)
+      run: |
+        ls -R
+        f_d_list=$(ls -R)
+        echo "List of all files and directories: $f_d_list"
+        cat_out = $(cat CITATION.cff)
+        echo "CITATION.cff content: $cat_out"
     - name: Package version
       id: package_version
       run: |
