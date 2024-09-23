@@ -25,12 +25,7 @@ from typing import Dict, Union, List, Optional
 from pathlib import Path
 from dataclasses import dataclass
 from pynxtools_stm.parsers import SPMParser
-import pynxtools_stm.nxformatters.helpers as fhs
-from pynxtools_stm.configs.nanonis_sxm_generic_stm import __config_stm_generic
 from pynxtools.dataconverter.template import Template
-
-
-_scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
 
 
 @dataclass
@@ -57,9 +52,9 @@ class SPMformatter(ABC):
         # data_dict: Optional[Dict] = None,
         entry: Optional[str] = None,
     ):
+        self.template: Template = template
         self.raw_file: Union[str, Path] = raw_file
         self.eln: Dict = eln_dict
-        self.conf: Dict = self.__get_conf_dict(config_file)
         self.raw_data: Dict = self.get_raw_data_dict()
         self.entry: str = entry
 
@@ -70,12 +65,8 @@ class SPMformatter(ABC):
     #     vendor_software_version: Optional[str] = None
 
     #     return instrument_name, file_ext, vendor, vendor_software_version
-
-    def __get_conf_dict(self, config_file: str = None):
-        if config_file is not None:
-            return fhs.read_config_file(config_file)
-        else:
-            return __config_stm_generic
+    @abstractmethod
+    def __get_conf_dict(self, config_file: str = None): ...
 
     def get_raw_data_dict(self):
         SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)

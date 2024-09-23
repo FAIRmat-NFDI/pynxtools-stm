@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
-A short description on STS reader which also suitable for file from STM .
+TODO: Add simple description of the module
 """
-
+# -*- coding: utf-8 -*-
+#
 # Copyright The NOMAD Authors.
 #
 # This file is part of NOMAD. See https://nomad-lab.eu for further info.
@@ -19,21 +20,3 @@ A short description on STS reader which also suitable for file from STM .
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import os
-from abc import ABC, abstractmethod
-
-
-class SPMBase(ABC):
-    """Base class for all the SPM readers."""
-
-    def __init__(self, file_path) -> None:
-        super().__init__()
-        if os.path.exists(file_path):
-            self.file_path = file_path
-        else:
-            raise FileNotFoundError(f"File {file_path} not found.")
-
-    @abstractmethod
-    def parse(self):
-        """Parse the file and return the parsed data."""
-        pass

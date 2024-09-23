@@ -26,7 +26,6 @@ from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
 import pynxtools_stm.parsers.helpers as phs
 from pathlib import Path, PosixPath
 import os
-from abc import ABC, abstractmethod
 
 
 class SPMParser:

@@ -1,6 +1,5 @@
 from pathlib import PosixPath
 from typing import Dict, Optional, Tuple
-import re
 from pint import UnitRegistry
 from typing import Optional, Dict, Tuple
 import logging
@@ -12,6 +11,8 @@ ureg = UnitRegistry()
 #  try to create a common logger for all the modules
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
+
+__scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
 
 
 def read_config_file(config_file: str) -> Dict:

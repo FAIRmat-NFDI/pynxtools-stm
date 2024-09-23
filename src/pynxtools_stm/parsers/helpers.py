@@ -24,6 +24,8 @@ TODO: Add simple description of the module
 import numpy as np
 from typing import Dict, Any
 
+UNIT_TO_SKIP = ["on/off", "off", "on", "off/on"]
+
 
 def nested_path_to_slash_separated_path(
     nested_dict: dict, flattened_dict: dict, parent_path=""

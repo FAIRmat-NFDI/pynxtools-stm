@@ -1,12 +1,13 @@
-from pynxtools_stm.nxformatter.base_formatter import SPMformatter
+from pynxtools_stm.nxformatters.base_formatter import SPMformatter
 from typing import Dict, Optional, Union
 from pathlib import Path
 import re
+from pynxtools_stm.configs.nanonis_sxm_generic_stm import __config_stm_generic
+import pynxtools_stm.nxformatters.helpers as fhs
 from pynxtools.dataconverter.template import Template
 from pynxtools_stm.nxformatters.helpers import (
     __get_data_unit_and_others,
-    __arange_axes,
-    _scientific_num_pattern,
+    __scientific_num_pattern,
 )
 
 
@@ -20,7 +21,8 @@ class NanonisSXMSTM(SPMformatter):
         config_file: str = None,  # Incase it is not provided by users
         entry: Optional[str] = None,
     ):
-        super().__init__(raw_file, eln_dict, config_file, entry)
+        super().__init__(template, raw_file, eln_dict, config_file, entry)
+        self.config_dict: Dict = self.__get_conf_dict(config_file)
 
     def get_nxformatted_template(self):
         parent_path = "/ENTRY[entry]/experiment_instrument/scan_environment"
@@ -35,6 +37,12 @@ class NanonisSXMSTM(SPMformatter):
             group_name="scan_control",
         )
 
+    def __get_conf_dict(self, config_file: str = None):
+        if config_file is not None:
+            return fhs.read_config_file(config_file)
+        else:
+            return __config_stm_generic
+
     def construct_scan_control_grp(
         self,
         template,
@@ -43,6 +51,7 @@ class NanonisSXMSTM(SPMformatter):
         data_dict,
         group_name="scan_control",
     ):
+        # Rethink about the global variables
         global gbl_scan_points, gbl_scan_ranges
         axes = ["x", "y", "z"]
 
@@ -62,7 +71,7 @@ class NanonisSXMSTM(SPMformatter):
                 partial_conf_dict=partial_conf_dict,
                 concept_field=scan_angle,
             )
-            scan_angles = re.findall(_scientific_num_pattern, scan_angles)
+            scan_angles = re.findall(__scientific_num_pattern, scan_angles)
             for ind, ang in enumerate(scan_angles):
                 template[f"{parent_path}/{group_name}/scan_offset_{axes[ind]}"] = ang
                 template[
@@ -77,7 +86,7 @@ class NanonisSXMSTM(SPMformatter):
                 concept_field=scan_range,
             )
             global gbl_scan_ranges
-            gbl_scan_ranges = re.findall(_scientific_num_pattern, scan_ranges)
+            gbl_scan_ranges = re.findall(__scientific_num_pattern, scan_ranges)
             if gbl_scan_ranges:
                 gbl_scan_ranges = [float(x) for x in gbl_scan_ranges]
 
@@ -106,7 +115,7 @@ class NanonisSXMSTM(SPMformatter):
             )
             # TODO remove the global variables
             global gbl_scan_points, gbl_scan_ranges
-            gbl_scan_points = re.findall(_scientific_num_pattern, scan_points)
+            gbl_scan_points = re.findall(__scientific_num_pattern, scan_points)
             if gbl_scan_points:
                 gbl_scan_points = [float(x) for x in gbl_scan_points]
             for ind, point in enumerate(gbl_scan_points):
@@ -129,8 +138,8 @@ class NanonisSXMSTM(SPMformatter):
             partial_conf_dict=partial_conf_dict,
             concept_field=independent_axes,
         )
-        template[f"{parent_path}/{group_name}/independent_scan_axes"] = __arange_axes(
-            direction.strip()
+        template[f"{parent_path}/{group_name}/independent_scan_axes"] = (
+            self.__arange_axes(direction.strip())
         )
         scan_region_grp = "scan_region"
         scan_region_dict = partial_conf_dict.get(scan_region_grp, None)

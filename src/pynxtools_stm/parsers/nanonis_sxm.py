@@ -25,15 +25,15 @@ import re
 
 import numpy as np
 import pynxtools_stm.parsers.helpers as phs
-import pynxtools_stm.nanonispy as nap
+import pynxtools_stm.parsers.nanonispy as nap
 from pynxtools_stm.parsers.base_parser import SPMBase
-from pynxtools_stm.helper import (
+from pynxtools_stm.parsers.helpers import (
     UNIT_TO_SKIP,
-    fill_template_from_eln_data,
-    link_seperation_from_hard_code,
+    # fill_template_from_eln_data,
+    # link_seperation_from_hard_code,
     nested_path_to_slash_separated_path,
-    to_intended_t,
-    work_out_overwriteable_field,
+    # to_intended_t,
+    # work_out_overwriteable_field,
 )
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
@@ -188,313 +188,313 @@ class SXMGenericNanonis(SPMBase):
         return self.__get_nested_metadata_dict_and_signal()
 
     # pylint: disable=too-many-arguments
-    def construct_nxdata_for_sxm(
-        self, template, data_dict, sub_config_dict, coor_info, data_group, eln_data_dict
-    ):
-        """
-        Construct NXdata that includes all the groups, field and attributes. All the elements
-        will be stored in template.
+    # def construct_nxdata_for_sxm(
+    #     self, template, data_dict, sub_config_dict, coor_info, data_group, eln_data_dict
+    # ):
+    #     """
+    #     Construct NXdata that includes all the groups, field and attributes. All the elements
+    #     will be stored in template.
 
-        Parameters:
-        -----------
-        template : dict[str, Any]
-            Capturing data elements. One to one dictionary for capturing data array, data axes
-            and so on from data_dict to be ploted.
-        data_dict : dict[str, Union[array, str]]
-            Data stored from dat file. Path (str) to data elements which mainly come from
-            dat file. Data from this dict will go to template
-        data_config_dict : dict[str, list]
-            This dictionary is numerical data order to list (list of path to data elements in
-            input file). Each order indicates a group of data set.
-        coor_info: Tuple[list]
-            Tuple (for X and Y coordinate respectively) of list  and each list starting and
-            end point of x-axis.
+    #     Parameters:
+    #     -----------
+    #     template : dict[str, Any]
+    #         Capturing data elements. One to one dictionary for capturing data array, data axes
+    #         and so on from data_dict to be ploted.
+    #     data_dict : dict[str, Union[array, str]]
+    #         Data stored from dat file. Path (str) to data elements which mainly come from
+    #         dat file. Data from this dict will go to template
+    #     data_config_dict : dict[str, list]
+    #         This dictionary is numerical data order to list (list of path to data elements in
+    #         input file). Each order indicates a group of data set.
+    #     coor_info: Tuple[list]
+    #         Tuple (for X and Y coordinate respectively) of list  and each list starting and
+    #         end point of x-axis.
 
-        data_group : NeXus path for NXdata
+    #     data_group : NeXus path for NXdata
 
-        Return:
-        -------
-        None
+    #     Return:
+    #     -------
+    #     None
 
-        Raise:
-        ------
-        None
-        """
+    #     Raise:
+    #     ------
+    #     None
+    #     """
 
-        # pylint: disable=global-variable-undefined
-        def indivisual_DATA_field():
-            """Fill up template's indivisual data field and the descendant attribute.
-            e.g. /Entry[ENTRY]/data/DATA,
-            /Entry[ENTRY]/data/DATA/@axes and so on
-            note: Add filtration for data array
-            """
-            # To define a variable on global namespace
-            global nxdata_grp, field_name
-            # list of paths e.g. "/LI_Demod_2_X/forward" comes provided file .sxm.
-            for path in dt_path_list:
-                if path in data_dict:
-                    grp_name, field_name = find_nxdata_group_and_name(path)
-                    grp_name = "_".join(grp_name.lower().split(" "))
-                    signals.append(field_name)
-                    nxdata_grp = data_group.replace("DATA[data", f"DATA[{grp_name}")
-                    temp_data_field = nxdata_grp + "/" + field_name
-                    scan_dt_arr = to_intended_t(data_dict[path])
-                    scan_dt_arr = self.flip_scan_data_properly(
-                        template, scan_dt_arr, field_name
-                    )
-                    y_cor_len, x_cor_len = scan_dt_arr.shape
-                    # collect for only one data field e.g. forward or backward, as all the data
-                    # fields must have the same length of co-ordinate
-                    if not axes_data:
-                        # coor_info[i] has start, end and unit
-                        axes_data.append(np.linspace(*coor_info[0][0:2], x_cor_len))
-                        axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
-                    axes_units.append(coor_info[0][2])
-                    template[temp_data_field] = scan_dt_arr
-                else:
-                    # to clean up nxdata_grp and field_name from previous loop
-                    nxdata_grp = ""
-                    field_name = ""
+    #     # pylint: disable=global-variable-undefined
+    #     def indivisual_DATA_field():
+    #         """Fill up template's indivisual data field and the descendant attribute.
+    #         e.g. /Entry[ENTRY]/data/DATA,
+    #         /Entry[ENTRY]/data/DATA/@axes and so on
+    #         note: Add filtration for data array
+    #         """
+    #         # To define a variable on global namespace
+    #         global nxdata_grp, field_name
+    #         # list of paths e.g. "/LI_Demod_2_X/forward" comes provided file .sxm.
+    #         for path in dt_path_list:
+    #             if path in data_dict:
+    #                 grp_name, field_name = find_nxdata_group_and_name(path)
+    #                 grp_name = "_".join(grp_name.lower().split(" "))
+    #                 signals.append(field_name)
+    #                 nxdata_grp = data_group.replace("DATA[data", f"DATA[{grp_name}")
+    #                 temp_data_field = nxdata_grp + "/" + field_name
+    #                 scan_dt_arr = to_intended_t(data_dict[path])
+    #                 scan_dt_arr = self.flip_scan_data_properly(
+    #                     template, scan_dt_arr, field_name
+    #                 )
+    #                 y_cor_len, x_cor_len = scan_dt_arr.shape
+    #                 # collect for only one data field e.g. forward or backward, as all the data
+    #                 # fields must have the same length of co-ordinate
+    #                 if not axes_data:
+    #                     # coor_info[i] has start, end and unit
+    #                     axes_data.append(np.linspace(*coor_info[0][0:2], x_cor_len))
+    #                     axes_data.append(np.linspace(*coor_info[1][0:2], y_cor_len))
+    #                 axes_units.append(coor_info[0][2])
+    #                 template[temp_data_field] = scan_dt_arr
+    #             else:
+    #                 # to clean up nxdata_grp and field_name from previous loop
+    #                 nxdata_grp = ""
+    #                 field_name = ""
 
-        def fill_out_NXdata_group():
-            """To fill out NXdata which is root for all data fields and attributes for NXdata.
-            This function fills template with first level of descendent fields and attributes
-            of NXdata but not the fields and attributes under child of NXdata.
-            """
-            if nxdata_grp:
-                auxiliary_signals_attr = f"{nxdata_grp}/@auxiliary_signals"
-                axes = f"{nxdata_grp}/@axes"
-                signal_attr = f"{nxdata_grp}/@signal"
-                template[auxiliary_signals_attr] = []
-                template[axes] = [ax.lower() for ax in axes_name]
-                for ind, data_field_nm in enumerate(signals):
-                    if ind == 0:
-                        template[signal_attr] = data_field_nm.lower()
-                    else:
-                        template[auxiliary_signals_attr].append(data_field_nm.lower())
+    #     def fill_out_NXdata_group():
+    #         """To fill out NXdata which is root for all data fields and attributes for NXdata.
+    #         This function fills template with first level of descendent fields and attributes
+    #         of NXdata but not the fields and attributes under child of NXdata.
+    #         """
+    #         if nxdata_grp:
+    #             auxiliary_signals_attr = f"{nxdata_grp}/@auxiliary_signals"
+    #             axes = f"{nxdata_grp}/@axes"
+    #             signal_attr = f"{nxdata_grp}/@signal"
+    #             template[auxiliary_signals_attr] = []
+    #             template[axes] = [ax.lower() for ax in axes_name]
+    #             for ind, data_field_nm in enumerate(signals):
+    #                 if ind == 0:
+    #                     template[signal_attr] = data_field_nm.lower()
+    #                 else:
+    #                     template[auxiliary_signals_attr].append(data_field_nm.lower())
 
-                if len(axes_data) != len(axes_units):
-                    missing = len(axes_data) - len(axes_units)
-                    axes_units.extend([""] * missing)
-                for axis, axis_data, unit in zip(axes_name, axes_data, axes_units):
-                    template[f"{nxdata_grp}/{axis}"] = axis_data
-                    template[f"{nxdata_grp}/{axis}/@unit"] = unit
-                    template[f"{nxdata_grp}/{axis}/@long_name"] = f"{axis}({unit})"
+    #             if len(axes_data) != len(axes_units):
+    #                 missing = len(axes_data) - len(axes_units)
+    #                 axes_units.extend([""] * missing)
+    #             for axis, axis_data, unit in zip(axes_name, axes_data, axes_units):
+    #                 template[f"{nxdata_grp}/{axis}"] = axis_data
+    #                 template[f"{nxdata_grp}/{axis}/@unit"] = unit
+    #                 template[f"{nxdata_grp}/{axis}/@long_name"] = f"{axis}({unit})"
 
-        def find_nxdata_group_and_name(key):
-            """Find data group name from a data path in file.
-            E.g. 'Z', 'LI_Demod_2_X' from /Z/forward and /LI_Demod_2_X/forward
-            Note: Create a function in stm_helper.py to unit scale such as nm, micrometer
-            """
-            tmp_key = key.split("/", 1)[1]
-            grp_name, data_field_name = tmp_key.split("/", 1)
-            return grp_name.lower(), data_field_name.lower()
+    #     def find_nxdata_group_and_name(key):
+    #         """Find data group name from a data path in file.
+    #         E.g. 'Z', 'LI_Demod_2_X' from /Z/forward and /LI_Demod_2_X/forward
+    #         Note: Create a function in stm_helper.py to unit scale such as nm, micrometer
+    #         """
+    #         tmp_key = key.split("/", 1)[1]
+    #         grp_name, data_field_name = tmp_key.split("/", 1)
+    #         return grp_name.lower(), data_field_name.lower()
 
-        for _, dt_path_list in sub_config_dict.items():
-            signals = []
-            axes_name = ["x", "y"]
-            axes_units = []
-            axes_data = []
-            # The following functions can be thought as unpacked function body here.
-            if not dt_path_list:
-                continue
-            indivisual_DATA_field()
-            fill_out_NXdata_group()
+    #     for _, dt_path_list in sub_config_dict.items():
+    #         signals = []
+    #         axes_name = ["x", "y"]
+    #         axes_units = []
+    #         axes_data = []
+    #         # The following functions can be thought as unpacked function body here.
+    #         if not dt_path_list:
+    #             continue
+    #         indivisual_DATA_field()
+    #         fill_out_NXdata_group()
 
     # pylint: disable=too-many-locals
-    def get_dimension_info(self, config_dict, data_dict, template):
-        """
-        Extract dimension info from scanfield.
+    # def get_dimension_info(self, config_dict, data_dict, template):
+    #     """
+    #     Extract dimension info from scanfield.
 
-            ../ENVIRONMENT[environment]/scan_control/positioner/scanfield"
-            The scanfield has four parts starting point of (x, y) co-ordinate
-            length on (x, y)-dimenstion and one last unknown values.
-        """
-        scanfield: str = ""
-        scan_range: str = ""
-        scan_offset: str = ""
-        scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
-        for key, val in config_dict.items():
-            if (
-                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/"
-                "scan_control/positioner/scanfield"
-            ) == key:
-                if val in data_dict:
-                    scanfield = data_dict[val]
-            elif (
-                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
-                "/scan_control/scan_range"
-            ) == key:
-                scan_range = data_dict.get(val, None)
-                if scan_range:
-                    scan_range = re.findall(scientific_num_pattern, scan_range)
-                    template[key] = to_intended_t(scan_range)
-            elif (
-                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
-                "/scan_control/scan_offset"
-            ) == key:
-                scan_offset = data_dict.get(val, None)
-                if scan_offset:
-                    scan_offset = re.findall(scientific_num_pattern, scan_offset)
-                    template[key] = to_intended_t(scan_offset)
-        if (not scan_offset or not scan_range) and not scanfield:
-            raise KeyError(
-                "Scanfield, scan_range, and scan_offset are not available in raw data file."
-            )
-        conf_unit_key = "unit_of_x_y_coordinate"
-        try:
-            unit_info = data_dict[config_dict[conf_unit_key]]
-        except KeyError as exc:
-            raise KeyError(
-                f"No info found about coordinate unit. check config file by"
-                f"key {conf_unit_key}"
-            ) from exc
-        for sep in [";"]:
-            if scan_offset and scan_range:
-                scanfield_parts = scan_offset + scan_range
-            elif sep in scanfield:
-                # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
-                scanfield_parts = scanfield.split(sep)
+    #         ../ENVIRONMENT[environment]/scan_control/positioner/scanfield"
+    #         The scanfield has four parts starting point of (x, y) co-ordinate
+    #         length on (x, y)-dimenstion and one last unknown values.
+    #     """
+    #     scanfield: str = ""
+    #     scan_range: str = ""
+    #     scan_offset: str = ""
+    #     scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
+    #     for key, val in config_dict.items():
+    #         if (
+    #             "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/"
+    #             "scan_control/positioner/scanfield"
+    #         ) == key:
+    #             if val in data_dict:
+    #                 scanfield = data_dict[val]
+    #         elif (
+    #             "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+    #             "/scan_control/scan_range"
+    #         ) == key:
+    #             scan_range = data_dict.get(val, None)
+    #             if scan_range:
+    #                 scan_range = re.findall(scientific_num_pattern, scan_range)
+    #                 template[key] = to_intended_t(scan_range)
+    #         elif (
+    #             "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]"
+    #             "/scan_control/scan_offset"
+    #         ) == key:
+    #             scan_offset = data_dict.get(val, None)
+    #             if scan_offset:
+    #                 scan_offset = re.findall(scientific_num_pattern, scan_offset)
+    #                 template[key] = to_intended_t(scan_offset)
+    #     if (not scan_offset or not scan_range) and not scanfield:
+    #         raise KeyError(
+    #             "Scanfield, scan_range, and scan_offset are not available in raw data file."
+    #         )
+    #     conf_unit_key = "unit_of_x_y_coordinate"
+    #     try:
+    #         unit_info = data_dict[config_dict[conf_unit_key]]
+    #     except KeyError as exc:
+    #         raise KeyError(
+    #             f"No info found about coordinate unit. check config file by"
+    #             f"key {conf_unit_key}"
+    #         ) from exc
+    #     for sep in [";"]:
+    #         if scan_offset and scan_range:
+    #             scanfield_parts = scan_offset + scan_range
+    #         elif sep in scanfield:
+    #             # parts are offset(X_cor, Y_cor), range(X_len, Y_len) and one unkown value
+    #             scanfield_parts = scanfield.split(sep)
 
-            x_start = to_intended_t(scanfield_parts[0])
-            x_len = to_intended_t(scanfield_parts[2])
-            x_cor = [x_start, x_start + x_len, unit_info]
-            y_start = to_intended_t(scanfield_parts[1])
-            y_len = to_intended_t(scanfield_parts[3])
-            y_cor = [y_start, y_start + y_len, unit_info]
-            return (x_cor, y_cor)
-        return ()
+    #         x_start = to_intended_t(scanfield_parts[0])
+    #         x_len = to_intended_t(scanfield_parts[2])
+    #         x_cor = [x_start, x_start + x_len, unit_info]
+    #         y_start = to_intended_t(scanfield_parts[1])
+    #         y_len = to_intended_t(scanfield_parts[3])
+    #         y_cor = [y_start, y_start + y_len, unit_info]
+    #         return (x_cor, y_cor)
+    #     return ()
 
-    # pylint: disable=too-many-branches
-    def from_sxm_file_into_template(self, template, config_dict, eln_data_dict):
-        """
-        Pass metadata and signals into template. This should be last steps for writting
-        metadata and data into nexus template.
-        """
+    # # pylint: disable=too-many-branches
+    # def from_sxm_file_into_template(self, template, config_dict, eln_data_dict):
+    #     """
+    #     Pass metadata and signals into template. This should be last steps for writting
+    #     metadata and data into nexus template.
+    #     """
 
-        nxdl_key_to_modified_key: dict = {}
-        data_dict = self.__get_nested_metadata_dict_and_signal()
+    #     nxdl_key_to_modified_key: dict = {}
+    #     data_dict = self.__get_nested_metadata_dict_and_signal()
 
-        fill_template_from_eln_data(eln_data_dict, template)
-        self.fill_temp_with_required_metadata(template, data_dict, config_dict)
-        # Fill out template from config file
-        temp_keys = template.keys()
-        for c_key, c_val in config_dict.items():
-            if c_val in ["None", ""] or c_key[0] != "/":
-                continue
-            if c_key in temp_keys:
-                if isinstance(c_val, str):
-                    if c_val in data_dict:
-                        template[c_key] = to_intended_t(data_dict[c_val])
-                # Handling multiple possible raw data according to user's defined name.
-                if isinstance(c_val, list):
-                    for search_key in c_val:
-                        if search_key in data_dict:
-                            template[c_key] = to_intended_t(data_dict[search_key])
-                if isinstance(c_val, dict):
-                    data_group = "/ENTRY[entry]/DATA[data]"
-                    if c_key == data_group:
-                        coor_info = self.get_dimension_info(
-                            config_dict, data_dict, template
-                        )
-                        self.construct_nxdata_for_sxm(
-                            template,
-                            data_dict,
-                            c_val,
-                            coor_info,
-                            data_group,
-                            eln_data_dict,
-                        )
-                    else:
-                        work_out_overwriteable_field(
-                            template, data_dict, c_val, c_key, nxdl_key_to_modified_key
-                        )
-            else:
-                if isinstance(c_val, dict):
-                    work_out_overwriteable_field(
-                        template, data_dict, c_val, c_key, nxdl_key_to_modified_key
-                    )
-                else:
-                    template[c_key] = (
-                        to_intended_t(data_dict[c_val]) if c_val in data_dict else None
-                    )
-        # The following function can be used later it link come true in application def.
-        # link_implementation(template, nxdl_key_to_modified_key)
-        link_seperation_from_hard_code(template, nxdl_key_to_modified_key)
-        self.set_default_values(template)
+    #     fill_template_from_eln_data(eln_data_dict, template)
+    #     self.fill_temp_with_required_metadata(template, data_dict, config_dict)
+    #     # Fill out template from config file
+    #     temp_keys = template.keys()
+    #     for c_key, c_val in config_dict.items():
+    #         if c_val in ["None", ""] or c_key[0] != "/":
+    #             continue
+    #         if c_key in temp_keys:
+    #             if isinstance(c_val, str):
+    #                 if c_val in data_dict:
+    #                     template[c_key] = to_intended_t(data_dict[c_val])
+    #             # Handling multiple possible raw data according to user's defined name.
+    #             if isinstance(c_val, list):
+    #                 for search_key in c_val:
+    #                     if search_key in data_dict:
+    #                         template[c_key] = to_intended_t(data_dict[search_key])
+    #             if isinstance(c_val, dict):
+    #                 data_group = "/ENTRY[entry]/DATA[data]"
+    #                 if c_key == data_group:
+    #                     coor_info = self.get_dimension_info(
+    #                         config_dict, data_dict, template
+    #                     )
+    #                     self.construct_nxdata_for_sxm(
+    #                         template,
+    #                         data_dict,
+    #                         c_val,
+    #                         coor_info,
+    #                         data_group,
+    #                         eln_data_dict,
+    #                     )
+    #                 else:
+    #                     work_out_overwriteable_field(
+    #                         template, data_dict, c_val, c_key, nxdl_key_to_modified_key
+    #                     )
+    #         else:
+    #             if isinstance(c_val, dict):
+    #                 work_out_overwriteable_field(
+    #                     template, data_dict, c_val, c_key, nxdl_key_to_modified_key
+    #                 )
+    #             else:
+    #                 template[c_key] = (
+    #                     to_intended_t(data_dict[c_val]) if c_val in data_dict else None
+    #                 )
+    #     # The following function can be used later it link come true in application def.
+    #     # link_implementation(template, nxdl_key_to_modified_key)
+    #     link_seperation_from_hard_code(template, nxdl_key_to_modified_key)
+    #     self.set_default_values(template)
 
-    @staticmethod
-    def fill_temp_with_required_metadata(template, data_dict, config_dict):
-        """
-        Set required metadata for the STM reader that must be known before
-        filling up template in general. This method works with hard coded concepts.
+    # @staticmethod
+    # def fill_temp_with_required_metadata(template, data_dict, config_dict):
+    #     """
+    #     Set required metadata for the STM reader that must be known before
+    #     filling up template in general. This method works with hard coded concepts.
 
-        Parameters:
-        -----------
-        template : dict
-            A pynxtools template.
-        data_dict : dict
-            A dictionarry mapping data path to data value from raw file.
-        config_dict : dict
-            A dictionary mapping nexus concept path to data path from raw file.
-        """
+    #     Parameters:
+    #     -----------
+    #     template : dict
+    #         A pynxtools template.
+    #     data_dict : dict
+    #         A dictionarry mapping data path to data value from raw file.
+    #     config_dict : dict
+    #         A dictionary mapping nexus concept path to data path from raw file.
+    #     """
 
-        temp_key_to_deflt_val = {
-            "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction": "down"
-        }
+    #     temp_key_to_deflt_val = {
+    #         "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction": "down"
+    #     }
 
-        for key, deflt_val in temp_key_to_deflt_val.items():
-            raw_data_path = config_dict.get(key, None)
-            template[key] = to_intended_t(data_dict.get(raw_data_path, deflt_val))
+    #     for key, deflt_val in temp_key_to_deflt_val.items():
+    #         raw_data_path = config_dict.get(key, None)
+    #         template[key] = to_intended_t(data_dict.get(raw_data_path, deflt_val))
 
-    @staticmethod
-    def flip_scan_data_properly(template, scan_dt_arr, fld_name):
-        """Flip 2d scan data according to the scan direction.
+    # @staticmethod
+    # def flip_scan_data_properly(template, scan_dt_arr, fld_name):
+    #     """Flip 2d scan data according to the scan direction.
 
-        Parameters:
-        -----------
-        template : dict
-            A pynxtools template.
-        scan_array : array
-            A 2d scan data array.
-        file_name : str
-            The name of the data field of NXdata.
+    #     Parameters:
+    #     -----------
+    #     template : dict
+    #         A pynxtools template.
+    #     scan_array : array
+    #         A 2d scan data array.
+    #     file_name : str
+    #         The name of the data field of NXdata.
 
-        Return:
-        -------
-        array
-            A 2d scan data array.
-        """
-        global SCAN_SIDE
-        if not SCAN_SIDE:
-            SCAN_SIDE = template[
-                "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction"
-            ].lower()
-        if SCAN_SIDE in ("down", "bottom"):
-            # Forwaard: Flip array along y-axis (e.g. y[0, :] -> y[n-1, :])
-            # Backward: Flip array along x & y-axis (e.g. x[:, 0] -> x[:, n-1]
-            #                                    and  y[0,:] -> y[n-1, :])
-            if fld_name == "forward":
-                return scan_dt_arr[::-1, :]
-            elif fld_name == "backward":
-                return scan_dt_arr[::-1, ::-1]
-        elif SCAN_SIDE in ("up", "top"):
-            if fld_name == "forward":
-                return scan_dt_arr
-            elif fld_name == "backward":
-                return scan_dt_arr[:, ::-1]
+    #     Return:
+    #     -------
+    #     array
+    #         A 2d scan data array.
+    #     """
+    #     global SCAN_SIDE
+    #     if not SCAN_SIDE:
+    #         SCAN_SIDE = template[
+    #             "/ENTRY[entry]/INSTRUMENT[instrument]/ENVIRONMENT[environment]/scan_control/scan_direction"
+    #         ].lower()
+    #     if SCAN_SIDE in ("down", "bottom"):
+    #         # Forwaard: Flip array along y-axis (e.g. y[0, :] -> y[n-1, :])
+    #         # Backward: Flip array along x & y-axis (e.g. x[:, 0] -> x[:, n-1]
+    #         #                                    and  y[0,:] -> y[n-1, :])
+    #         if fld_name == "forward":
+    #             return scan_dt_arr[::-1, :]
+    #         elif fld_name == "backward":
+    #             return scan_dt_arr[::-1, ::-1]
+    #     elif SCAN_SIDE in ("up", "top"):
+    #         if fld_name == "forward":
+    #             return scan_dt_arr
+    #         elif fld_name == "backward":
+    #             return scan_dt_arr[:, ::-1]
 
-    @staticmethod
-    def set_default_values(template):
-        """Set up some default values from template."""
+    # @staticmethod
+    # def set_default_values(template):
+    #     """Set up some default values from template."""
 
-        # concept key to active or renamed group name.
-        deflts = {
-            "/ENTRY[entry]/@default": "z",
-        }
-        for key, val in deflts.items():
-            if template.get(key, None) is None:
-                template[key] = val
+    #     # concept key to active or renamed group name.
+    #     deflts = {
+    #         "/ENTRY[entry]/@default": "z",
+    #     }
+    #     for key, val in deflts.items():
+    #         if template.get(key, None) is None:
+    #             template[key] = val
 
 
 def get_stm_raw_file_info(raw_file):

@@ -20,7 +20,6 @@ A short description on STS reader which also suitable for file from STM .
 #
 
 import json
-from collections.abc import Callable
 from typing import Dict, Union, Tuple, Any, Optional
 import numpy as np
 import yaml
@@ -30,10 +29,9 @@ from pynxtools.dataconverter.readers.base.reader import BaseReader
 from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
 from pynxtools.dataconverter.template import Template
 from pynxtools import get_nexus_version
-from pynxtools_stm_old.helper import set_default_attr_in_group
+# from pynxtools_stm.helper import set_default_attr_in_group
 
-from src.pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
-from pynxtools_stm_old.sts_file_parser import from_dat_file_into_template
+from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
 
 CONVERT_DICT = {
     "Instrument": "INSTRUMENT[instrument]",
