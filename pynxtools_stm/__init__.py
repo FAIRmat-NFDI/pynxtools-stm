@@ -22,7 +22,7 @@ file with dat extension.
 # limitations under the License.
 #
 
-__version__ = "1.0.5"
+__version__ = "1.0.6"
 from pynxtools_stm.stm_file_parser import get_stm_raw_file_info
 
 # To mvake the functions available in stm module
