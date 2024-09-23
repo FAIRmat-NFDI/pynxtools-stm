@@ -24,7 +24,10 @@ classifiers = [
 dependencies = [
     "findiff",
     "pynxtools>=0.3.3",
+    "pySPM==0.6.2",  # SPM file reader for Bruker files
 ]
+
+# TODO: Add acknowledgements to pySPM python package
 
 [project.urls]
 "GitHub page" = "https://github.com/FAIRmat-NFDI/pynxtools-stm"
