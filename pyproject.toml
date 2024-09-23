@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
-    "pynxtools>=0.3.3",
+    "pynxtools>=0.7.1",
 ]
 
 [project.urls]
@@ -36,6 +36,7 @@ dev = [
     "ruff==0.3.4",
     "pytest",
     "pip-tools",
+    "cffconvert", # To validate a CITATION.cff file 
 ]
 
 docs = [
