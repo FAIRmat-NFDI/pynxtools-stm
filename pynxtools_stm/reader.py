@@ -32,7 +32,7 @@ from pynxtools.dataconverter.template import Template
 from pynxtools import get_nexus_version
 from pynxtools_stm.helper import set_default_attr_in_group
 
-from pynxtools_stm.stm_file_parser import STM_Nanonis
+from src.pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
 from pynxtools_stm.sts_file_parser import from_dat_file_into_template
 
 CONVERT_DICT = {
@@ -76,7 +76,7 @@ class StmNanonisGeneric:
             user provided dict
         """
 
-        STM_Nanonis(file_name=data_file).from_sxm_file_into_template(
+        SXMGenericNanonis(file_name=data_file).from_sxm_file_into_template(
             template, config_dict, eln_dict
         )
 

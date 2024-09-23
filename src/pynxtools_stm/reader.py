@@ -67,10 +67,10 @@ def manually_filter_data_type(template):
 
 
 # pylint: disable=invalid-name, too-few-public-methods
-class STMReader(BaseReader):
+class SPMReader(BaseReader):
     """Reader for XPS."""
 
-    supported_nxdls = ["NXsts"]
+    supported_nxdls = ["NXstm"]
 
     def read(
         self,

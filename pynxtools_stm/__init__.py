@@ -22,7 +22,7 @@ file with dat extension.
 # limitations under the License.
 #
 
-from pynxtools_stm.stm_file_parser import get_stm_raw_file_info
+from src.pynxtools_stm.parsers.nanonis_sxm import get_stm_raw_file_info
 
 # To mvake the functions available in stm module
 # pylint: disable=unused-import
