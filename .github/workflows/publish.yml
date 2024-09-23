@@ -1,12 +1,8 @@
 name: Upload Python Package
 
 on:
-  # release:
-  #   types: [published]
-
-  push:
-    branches:
-      - '**'
+  release:
+    types: [published]
 
 jobs:
   deploy:
@@ -51,10 +47,10 @@ jobs:
             echo "Version mismatch: Git tag version is $GIT_TAG_VERSION, CITATION.cff version is $CITATION_VERSION"
             exit 1
           fi
-      # - name: Build package
-      #   run: python -m build
-      # - name: Publish package
-      #   uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      #   with:
-      #     user: __token__
-      #     password: ${{secrets.PYPI_API_TOKEN}}
+      - name: Build package
+        run: python -m build
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+        with:
+          user: __token__
+          password: ${{secrets.PYPI_API_TOKEN}}
