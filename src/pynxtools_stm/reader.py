@@ -107,16 +107,17 @@ class SPMReader(BaseReader):
         if experirment_type == "stm" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonnis_sxm_stm import NanonisSXMSTM
 
-            NanonisSXMSTM(
+            nss = NanonisSXMSTM(
                 template=template,
                 raw_file=data_file,
                 eln_dict=eln_dict,
                 config_file=config_file,
             )
+            nss.get_nxformatted_template()
+
         # set_default_attr_in_group(template)
 
         # manually_filter_data_type(template)
-        print(" #### : template  ::", template)
         for key, val in template.items():
             if isinstance(val, np.ndarray):
                 filled_template[key] = val

@@ -6,8 +6,8 @@ from pynxtools_stm.configs.nanonis_sxm_generic_stm import _config_stm_generic
 import pynxtools_stm.nxformatters.helpers as fhs
 from pynxtools.dataconverter.template import Template
 from pynxtools_stm.nxformatters.helpers import (
-    __get_data_unit_and_others,
-    __scientific_num_pattern,
+    _get_data_unit_and_others,
+    _scientific_num_pattern,
 )
 
 
@@ -66,12 +66,12 @@ class NanonisSXMSTM(SPMformatter):
         ):
             scan_angle = "scan_offset_N[scan_offset_n]"
 
-            scan_angles, unit, _ = __get_data_unit_and_others(
+            scan_angles, unit, _ = _get_data_unit_and_others(
                 data_dict=data_dict,
                 partial_conf_dict=partial_conf_dict,
                 concept_field=scan_angle,
             )
-            scan_angles = re.findall(__scientific_num_pattern, scan_angles)
+            scan_angles = re.findall(_scientific_num_pattern, scan_angles)
             for ind, ang in enumerate(scan_angles):
                 template[f"{parent_path}/{group_name}/scan_offset_{axes[ind]}"] = ang
                 template[
@@ -80,13 +80,13 @@ class NanonisSXMSTM(SPMformatter):
 
             # scan range
             scan_range = "scan_range_N[scan_range_n]"
-            scan_ranges, unit, _ = __get_data_unit_and_others(
+            scan_ranges, unit, _ = _get_data_unit_and_others(
                 data_dict=data_dict,
                 partial_conf_dict=partial_conf_dict,
                 concept_field=scan_range,
             )
             global gbl_scan_ranges
-            gbl_scan_ranges = re.findall(__scientific_num_pattern, scan_ranges)
+            gbl_scan_ranges = re.findall(_scientific_num_pattern, scan_ranges)
             if gbl_scan_ranges:
                 gbl_scan_ranges = [float(x) for x in gbl_scan_ranges]
 
@@ -108,14 +108,14 @@ class NanonisSXMSTM(SPMformatter):
             # scan_point fields
             scan_point = "scan_points_N[scan_points_n]"
 
-            scan_points, unit, _ = __get_data_unit_and_others(
+            scan_points, unit, _ = _get_data_unit_and_others(
                 data_dict=data_dict,
                 partial_conf_dict=partial_conf_dict,
                 concept_field=scan_point,
             )
             # TODO remove the global variables
             global gbl_scan_points, gbl_scan_ranges
-            gbl_scan_points = re.findall(__scientific_num_pattern, scan_points)
+            gbl_scan_points = re.findall(_scientific_num_pattern, scan_points)
             if gbl_scan_points:
                 gbl_scan_points = [float(x) for x in gbl_scan_points]
             for ind, point in enumerate(gbl_scan_points):
@@ -133,7 +133,7 @@ class NanonisSXMSTM(SPMformatter):
         # find independent_scan_axes
         # independent_axes = "/ENTRY[entry]/experiment_instrument/scan_environment/SCAN_CONTROL[scan_control]/independent_scan_axes"
         independent_axes = "independent_scan_axes"
-        direction, _, _ = __get_data_unit_and_others(
+        direction, _, _ = _get_data_unit_and_others(
             data_dict=data_dict,
             partial_conf_dict=partial_conf_dict,
             concept_field=independent_axes,

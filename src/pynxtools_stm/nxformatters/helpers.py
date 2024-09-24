@@ -12,7 +12,7 @@ ureg = UnitRegistry()
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
 
-__scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
+_scientific_num_pattern = r"[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?"
 
 
 def read_config_file(config_file: str) -> Dict:
@@ -59,7 +59,7 @@ def __verify_unit(
         return None
 
 
-def __get_data_unit_and_others(
+def _get_data_unit_and_others(
     data_dict=None, partial_conf_dict=None, concept_field=None
 ) -> Tuple[str, str, Optional[dict]]:
     """Destructure the raw data, units, and other attrs.
@@ -115,7 +115,7 @@ def __get_data_unit_and_others(
 
     val_dict: dict[str:any] = partial_conf_dict[concept_field]
 
-    raw_data = data_dict.get(val_dict.get("raw_path", None), None)
+    raw_data = data_dict.get(val_dict.get("raw_path", ""), None)
     unit_des = val_dict.get("@units", None)
     try:
         del val_dict["raw_path"]

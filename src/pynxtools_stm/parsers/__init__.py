@@ -85,7 +85,6 @@ class SPMParser:
                     file_ext = str(file.absolute()).rsplit(".", 1)[-1]
                 elif isinstance(file, str) and os.path.exists(file):
                     file_ext = file.rsplit(".", 1)[-1]
-        print(f" ##### File extension: {file_ext}")
         parser: Optional[Callable] = None
         # experiment_t_key: str = "/ENTRY[entry]/experiment_type"
         # experiment_t: str = eln_dict[experiment_t_key]

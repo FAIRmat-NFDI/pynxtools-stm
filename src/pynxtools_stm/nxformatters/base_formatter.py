@@ -69,7 +69,7 @@ class SPMformatter(ABC):
     def _get_conf_dict(self, config_file: str = None): ...
 
     def get_raw_data_dict(self):
-        SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)
+        return SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)
 
     def _arange_axes(self, direction="down"):
         if direction.lower() == "down":
