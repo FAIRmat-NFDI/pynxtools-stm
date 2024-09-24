@@ -66,12 +66,12 @@ class SPMformatter(ABC):
 
     #     return instrument_name, file_ext, vendor, vendor_software_version
     @abstractmethod
-    def __get_conf_dict(self, config_file: str = None): ...
+    def _get_conf_dict(self, config_file: str = None): ...
 
     def get_raw_data_dict(self):
         SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)
 
-    def __arange_axes(self, direction="down"):
+    def _arange_axes(self, direction="down"):
         if direction.lower() == "down":
             return ["-Y", "X"]
         elif direction.lower() == "up":
@@ -82,7 +82,10 @@ class SPMformatter(ABC):
             return ["-X", "Y"]
 
     @abstractmethod
-    def __construct_nxscan_controlers(self):
+    def get_nxformatted_template(self): ...
+
+    @abstractmethod
+    def _construct_nxscan_controlers(self):
         ...
         # TODO: if NXscan_control is implementd please try to construct
         # scan_controller here

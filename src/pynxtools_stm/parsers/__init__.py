@@ -61,7 +61,7 @@ class SPMParser:
 
     def __get_appropriate_parser(
         self,
-        file: Optional[str, Path],
+        file: Union[str, Path],
         eln_dict: Dict = {},
         file_ext: Optional[str] = None,
     ) -> Iterable[Callable]:
@@ -78,14 +78,14 @@ class SPMParser:
             Return callable function that has capability to run the correponding parser.
         """
         if file_ext is None:
-            if file is not None:
+            if file is None:
                 raise ValueError("No file has been provided to parse.")
             else:
                 if isinstance(file, PosixPath) and Path.exists(file):
-                    file_ext = str(file.absolute()).split(".", 1)[-1]
+                    file_ext = str(file.absolute()).rsplit(".", 1)[-1]
                 elif isinstance(file, str) and os.path.exists(file):
-                    file_ext = file.split(".", 1)[-1]
-
+                    file_ext = file.rsplit(".", 1)[-1]
+        print(f" ##### File extension: {file_ext}")
         parser: Optional[Callable] = None
         # experiment_t_key: str = "/ENTRY[entry]/experiment_type"
         # experiment_t: str = eln_dict[experiment_t_key]
@@ -100,7 +100,7 @@ class SPMParser:
         vendor_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
         vendor_n: str = eln_dict.get(vendor_key, None)
         try:
-            vendor_dict: SPMParser.par_nav_t = experiment_dict[vendor_n]  # type: ignore[assignment]
+            vendor_dict: SPMParser.par_nav_t = experiment_dict.get(vendor_n, {})  # type: ignore[assignment]
         except (KeyError, ValueError):
             pass
 
@@ -109,9 +109,9 @@ class SPMParser:
         )
         software_v: str = eln_dict.get(software_v_key, None)
         try:
-            parser_cls: Callable = vendor_dict[software_v]  # type: ignore[assignment]
-            # cls instance
-            parser = parser_cls()
+            parser_cls: Callable = vendor_dict.get(software_v, None)  # type: ignore[assignment]
+            if isinstance(parser_cls, Callable):
+                parser = parser_cls()
         except (ValueError, KeyError):
             pass
 
@@ -133,7 +133,7 @@ class SPMParser:
     ):
         """Get the raw data from the file."""
         parsers: Iterable[callable] = self.__get_appropriate_parser(
-            file=file, eln_dict=eln_dict | {}, file_ext=file_ext
+            file=file, eln_dict=eln_dict or {}, file_ext=file_ext
         )
         raw_data_dict: Optional[Dict[str, Any]] = None
         for parser in parsers:

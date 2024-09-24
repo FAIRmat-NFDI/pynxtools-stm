@@ -2,7 +2,7 @@ from pynxtools_stm.nxformatters.base_formatter import SPMformatter
 from typing import Dict, Optional, Union
 from pathlib import Path
 import re
-from pynxtools_stm.configs.nanonis_sxm_generic_stm import __config_stm_generic
+from pynxtools_stm.configs.nanonis_sxm_generic_stm import _config_stm_generic
 import pynxtools_stm.nxformatters.helpers as fhs
 from pynxtools.dataconverter.template import Template
 from pynxtools_stm.nxformatters.helpers import (
@@ -22,14 +22,14 @@ class NanonisSXMSTM(SPMformatter):
         entry: Optional[str] = None,
     ):
         super().__init__(template, raw_file, eln_dict, config_file, entry)
-        self.config_dict: Dict = self.__get_conf_dict(config_file)
+        self.config_dict: Dict = self._get_conf_dict(config_file)
 
     def get_nxformatted_template(self):
         parent_path = "/ENTRY[entry]/experiment_instrument/scan_environment"
         scan_control_dict = self.config_dict["ENTRY[entry]"]["experiment_instrument"][
             "scan_environment"
         ]["SCAN_CONTROL[scan_control]"]
-        self.construct_scan_control_grp(
+        self._construct_nxscan_controlers(
             template=self.template,
             partial_conf_dict=scan_control_dict,
             parent_path=parent_path,
@@ -37,13 +37,13 @@ class NanonisSXMSTM(SPMformatter):
             group_name="scan_control",
         )
 
-    def __get_conf_dict(self, config_file: str = None):
+    def _get_conf_dict(self, config_file: str = None):
         if config_file is not None:
             return fhs.read_config_file(config_file)
         else:
-            return __config_stm_generic
+            return _config_stm_generic
 
-    def construct_scan_control_grp(
+    def _construct_nxscan_controlers(
         self,
         template,
         partial_conf_dict,
@@ -139,7 +139,7 @@ class NanonisSXMSTM(SPMformatter):
             concept_field=independent_axes,
         )
         template[f"{parent_path}/{group_name}/independent_scan_axes"] = (
-            self.__arange_axes(direction.strip())
+            self._arange_axes(direction.strip())
         )
         scan_region_grp = "scan_region"
         scan_region_dict = partial_conf_dict.get(scan_region_grp, None)

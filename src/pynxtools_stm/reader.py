@@ -116,7 +116,7 @@ class SPMReader(BaseReader):
         # set_default_attr_in_group(template)
 
         # manually_filter_data_type(template)
-
+        print(" #### : template  ::", template)
         for key, val in template.items():
             if isinstance(val, np.ndarray):
                 filled_template[key] = val

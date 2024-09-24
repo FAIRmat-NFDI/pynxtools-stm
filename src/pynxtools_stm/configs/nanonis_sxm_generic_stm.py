@@ -22,7 +22,7 @@ TODO: Add simple description of the module
 # limitations under the License.
 
 # TODO: careate config file and include test with config file and wihout config file
-__config_stm_generic = {
+_config_stm_generic = {
     "ENTRY[entry]": {
         "experiment_instrument": {
             "tip_temperature": "",
