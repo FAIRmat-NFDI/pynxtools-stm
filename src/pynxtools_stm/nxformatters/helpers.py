@@ -3,6 +3,8 @@ from typing import Dict, Optional, Tuple
 from pint import UnitRegistry
 from typing import Optional, Dict, Tuple
 import logging
+from copy import deepcopy
+import numpy as np
 
 import json
 
@@ -50,9 +52,15 @@ def __verify_unit(
         if unit_or_path.starswith("@default:"):
             unit_derived = unit_or_path.split("@default:")[-1]
         else:
-            unit_derived = data_dict.get(unit_or_path, None)
+            unit_derived = (
+                data_dict.get(unit_or_path, None)
+                if isinstance(data_dict, dict)
+                else None
+            )
     try:
-        return str(ureg(unit_derived).units)
+        unit_derived = str(ureg(unit_derived).units)
+        return unit_derived
+        # return "" if unit_derived == "dimensionless" else unit_derived
     except Exception as e:
         # TODO: add nomad logger here
         logger.debug(f"Check the unit for nx concept {concept}.\n" f"Error : {e}")
@@ -60,7 +68,7 @@ def __verify_unit(
 
 
 def _get_data_unit_and_others(
-    data_dict=None, partial_conf_dict=None, concept_field=None
+    data_dict, partial_conf_dict=None, concept_field=None, end_dict=None
 ) -> Tuple[str, str, Optional[dict]]:
     """Destructure the raw data, units, and other attrs.
 
@@ -112,14 +120,20 @@ def _get_data_unit_and_others(
             See the example below.
 
     """
-
-    val_dict: dict[str:any] = partial_conf_dict[concept_field]
-
-    raw_data = data_dict.get(val_dict.get("raw_path", ""), None)
-    unit_des = val_dict.get("@units", None)
+    if end_dict is None:
+        end_dict: dict[str:any] = partial_conf_dict[concept_field]
+    raw_path = end_dict.get("raw_path", "")
+    if raw_path != "":
+        print(" raw_path: ", raw_path)
+    if raw_path.startswith("@default:"):
+        raw_data = raw_path.split("@default:")[-1]
+    else:
+        raw_data = data_dict.get(raw_path)
+    unit_des = end_dict.get("@units", None)
     try:
-        del val_dict["raw_path"]
-        del val_dict["@units"]
+        val_copy = deepcopy(end_dict)
+        del val_copy["raw_path"]
+        del val_copy["@units"]
     except KeyError:
         pass
 
@@ -128,4 +142,79 @@ def _get_data_unit_and_others(
     else:
         unit = data_dict.get(unit_des, None)
     # TODO: write a function that write other attributes in general and use that func where this function is used
-    return raw_data, __verify_unit(unit=unit), val_dict
+    return raw_data, __verify_unit(unit=unit), val_copy
+
+
+# pylint: disable=too-many-return-statements
+def to_intended_t(str_value):
+    """
+        Transform string to the intended data type, if not then return str_value.
+    e.g '2.5E-2' will be transfor into 2.5E-2
+    tested with: '2.4E-23', '28', '45.98', 'test', ['59', '3.00005', '498E-34'], None
+    with result: 2.4e-23, 28, 45.98, test, [5.90000e+01 3.00005e+00 4.98000e-32], None
+
+    Parameters
+    ----------
+    str_value : _type_
+        _description_
+
+    Returns
+    -------
+    Union[str, int, float, np.ndarray]
+        Converted data type
+    """
+    symbol_list_for_data_seperation = [";"]
+    transformed = ""
+    if str_value is None:
+        return str_value
+
+    if isinstance(str_value, list):
+        str_value = list(str_value)
+        try:
+            transformed = np.array(str_value, dtype=np.float64)
+            return transformed
+        except ValueError:
+            pass
+
+    if isinstance(str_value, np.ndarray):
+        return str_value
+
+    if isinstance(str_value, str):
+        if str_value in (
+            "infinitiy",
+            "-infinity",
+            "Infinity",
+            "-Infinity",
+            "INFINITY",
+            "-INFINITY",
+            "inf",
+            "-inf",
+            "Inf",
+            "-Inf",
+            "INF",
+            "-INF",
+            "NaN",
+            "nan",
+        ):
+            return None
+        try:
+            transformed = int(str_value)
+            return transformed
+        except ValueError:
+            try:
+                transformed = float(str_value)
+                return transformed
+            except ValueError:
+                if "[" in str_value and "]" in str_value:
+                    transformed = json.loads(str_value)
+                    return transformed
+
+        for sym in symbol_list_for_data_seperation:
+            if sym in str_value:
+                parts = str_value.split(sym)
+                modified_parts = []
+                for part in parts:
+                    modified_parts.append(to_intended_t(part))
+                return modified_parts
+
+    return str_value

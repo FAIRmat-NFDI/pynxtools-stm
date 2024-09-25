@@ -22,6 +22,7 @@ TODO: Add simple description of the module
 # limitations under the License.
 
 # TODO: careate config file and include test with config file and wihout config file
+
 _config_stm_generic = {
     "ENTRY[entry]": {
         "experiment_instrument": {
@@ -29,7 +30,10 @@ _config_stm_generic = {
             "cryo_temperature": "",
             "cryo_shield_temperature": "",
             "scan_environment": {
-                "stm_head_temp": "/Temperature 1/Temperature 1",
+                "stm_head_temp": {
+                    "raw_path": "/Temperature 1/Temperature 1",
+                    "@units": "@default:K",
+                },
                 "cryo_bottom_temp": "",
                 "cryo_shield_temp": "",
                 "SCAN_CONTROL[scan_control]": {
@@ -38,11 +42,20 @@ _config_stm_generic = {
                         "forward_speed_N[forward_speed_n]": "",
                         "scan_speed_N[scan_speed_n]": "",
                         "channel_NAME_N[scan_name_n]": "",
-                        "scan_points_N[scan_points_n]": {"raw_path": "/SCAN/PIXELS"},
-                        "stepping_N[stepping_n]": {"raw_path": "@default:1"},
+                        "scan_points_N[scan_points_n]": {
+                            "raw_path": "/SCAN/PIXELS",
+                            "@units": "",
+                        },
+                        "stepping_N[stepping_n]": {
+                            "raw_path": "@default:1",
+                            "@units": "",
+                        },
                         "step_size_N[step_size_n]": {"raw_path": "", "@units": ""},
                         "scan_time": "",
-                        "SCAN_DATA[scan_data]": {"raw_path": "/DATA/INFO"},
+                        "SCAN_DATA[scan_data]": {
+                            "raw_path": "/DATA/INFO",
+                            "@units": "",
+                        },
                     },
                     "scan_region": {
                         "scan_angle_N[scan_angle_n]": {
@@ -60,11 +73,14 @@ _config_stm_generic = {
                     },
                     "scan_time_start": "",
                     "scan_time_end": "",
-                    "independent_scan_axes": {"raw_path": "/SCAN/DIR"},
+                    "independent_scan_axes": {"raw_path": "/SCAN/DIR", "@units": ""},
                     "scan_resolution_N": "",
                     "accuracy_N": "",
-                    "scan_type": {"raw_path": "@default:mesh"},
-                    "scan_control_type": {"raw_path": "@default:continuous"},
+                    "scan_type": {"raw_path": "@default:mesh", "@units": ""},
+                    "scan_control_type": {
+                        "raw_path": "@default:continuous",
+                        "@units": "",
+                    },
                 },
                 "SENSOR[sensor]": {
                     "calibration_time": "",
