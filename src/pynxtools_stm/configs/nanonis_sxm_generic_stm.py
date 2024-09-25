@@ -25,7 +25,7 @@ TODO: Add simple description of the module
 
 _config_stm_generic = {
     "ENTRY[entry]": {
-        "experiment_instrument": {
+        "INSTRUMENT[instrument]": {
             "tip_temperature": "",
             "cryo_temperature": "",
             "cryo_shield_temperature": "",

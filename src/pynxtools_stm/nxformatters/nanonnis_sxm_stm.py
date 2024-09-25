@@ -15,6 +15,8 @@ from pynxtools_stm.nxformatters.helpers import (
 import numpy as np
 
 
+# TODO: add test to check if user example config file is the same as given default
+# config file with this package.
 @dataclass
 class NXScanControl:
     x_points = None
@@ -215,24 +217,24 @@ class NanonisSXMSTM(SPMformatter):
             # data field
             f_data = to_intended_t(self.raw_data[raw_key])
             template[f"{parent_path}/{group_name}/{field_nm}"] = f_data
-            template[f"{parent_path}/{group_name}/{field_nm}/@axes"] = axes
+            # template[f"{parent_path}/{group_name}/{field_nm}/@axes"] = axes
             template[f"{parent_path}/{group_name}/{field_nm}/@units"] = plot_data_info[
                 "units"
             ]
-            calibration = to_intended_t(plot_data_info.get("calibration", None))
-            template[f"{parent_path}/{group_name}/{field_nm}/@calibration"] = (
-                calibration
-            )
-            offset = to_intended_t(plot_data_info.get("offset", None))
-            template[f"{parent_path}/{group_name}/{field_nm}/@calibration"] = offset
+            # calibration = to_intended_t(plot_data_info.get("calibration", None))
+            # template[f"{parent_path}/{group_name}/{field_nm}/@calibration"] = (
+            #     calibration
+            # )
+            # offset = to_intended_t(plot_data_info.get("offset", None))
+            # template[f"{parent_path}/{group_name}/{field_nm}/@calibration"] = offset
             # x and y axis
             template[f"{parent_path}/{group_name}/x"] = plot_data_info["x_axis"]
             x_unit = plot_data_info["x_units"]
-            template[f"{parent_path}/{group_name}/x/@unit"] = x_unit
+            template[f"{parent_path}/{group_name}/x/@units"] = x_unit
             template[f"{parent_path}/{group_name}/x/@long_name"] = f"X ({x_unit})"
             template[f"{parent_path}/{group_name}/y"] = plot_data_info["y_axis"]
             y_unit = plot_data_info["y_units"]
-            template[f"{parent_path}/{group_name}/y/@unit"] = y_unit
+            template[f"{parent_path}/{group_name}/y/@units"] = y_unit
             template[f"{parent_path}/{group_name}/y/@long_name"] = f"Y ({y_unit})"
 
         def construct_scan_data_grps(
