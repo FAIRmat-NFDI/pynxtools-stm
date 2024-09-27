@@ -63,12 +63,14 @@ class NanonisSXMSTM(SPMformatter):
             if val is None or val == "":
                 continue
             if key in self._grp_to_func:
-                # First fill the default calues
+                # First fill the default values
                 self.work_though_config_nested_dict(
                     config_dict=val, parent_path=f"{parent_path}/{key}"
                 )
                 method = getattr(self, self._grp_to_func[key])
                 method(val, parent_path, key)
+
+            # end dict of the definition path that has raw_path key
             elif isinstance(val, dict) and "raw_path" in val:
                 data, unit, other_attrs = _get_data_unit_and_others(
                     data_dict=self.raw_data, end_dict=val
@@ -78,6 +80,7 @@ class NanonisSXMSTM(SPMformatter):
                 if other_attrs:
                     for k, v in other_attrs.items():
                         self.template[f"{parent_path}/{key}/@{k}"] = v
+            # variadic fields that would have several values according to the dimentions
             elif isinstance(val, list) and isinstance(val[0], dict):
                 for item in val:
                     part_to_embed, path_dict = (

@@ -22,7 +22,22 @@ TODO: Add simple description of the module
 # limitations under the License.
 
 # TODO: careate config file and include test with config file and wihout config file
-
+# TODO: Try to include functionality to collect NXdata description from config file
+# for example:
+# "/ENTRY[entry]/DATA[data]": {"0": ["/Z/forward",
+#    "/Z/backward"],
+#  "1": ["/Bias/forward",
+#    "/Bias/backward"],
+#  "2": ["/Current/forward",
+#    "/Current/backward"],
+#  "3": ["/LI_Demod_2_X/forward",
+#    "/LI_Demod_2_X/backward"],
+#  "4": ["/LI_Demod_2_Y/forward",
+#    "/LI_Demod_2_Y/backward"],
+#  "5": ["/LI_Demod_1_X/forward",
+#    "/LI_Demod_1_X/backward"],
+#  "6": ["/LI_Demod_1_Y/forward",
+#    "/LI_Demod_1_Y/backward"]},
 _config_stm_generic = {
     "ENTRY[entry]": {
         # '@defaut': 'name of one of the plots,  TODO
@@ -111,8 +126,61 @@ _config_stm_generic = {
                 },
             },
             "LOCKIN[lockin]": {
-                "modulation_frequency": "",
-                "modulation_signal_type": "",
+                "modulation_frequency": {
+                    "raw_path": "/Lock-in/Frequency",
+                    "@units": "@default:Hz",
+                },
+                "modulation_signal_type": {
+                    "raw_path": "/Lock-in/Modulated signal",
+                    "@units": "/Lock-in/Modulated signal/@unit",
+                },
+                "demodulated_signal": {
+                    "raw_path": "/Lock-in/Demodulated signal",
+                    "@units": "/Lock-in/Demodulated signal/@unit",
+                },
+                "modulation_status": {"raw_path": "/Lock-in/Lock-in status"},
+                "demodulated_frequency": "",
+                "demodulated_amplitude": "",
+                "demodulator_channels": "",
+                "recorded_channels": "",
+                "low_pass_N": [
+                    {
+                        "d1": {
+                            "raw_path": "/Lock-in/LP Filter Cutoff D1",
+                            "@units": "/Lock-in/LP Filter Cutoff D1/@unit",
+                        }
+                    },
+                    {
+                        "d2": {
+                            "raw_path": "/Lock-in/LP Filter Cutoff D2",
+                            "@units": "/Lock-in/LP Filter Cutoff D2/@unit",
+                        }
+                    },
+                ],
+                "lp_filter_order_N": [
+                    {
+                        "d1": {"raw_path": "/Lock-in/LP Filter Order D1"},
+                        "d2": {"raw_path": "/Lock-in/LP Filter Order D2"},
+                    }
+                ],
+                "hi_pass_N": [
+                    {
+                        "d1": {
+                            "raw_path": "/Lock-in/HP Filter Cutoff D1",
+                            "@units": "/Lock-in/HP Filter Cutoff D1/@unit",
+                        }
+                    },
+                    {
+                        "d2": {
+                            "raw_path": "/Lock-in/HP Filter Cutoff D2",
+                            "@units": "/Lock-in/HP Filter Cutoff D2/@unit",
+                        }
+                    },
+                ],
+                "hp_filter_order_N": [
+                    {"d1": {"raw_path": "/Lock-in/HP Filter Order D1"}},
+                    {"d2": {"raw_path": "/Lock-in/HP Filter Order D2"}},
+                ],
                 "ref_phase_N[ref_phase_n]": [
                     {
                         "d1": {
@@ -150,13 +218,122 @@ _config_stm_generic = {
             },
             "piazo_sensor": {
                 "PIEZO_CONFIG_SPM[piezo_config_spm]": {
-                    "2nd_order_corr_N[2nd_order_corr_n]": "",
-                    "calibration_coeffecient_N[calibration_coeffecient_n]": "",
-                    "calibration_type": "",
-                    "drift_N[drift_n]": "",
-                    "drift_correction_status": "",
-                    "hv_gain_N[hv_gain_n]": "",
-                    "tilt_N[tilt_n]": "",
+                    "2nd_order_corr_N[2nd_order_corr_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Configuration/2nd order corr X",
+                                "@units": "/Piezo Configuration/2nd order corr X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Configuration/2nd order corr Y",
+                                "@units": "/Piezo Configuration/2nd order corr Y/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Configuration/2nd order corr Z",
+                                "@units": "/Piezo Configuration/2nd order corr Z/@unit",
+                            }
+                        },
+                    ],
+                    "calibration_coeffecient_N[calibration_coeffecient_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Configuration/Calib. X",
+                                "@units": "/Piezo Configuration/Calib. X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Configuration/Calib. Y",
+                                "@units": "/Piezo Configuration/Calib. Y/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Configuration/Calib. Z",
+                                "@units": "/Piezo Configuration/Calib. Z/@unit",
+                            },
+                        },
+                    ],
+                    "calibration_type": {
+                        "raw_path": "/Piezo Configuration/Active Calib.",
+                    },  # TODO handle it in different function
+                    "calibration_name": {
+                        "raw_path": "/Piezo Configuration/Active Calib."
+                    },
+                    "drift_N[drift_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Configuration/Drift X",
+                                "@units": "/Piezo Configuration/Drift X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Configuration/Drift Y",
+                                "@units": "/Piezo Configuration/Drift Y/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Configuration/Drift Z",
+                                "@units": "/Piezo Configuration/Drift Z/@unit",
+                            }
+                        },
+                    ],
+                    "drift_correction_status": {
+                        "raw_path": "/Piezo Configuration/Drift correction status"
+                    },
+                    "hv_gain_N[hv_gain_n]": [
+                        {"X": {"raw_path": "/Piezo Configuration/HV Gain X"}},
+                        {"Y": {"raw_path": "/Piezo Configuration/HV Gain Y"}},
+                        {"Z": {"raw_path": "/Piezo Configuration/HV Gain Z"}},
+                    ],
+                    "tilt_N[tilt_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Configuration/Tilt X",
+                                "@units": "/Piezo Configuration/Tilt X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Configuration/Tilt Y",
+                                "@units": "/Piezo Configuration/Tilt X/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Configuration/Tilt Z",
+                                "@units": "/Piezo Configuration/Tilt X/@unit",
+                            }
+                        },
+                    ],
+                    "piezo_material": {
+                        "curvature_radius_N": [
+                            {
+                                "x": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius X",
+                                    "@units": "/Piezo Configuration/Curvature radius X/@unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius Y",
+                                    "@units": "/Piezo Configuration/Curvature radius Y/@unit",
+                                }
+                            },
+                            {
+                                "z": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius Z",
+                                    "@units": "/Piezo Configuration/Curvature radius Z/@unit",
+                                }
+                            },
+                        ]
+                    },
                 },
                 "POSITIONER_SPM[positioner_spm]": {
                     "z_controller": {
