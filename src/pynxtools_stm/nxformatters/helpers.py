@@ -5,7 +5,7 @@ from typing import Optional, Dict, Tuple
 import logging
 from copy import deepcopy
 import numpy as np
-
+import re
 import json
 
 ureg = UnitRegistry()
@@ -120,8 +120,14 @@ def _get_data_unit_and_others(
             See the example below.
 
     """
+
     if end_dict is None:
         end_dict: dict[str:any] = partial_conf_dict[concept_field]
+
+    # Skip the non-general data
+    if "@note" in end_dict:
+        return None, None, {}
+
     raw_path = end_dict.get("raw_path", "")
     if raw_path != "":
         print(" raw_path: ", raw_path)
@@ -218,3 +224,60 @@ def to_intended_t(str_value):
                 return modified_parts
 
     return str_value
+
+
+def get_link_compatible_key(key):
+    """A unction to convert the key to compatible hdf5 link."""
+    # TODO use regrex pattern to match the key
+    # # DO not know why this pattern does not work
+    # pattern = r"\[([^\]]+)\]"
+    # Convert the key to compatible key for template
+    compatible_key = key.replace("NX", "")
+    key_parts = compatible_key.split("/")
+    new_parts = []
+    for part in key_parts:
+        ind_f = part.find("[")
+        ind_e = part.find("]")
+        if ind_f > 0 and ind_e > 0:
+            new_parts.append(part[ind_f + 1 : ind_e])
+
+    compatible_key = "/" + "/".join(new_parts)
+    print("  #### compatible_key: ", compatible_key)
+    return compatible_key
+
+
+def replace_variadic_name_part(name, part_to_embed):
+    """Replace the variadic part of the name with the part_to_embed.
+    e.g. name = "scan_angle_N_X[scan_angle_n_x]", part_to_embed = "xy"
+    then the output will be "scan_angle_xy"
+
+    # TODO: write test for this function with the following test_dict
+    and try to replace this with regex pattern
+    test_dict = {('yy_NM[yy_nm]', 'x'): 'yy_NM[yy_x]',
+                 ('yy_M_N[yy_m_n]', 'x') : 'yy_M_N[yy_x]',
+                 ('Myy[myy]', 'x') : 'Myy[xyy]',
+                 ('y_M_yy[y_m_yy]', 'x') : 'y_M_yy[y_x_yy]',
+                 ('y_M_N_yy[y_x_yy]', 'x') : 'y_M_N_yy[y_x_yy]',}
+    """
+    f_part, _ = name.split("[") if "[" in name else (name, "")
+    ind_start = None
+    ind_end = None
+    for ind, chr in enumerate(f_part):
+        if chr.isupper():
+            if ind_start is None:
+                ind_start = ind
+        if ind_start is not None and chr.islower():
+            ind_end = ind
+            break
+    if ind_end is None and ind_start is not None:
+        f_part_mod = f_part.replace(f_part[ind_start:], part_to_embed)
+        return "[".join([f_part, f_part_mod]) + "]"
+    elif ind_end is not None and ind_start is not None:
+        replacement_p = f_part[ind_start:ind_end]
+        # if replacement_p end with '_'
+        if replacement_p.endwith("_"):
+            replacement_p = replacement_p[:-1]
+        f_part_mod = f_part.replace(replacement_p, part_to_embed)
+        return "[".join([f_part, f_part_mod]) + "]"
+    else:
+        return name

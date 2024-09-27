@@ -25,6 +25,7 @@ TODO: Add simple description of the module
 
 _config_stm_generic = {
     "ENTRY[entry]": {
+        # '@defaut': 'name of one of the plots,  TODO
         "INSTRUMENT[instrument]": {
             "tip_temperature": "",
             "cryo_temperature": "",
@@ -112,6 +113,24 @@ _config_stm_generic = {
             "LOCKIN[lockin]": {
                 "modulation_frequency": "",
                 "modulation_signal_type": "",
+                "ref_phase_N[ref_phase_n]": [
+                    {
+                        "d1": {
+                            "raw_path": "/Lock-in/Reference phase D1",
+                            "@units": "/Lock-in/Reference phase D1/@unit",
+                        }
+                    },
+                    {
+                        "d2": {
+                            "raw_path": "/Lock-in/Reference phase D2",
+                            "@units": "/Lock-in/Reference phase D1/@unit",
+                        }
+                    },
+                ],
+                "harmonic_order_N[harmonic_order_n]": [
+                    {"d1": {"raw_path": "/Lock-in/Harmonic D1"}},
+                    {"d2": {"raw_path": "/Lock-in/Harmonic D2"}},
+                ],
             },
             "bias_spectroscopy_environment": {
                 "SENSOR[sensor]": {
@@ -141,16 +160,36 @@ _config_stm_generic = {
                 },
                 "POSITIONER_SPM[positioner_spm]": {
                     "z_controller": {
-                        "controller_name": "",
-                        "controller_status": "",
-                        "i_gain": "",
-                        "p_gain": "",
-                        "set_point": "",
+                        "K_i_value[k_i_value]": {"raw_path": "/Z-Controller/P gain"},
+                        "K_p_value[k_p_value]": {"raw_path": "/Z-Controller/I gain"},
+                        "setpoint": {
+                            "raw_path": "/Z-Controller/Setpoint",
+                            "@units": "/Z-Controller/Setpoint unit",
+                        },
                         "switch_off_delay": "",
-                        "time_const": "",
-                        "tip_lift": "",
-                        "z": "",
-                    }
+                        "K_t_const[k_t_const]": {
+                            "raw_path": "/Z-Controller/Time const",
+                            "@units": "/Z-Controller/Time const/@unit",
+                        },
+                        "tip_lift": {
+                            "raw_path": "/Z-Controller/TipLift",
+                            "@units": "/Z-Controller/TipLift/@unit",
+                        },  # TODO: add to under stm[spm] definition
+                        "z": {
+                            "raw_path": "/Z-Controller/Z",
+                            "@units": "/Z-Controller/Z/@unit",
+                        },  # TODO:add to uder stm[spm] definition
+                    },
+                    "z_offset": "",
+                    "tip_position_z": "",
+                    "controller_name": {"raw_path": "/Z-Controller/Controller name"},
+                    "controller_status": {
+                        "raw_path": "/Z-Controller/Controller status"
+                    },  # TODO: add to under stm[spm] definition
+                    "switch_off_delay": {
+                        "raw_path": "/Z-Controller/Switch off delay",
+                        "@units": "/Z-Controller/Switch off delay/@unit",
+                    },
                 },
                 "x": "",
                 "y": "",

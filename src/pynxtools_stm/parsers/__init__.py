@@ -24,8 +24,12 @@ TODO: Add simple description of the module
 from typing import Dict, Union, Callable, Optional, Iterable, Any
 from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
 import pynxtools_stm.parsers.helpers as phs
+import logging
 from pathlib import Path, PosixPath
 import os
+
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s - %(message)s")
 
 
 class SPMParser:
@@ -165,6 +169,20 @@ def get_nanonis_sxm_parsed_data(file_path: str):
     # nanonis_sxm = SXMGenericNanonis(file_path)
     # return nanonis_sxm.get_parsed_data()
     return SPMParser().get_raw_data_dict(file_path)
+
+
+def write_stm_raw_file_info(raw_file):
+    """Parse the raw_file into a organised dictionary. It helps users as well as developers
+    to understand how the reader works and modify the config file."""
+
+    base_name = os.path.basename(raw_file)
+    raw_name = base_name.rsplit(".")[0]
+    data_dict = get_nanonis_sxm_parsed_data(raw_file)
+    temp_file = f"{raw_name}.txt"
+    with open(temp_file, mode="w", encoding="utf-8") as txt_f:
+        for key, val in data_dict.items():
+            txt_f.write(f"{key} : {val}\n")
+    logging.info(" %s has been created to investigate raw data structure.", temp_file)
 
 
 def get_nanonis_dat_parsed_data(file_path: str):
