@@ -30,7 +30,7 @@ class NXScanControl:
 
 
 class NanonisSXMSTM(SPMformatter):
-    _grp_to_func = {"SCAN_CONTROL[scan_control]": "_construct_nxscan_controlers"}
+    _grp_to_func = {"SCAN_CONTROL[scan_control]": "_construct_nxscan_controllers"}
     _axes = ["x", "y", "z"]
 
     def __init__(
@@ -349,7 +349,7 @@ class NanonisSXMSTM(SPMformatter):
                 group_name=group_name,
             )
 
-    def _construct_nxscan_controlers(
+    def _construct_nxscan_controllers(
         self,
         partial_conf_dict,
         parent_path: str,

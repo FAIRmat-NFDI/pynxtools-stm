@@ -21,6 +21,8 @@ TODO: Add simple description of the module
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO for tuture Find what is rt frequency for NanonisMain software add it to the appropiate group and base class
+
 # TODO: careate config file and include test with config file and wihout config file
 # TODO: Try to include functionality to collect NXdata description from config file
 # for example:
@@ -41,6 +43,7 @@ TODO: Add simple description of the module
 _config_stm_generic = {
     "ENTRY[entry]": {
         # '@defaut': 'name of one of the plots,  TODO
+        # TODO: RENAME INSTRUMENT GROUP TO EXPERIMENT_INSTRUMENT IN APPDEF
         "INSTRUMENT[instrument]": {
             "tip_temperature": "",
             "cryo_temperature": "",
@@ -52,12 +55,25 @@ _config_stm_generic = {
                 },
                 "cryo_bottom_temp": "",
                 "cryo_shield_temp": "",
+                # TODO: Include it NXspm def
+                "scan_name": {"raw_path": "/Scan/series name"},
                 "SCAN_CONTROL[scan_control]": {
                     "mesh_SCAN[mesh_scan]": {
-                        "backward_speed_N[backward_speed_n]": "",
-                        "forward_speed_N[forward_speed_n]": "",
+                        # TODO: For to replace n in backward_speed_N use fast axis
+                        "backward_speed_N[backward_speed_n]": {
+                            "raw_path": "/Scan/speed backw.",
+                            "@units": "/Scan/speed backw./@unit",
+                        },  # TODO: For to replace n in forward_speed_N use fast axis
+                        "forward_speed_N[forward_speed_n]": {
+                            "raw_path": "/Scan/speed forw.",
+                            "@units": "/Scan/speed forw./@unit",
+                        },
                         "scan_speed_N[scan_speed_n]": "",
                         "channel_NAME_N[scan_name_n]": "",
+                        # TODO: Take care of this field inside the construct_scan_conttrollers function
+                        # for 'down' scan_points along the X-axis is the line numder and
+                        # number of pixels per line along the Y-axis, Do it for up, left, right
+                        # Use raw_path "/Scan/lines" and "/Scan/pixels/lines"
                         "scan_points_N[scan_points_n]": {
                             "raw_path": "/SCAN/PIXELS",
                             "@units": "",
@@ -124,6 +140,24 @@ _config_stm_generic = {
                     "value": "",
                     "value_timestamp": "",
                 },
+            },
+            "current_sensor": {
+                "current": {
+                    "raw_path": "/Current/Current",
+                    "@units": "/Current/Current/@unit",
+                },
+                "current_offset": {
+                    "raw_path": "/Current/Offset",
+                    "@units": "/Current/Offset/@unit",
+                },
+                "current_calibration": {
+                    "coefficients": {
+                        "raw_path": "/Current/Calibration",
+                        "@units": "/Current/Calibration/@unit",
+                    },
+                    "caliberation_time": "",
+                },
+                "AMPLIFIER[amplifier]": {"current_gain": {"raw_path": "/Current/Gain"}},
             },
             "LOCKIN[lockin]": {
                 "modulation_frequency": {
@@ -201,251 +235,347 @@ _config_stm_generic = {
                 ],
             },
             "bias_spectroscopy_environment": {
-                "SENSOR[sensor]": {
-                    "calibration_time": "",
-                    "run_control": "",
-                    "value": "",
-                    "value_timestamp": "",
-                },
-                "independent_controllers": "",
-                "measurement_sensors": "",
-            },
-            "current_sensor": {
-                "AMPLIFIER[amplifier]": {"current_gain": ""},
-                "current": "",
-                "current_calibration": {"caliberation_time": "", "coefficients": ""},
-                "current_offset": "",
-            },
-            "piazo_sensor": {
-                "PIEZO_CONFIG_SPM[piezo_config_spm]": {
-                    "2nd_order_corr_N[2nd_order_corr_n]": [
-                        {
-                            "X": {
-                                "raw_path": "/Piezo Configuration/2nd order corr X",
-                                "@units": "/Piezo Configuration/2nd order corr X/@unit",
-                            }
-                        },
-                        {
-                            "Y": {
-                                "raw_path": "/Piezo Configuration/2nd order corr Y",
-                                "@units": "/Piezo Configuration/2nd order corr Y/@unit",
-                            }
-                        },
-                        {
-                            "Z": {
-                                "raw_path": "/Piezo Configuration/2nd order corr Z",
-                                "@units": "/Piezo Configuration/2nd order corr Z/@unit",
-                            }
-                        },
-                    ],
-                    "calibration_coeffecient_N[calibration_coeffecient_n]": [
-                        {
-                            "X": {
-                                "raw_path": "/Piezo Configuration/Calib. X",
-                                "@units": "/Piezo Configuration/Calib. X/@unit",
-                            }
-                        },
-                        {
-                            "Y": {
-                                "raw_path": "/Piezo Configuration/Calib. Y",
-                                "@units": "/Piezo Configuration/Calib. Y/@unit",
-                            }
-                        },
-                        {
-                            "Z": {
-                                "raw_path": "/Piezo Configuration/Calib. Z",
-                                "@units": "/Piezo Configuration/Calib. Z/@unit",
+                # TODO: Add docs to include the bias_spectroscopy group
+                "BIAS_SPECTROSCOPY[bias_spectroscopy]": {
+                    "measurement_type": "",
+                    "POSITIONER_SPM[positioner_spm]": {  # Add this complete group in NXstm
+                        "z_controller": {
+                            "z_average_time": {
+                                "raw_path": "/Bias Spectroscopy/Z Avg time",  #
+                                "@units": "/Bias Spectroscopy/Z Avg time/@unit",
+                            },
+                            "z_controller_time": {
+                                "raw_path": "/Bias Spectroscopy/Z control time",
+                                "@units": "/Bias Spectroscopy/Z control time/@unit",
+                            },
+                            "z_ccontroller_hold": {
+                                "raw_path": "/Bias Spectroscopy/Z-controller hold",
+                            },
+                            "record_final_z": {
+                                "raw_path": "/Bias Spectroscopy/Record final Z",
                             },
                         },
-                    ],
-                    "calibration_type": {
-                        "raw_path": "/Piezo Configuration/Active Calib.",
-                    },  # TODO handle it in different function
-                    "calibration_name": {
-                        "raw_path": "/Piezo Configuration/Active Calib."
+                        "z_offset": {  # TODO: remove this field from NXstm but comes under bias_spectroscopy
+                            "raw_path": "/Bias Spectroscopy/Z offset",
+                            "@units": "/Bias Spectroscopy/Z offset/@unit",
+                        },
                     },
-                    "drift_N[drift_n]": [
-                        {
-                            "X": {
-                                "raw_path": "/Piezo Configuration/Drift X",
-                                "@units": "/Piezo Configuration/Drift X/@unit",
-                            }
+                    # TODO: Remove the bais_sweep definition, insteas use bias_sweep(NXScan_control) in NXstm, and in other
+                    # app def probably NXafm
+                    "bias_sweep": {
+                        "scan_type": "",
+                        "settling_time": {
+                            "raw_path": "/Bias Spectroscopy/Settling time",
+                            "@units": "/Bias Spectroscopy/Settling time/@unit",
                         },
-                        {
-                            "Y": {
-                                "raw_path": "/Piezo Configuration/Drift Y",
-                                "@units": "/Piezo Configuration/Drift Y/@unit",
-                            }
+                        "first_settling_time": {
+                            "raw_path": "/Bias Spectroscopy/1st Settling time",
+                            "@units": "/Bias Spectroscopy/1st Settling time/@unit",
                         },
-                        {
-                            "Z": {
-                                "raw_path": "/Piezo Configuration/Drift Z",
-                                "@units": "/Piezo Configuration/Drift Z/@unit",
-                            }
+                        "end_settling_time": {
+                            "raw_path": "/Bias Spectroscopy/End Settling time",
+                            "@units": "/Bias Spectroscopy/End Settling time/@unit",
                         },
-                    ],
-                    "drift_correction_status": {
-                        "raw_path": "/Piezo Configuration/Drift correction status"
-                    },
-                    "hv_gain_N[hv_gain_n]": [
-                        {"X": {"raw_path": "/Piezo Configuration/HV Gain X"}},
-                        {"Y": {"raw_path": "/Piezo Configuration/HV Gain Y"}},
-                        {"Z": {"raw_path": "/Piezo Configuration/HV Gain Z"}},
-                    ],
-                    "tilt_N[tilt_n]": [
-                        {
-                            "X": {
-                                "raw_path": "/Piezo Configuration/Tilt X",
-                                "@units": "/Piezo Configuration/Tilt X/@unit",
-                            }
+                        "max_slew_rate": {
+                            "raw_path": "/Bias Spectroscopy/Max Slew rate",
+                            "@units": "/Bias Spectroscopy/Max Slew rate/@unit",
                         },
-                        {
-                            "Y": {
-                                "raw_path": "/Piezo Configuration/Tilt Y",
-                                "@units": "/Piezo Configuration/Tilt X/@unit",
-                            }
+                        "final_z": "",
+                        "total_spectroscopy_time": "",
+                        "sweep_number": {
+                            "raw_path": "/Bias Spectroscopy/Number of sweeps"
+                        },  # TODO: Add it to NXbias_spectroscopy
+                        "backward_sweep": {
+                            "raw_path": "/Bias Spectroscopy/backward sweep"
+                        },  # TODO: Add it to NXbias_spectroscopy
+                        "scan_region": {
+                            "scan_range": "",
+                            "scan_offset": "",
+                            "scan_angle_N[scan_angle_n]": "",
                         },
-                        {
-                            "Z": {
-                                "raw_path": "/Piezo Configuration/Tilt Z",
-                                "@units": "/Piezo Configuration/Tilt X/@unit",
-                            }
-                        },
-                    ],
-                    "piezo_material": {
-                        "curvature_radius_N": [
+                        "scan_start_N[scan_start_n]": [
                             {
-                                "x": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius X",
-                                    "@units": "/Piezo Configuration/Curvature radius X/@unit",
+                                "bias": {
+                                    "raw_path": "/Bias Spectroscopy/Sweep Start",
+                                    "@units": "/Bias Spectroscopy/Sweep Start/@unit",
+                                }
+                            }
+                        ],
+                        "scan_end_N[scan_end_n]": [
+                            {
+                                "bias": {
+                                    "raw_path": "/Bias Spectroscopy/Sweep End",
+                                    "@units": "/Bias Spectroscopy/Sweep End/@unit",
                                 }
                             },
-                            {
-                                "y": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius Y",
-                                    "@units": "/Piezo Configuration/Curvature radius Y/@unit",
+                        ],
+                        "mesh_SCAN[mesh_scan]": {
+                            "scan_speed": "",
+                            "scan_time": "",
+                            "forward_speed_N[forward_speed_n]": "",
+                            "backward_speed_N[backward_speed_n]": "",
+                            "SCAN_DATA[scan_data]": "",
+                            "scam_points_N[scan_points_n]": [
+                                {
+                                    "bias": {
+                                        "raw_path": "/Bias Spectroscopy/Num Pixel",
+                                    },
                                 }
-                            },
-                            {
-                                "z": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius Z",
-                                    "@units": "/Piezo Configuration/Curvature radius Z/@unit",
-                                }
-                            },
-                        ]
-                    },
-                },
-                "POSITIONER_SPM[positioner_spm]": {
-                    "z_controller": {
-                        "K_i_value[k_i_value]": {"raw_path": "/Z-Controller/P gain"},
-                        "K_p_value[k_p_value]": {"raw_path": "/Z-Controller/I gain"},
-                        "setpoint": {
-                            "raw_path": "/Z-Controller/Setpoint",
-                            "@units": "/Z-Controller/Setpoint unit",
+                            ],
                         },
-                        "switch_off_delay": "",
-                        "K_t_const[k_t_const]": {
-                            "raw_path": "/Z-Controller/Time const",
-                            "@units": "/Z-Controller/Time const/@unit",
-                        },
-                        "tip_lift": {
-                            "raw_path": "/Z-Controller/TipLift",
-                            "@units": "/Z-Controller/TipLift/@unit",
-                        },  # TODO: add to under stm[spm] definition
-                        "z": {
-                            "raw_path": "/Z-Controller/Z",
-                            "@units": "/Z-Controller/Z/@unit",
-                        },  # TODO:add to uder stm[spm] definition
                     },
-                    "z_offset": "",
-                    "tip_position_z": "",
-                    "controller_name": {"raw_path": "/Z-Controller/Controller name"},
-                    "controller_status": {
-                        "raw_path": "/Z-Controller/Controller status"
-                    },  # TODO: add to under stm[spm] definition
-                    "switch_off_delay": {
-                        "raw_path": "/Z-Controller/Switch off delay",
-                        "@units": "/Z-Controller/Switch off delay/@unit",
-                    },
-                },
-                "x": "",
-                "y": "",
-                "z": "",
-            },
-        },
-        "PROCESS[process]": {"program": ""},
-        "SAMPLE[sample]": {"name": ""},
-        "USER[user]": {
-            "address": "",
-            "affiliation": "",
-            "email": "",
-            "name": "",
-            "orcid": "",
-            "telephone_number": "",
-        },
-        "collection_identifier": "",
-        "definition": "",
-        "end_time": "",
-        "entry_identifier": "",
-        "experiment_description": "",
-        "experiment_identifier": "",
-        "experiment_insturment": {
-            "scan_environment": {
-                "SENSOR[sensor]": {
-                    "calibration_time": "",
-                    "run_control": "",
-                    "value": "",
-                    "value_timestamp": "",
+                    "CIRCUIT[circuit]": "",
                 },
                 "current_sensor": {
-                    "calibration_time": "",
-                    "run_control": "",
-                    "value": "",
-                    "value_timestamp": "",
+                    "AMPLIFIER[amplifier]": {"current_gain": ""},
+                    "current": "",
+                    "current_calibration": {
+                        "caliberation_time": "",
+                        "coefficients": "",
+                    },
+                    "current_offset": "",
                 },
-                "independent_controllers": "",
-                "measurement_sensors": "",
                 "piazo_sensor": {
-                    "calibration_time": "",
-                    "run_control": "",
-                    "value": "",
-                    "value_timestamp": "",
-                },
-                "volatage_sensor": {
-                    "calibration_time": "",
-                    "run_control": "",
-                    "value": "",
-                    "value_timestamp": "",
+                    "PIEZO_CONFIG_SPM[piezo_config_spm]": {
+                        "2nd_order_corr_N[2nd_order_corr_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Configuration/2nd order corr X",
+                                    "@units": "/Piezo Configuration/2nd order corr X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Configuration/2nd order corr Y",
+                                    "@units": "/Piezo Configuration/2nd order corr Y/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Configuration/2nd order corr Z",
+                                    "@units": "/Piezo Configuration/2nd order corr Z/@unit",
+                                }
+                            },
+                        ],
+                        "calibration_coeffecient_N[calibration_coeffecient_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Configuration/Calib. X",
+                                    "@units": "/Piezo Configuration/Calib. X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Configuration/Calib. Y",
+                                    "@units": "/Piezo Configuration/Calib. Y/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Configuration/Calib. Z",
+                                    "@units": "/Piezo Configuration/Calib. Z/@unit",
+                                },
+                            },
+                        ],
+                        "calibration_type": {
+                            "raw_path": "/Piezo Configuration/Active Calib.",
+                        },  # TODO handle it in different function
+                        "calibration_name": {
+                            "raw_path": "/Piezo Configuration/Active Calib."
+                        },
+                        "drift_N[drift_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Configuration/Drift X",
+                                    "@units": "/Piezo Configuration/Drift X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Configuration/Drift Y",
+                                    "@units": "/Piezo Configuration/Drift Y/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Configuration/Drift Z",
+                                    "@units": "/Piezo Configuration/Drift Z/@unit",
+                                }
+                            },
+                        ],
+                        "drift_correction_status": {
+                            "raw_path": "/Piezo Configuration/Drift correction status"
+                            # TODO: Replace the above path with the following paths and include the functionality
+                            # in _get_data_unit_and_others function
+                            #  ["/Piezo Configuration/Drift correction status",
+                            #   "/Piezo Calibration/Drift correction status"],
+                        },
+                        "hv_gain_N[hv_gain_n]": [
+                            {"X": {"raw_path": "/Piezo Configuration/HV Gain X"}},
+                            {"Y": {"raw_path": "/Piezo Configuration/HV Gain Y"}},
+                            {"Z": {"raw_path": "/Piezo Configuration/HV Gain Z"}},
+                        ],
+                        "tilt_N[tilt_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Configuration/Tilt X",
+                                    "@units": "/Piezo Configuration/Tilt X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Configuration/Tilt Y",
+                                    "@units": "/Piezo Configuration/Tilt X/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Configuration/Tilt Z",
+                                    "@units": "/Piezo Configuration/Tilt X/@unit",
+                                }
+                            },
+                        ],
+                        "piezo_material": {
+                            "curvature_radius_N": [
+                                {
+                                    "x": {
+                                        "raw_path": "/Piezo Configuration/Curvature radius X",
+                                        "@units": "/Piezo Configuration/Curvature radius X/@unit",
+                                    }
+                                },
+                                {
+                                    "y": {
+                                        "raw_path": "/Piezo Configuration/Curvature radius Y",
+                                        "@units": "/Piezo Configuration/Curvature radius Y/@unit",
+                                    }
+                                },
+                                {
+                                    "z": {
+                                        "raw_path": "/Piezo Configuration/Curvature radius Z",
+                                        "@units": "/Piezo Configuration/Curvature radius Z/@unit",
+                                    }
+                                },
+                            ]
+                        },
+                    },
+                    "POSITIONER_SPM[positioner_spm]": {
+                        "z_controller": {
+                            "K_i_value[k_i_value]": {
+                                "raw_path": "/Z-Controller/P gain"
+                            },
+                            "K_p_value[k_p_value]": {
+                                "raw_path": "/Z-Controller/I gain"
+                            },
+                            "setpoint": {
+                                "raw_path": "/Z-Controller/Setpoint",
+                                "@units": "/Z-Controller/Setpoint unit",
+                            },
+                            "switch_off_delay": "",
+                            "K_t_const[k_t_const]": {
+                                "raw_path": "/Z-Controller/Time const",
+                                "@units": "/Z-Controller/Time const/@unit",
+                            },
+                            "tip_lift": {
+                                "raw_path": "/Z-Controller/TipLift",
+                                "@units": "/Z-Controller/TipLift/@unit",
+                            },  # TODO: add to under stm[spm] definition
+                            "z": {
+                                "raw_path": "/Z-Controller/Z",
+                                "@units": "/Z-Controller/Z/@unit",
+                            },  # TODO:add to uder stm[spm] definition
+                        },
+                        "z_offset": "",
+                        "tip_position_z": "",
+                        "controller_name": {
+                            "raw_path": "/Z-Controller/Controller name"
+                        },
+                        "controller_status": {
+                            "raw_path": "/Z-Controller/Controller status"
+                        },  # TODO: add to under stm[spm] definition
+                        "switch_off_delay": {
+                            "raw_path": "/Z-Controller/Switch off delay",
+                            "@units": "/Z-Controller/Switch off delay/@unit",
+                        },
+                    },
+                    "x": "",
+                    "y": "",
+                    "z": "",
                 },
             },
-            "TEMPERATURE[temperature]": {
-                "CHANNEL_temp[channel_temp]": "",
-                "temperature": "",
-                "temperature_calibration": {
-                    "caliberation_time": "",
-                    "coefficients": "",
+            "real_time_controller": {
+                "rcs_frequency": {
+                    "raw_path": "/NanonisMain/RT Frequency",
+                    "@units": "/NanonisMain/RT Frequency/@unit",
+                },
+                # TODO: Add rcs_model, acquisition_time, animation_time, measurement_time, indicators_period
+                # to NXspm under the real_time_controller group
+                "rcs_model": {
+                    "raw_path": "/NanonisMain/RT Release",
+                },
+                "acquisition_time": {
+                    "raw_path": "/NanonisMain/Acquisition Period",
+                    "@units": "/NanonisMain/Acquisition Period/@unit",
+                },
+                "animation_time": {
+                    "raw_path": "/NanonisMain/Animations Period",
+                    "@units": "/NanonisMain/Animations Period/@unit",
+                },
+                "measurement_time": {
+                    "raw_path": "/NanonisMain/Measurements Period",
+                    "@units": "/NanonisMain/Measurements Period/@unit",
+                },
+                # TODO: Check where the Bias Spectroscopy/Itegration time should be stored
+                # I suspect it should be stored under bias_swep group
+                #  {"raw_path": "/Bias Spectroscopy/Integration time",
+                #   "@units": "/Bias Spectroscopy/Integration time/@unit",},
+                "indicators_period": {
+                    "raw_path": "/NanonisMain/Indicators Period",
+                    "@units": "/NanonisMain/Indicators Period/@unit",
                 },
             },
-            "hardware": {"model": "", "vendor": ""},
-            "sample_bias_votage": {
-                "bias_calibration": {"caliberation_time": "", "coefficients": ""},
-                "bias_offset": "",
-                "bias_voltage": "",
+            "sample_bias_votage": {"bias_voltage":{"raw_path": "/Bias/Bias",
+                                                   "@units": "/Bias/Bias/@unit",},
+                                   "bias_offset":{"raw_path": "/Bias/Offset",
+                                                  "@units": "/Bias/Offset/@unit",},
+                                   "bias_calibration": {
+                                       "coefficients": {"raw_path": "/Bias/Calibration",
+                                                        "@units": "/Bias/Calibration/@unit",},
+                                       "calibration_time": "",
+                                   },
+            "PROCESS[process]": {"program": ""},
+            "SAMPLE[sample]": {"name": ""},
+            "USER[user]": {
+                "address": "",
+                "affiliation": "",
+                "email": "",
+                "name": "",
+                "orcid": "",
+                "telephone_number": "",
             },
-            "software": {"model": "", "vendor": ""},
-        },
-        "reproducibility_indicators": {
-            "current": "",
-            "current_gain": "",
-            "current_offset": "",
-            "modulation_frequency": "",
-            "modulation_signal_type": "",
-        },
-        "resolution_indicators": {
-            "modulation_frequency": "",
-            "modulation_signal_type": "",
+            "collection_identifier": "",
+            "definition": "",
+            "end_time": "",
+            "entry_identifier": "",
+            "experiment_description": "",
+            "experiment_identifier": "",
+            "reproducibility_indicators": {
+                "current": "",
+                "current_gain": "",
+                "current_offset": "",
+                "modulation_frequency": "",
+                "modulation_signal_type": "",
+            },
+            "resolution_indicators": {
+                "modulation_frequency": "",
+                "modulation_signal_type": "",
+            },
+            "start_time": "",
         },
         "scan_mode": "",
-        "start_time": "",
+        "scan_type": "",
+        # TODO: ADD experiment_identifier, in NXspm app def
+        "experiment_identifier": "", # TODO: use NXidentifier
+        "experiment_description": "",
+        # TODO: Check if axes unit comes from "/Z-Controller/Z/@unit" in Scan_controller 
     }
 }
