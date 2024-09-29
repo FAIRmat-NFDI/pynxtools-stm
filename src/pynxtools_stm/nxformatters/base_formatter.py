@@ -85,7 +85,7 @@ class SPMformatter(ABC):
     def get_nxformatted_template(self): ...
 
     @abstractmethod
-    def _construct_nxscan_controlers(self):
+    def _construct_nxscan_controllers(self):
         ...
         # TODO: if NXscan_control is implementd please try to construct
         # scan_controller here
