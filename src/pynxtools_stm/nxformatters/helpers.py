@@ -124,18 +124,24 @@ def _get_data_unit_and_others(
     if end_dict is None:
         end_dict: dict[str:any] = partial_conf_dict[concept_field]
 
-    # Skip the non-general data
-    if "@note" in end_dict:
-        return None, None, {}
+    # # Skip the non-general data
+    # if "#note" in end_dict:
+    #     return None, None, {}
 
     raw_path = end_dict.get("raw_path", "")
-    if raw_path != "":
-        print(" raw_path: ", raw_path)
-    if raw_path.startswith("@default:"):
+
+    # if raw_path have multiple possibel path to the raw data
+    if isinstance(raw_path, list):
+        for path in raw_path:
+            raw_data = data_dict.get(path, "")
+            if raw_data != "":
+                break
+    elif raw_path.startswith("@default:"):
         raw_data = raw_path.split("@default:")[-1]
     else:
         raw_data = data_dict.get(raw_path)
     unit_des = end_dict.get("@units", None)
+
     try:
         val_copy = deepcopy(end_dict)
         del val_copy["raw_path"]

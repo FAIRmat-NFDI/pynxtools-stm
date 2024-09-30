@@ -24,7 +24,7 @@ A default configuration file for Nanonis STM data from SXM file.
 # TODO for tuture Find what is rt frequency for NanonisMain software add it to the appropiate group and base class
 
 # TODO: careate config file and include test with config file and wihout config file
-# TODO: Try to include functionality to collect NXdata description from config file
+# TODO:Future develoüpment Try to include functionality to collect NXdata description from config file
 # for example:
 # "/ENTRY[entry]/DATA[data]": {"0": ["/Z/forward",
 #    "/Z/backward"],
@@ -60,21 +60,19 @@ _config_stm_generic = {
                 "SCAN_CONTROL[scan_control]": {
                     "mesh_SCAN[mesh_scan]": {
                         "backward_speed_N[backward_speed_n]": {
-                            "#note": "Derived from raw data and independent_scan_axes filed.",
+                            "#note": "Derived in construct_scan_pattern_grp",
                             "raw_path": "/Scan/speed backw.",
                             "@units": "/Scan/speed backw./@unit",
                         },
                         "forward_speed_N[forward_speed_n]": {
+                            "#note": "Derived in construct_scan_pattern_grp",
                             "raw_path": "/Scan/speed forw.",
                             "@units": "/Scan/speed forw./@unit",
                         },
                         "scan_speed_N[scan_speed_n]": "",
                         "channel_NAME_N[scan_name_n]": "",
                         "scan_points_N[scan_points_n]": {
-                            "#note": (
-                                "Set the scan points from something like '/SCANS/PIXELS'"
-                                "which is a list two numbers along X and Y axis."
-                            ),
+                            "#note": "Derived in construct_scan_pattern_grp",
                             "raw_path": "/SCAN/PIXELS",
                             "@units": "",
                         },
@@ -95,12 +93,14 @@ _config_stm_generic = {
                             "@units": "@default:deg",
                         },
                         "scan_offset_N[scan_offset_n]": {
+                            "#note": "Derived in function 'construct_scan_region_grp'.",
                             "raw_path": "/SCAN/OFFSET",
-                            "@units": "",
+                            "@units": "/Z-Controller/Z/@unit",
                         },
                         "scan_range_N[scan_range_n]": {
+                            "#note": "Derived in function 'construct_scan_region_grp'.",
                             "raw_path": "/SCAN/RANGE",
-                            "@units": "",
+                            "@units": "/Z-Controller/Z/@unit",
                         },
                     },
                     "scan_time_start": "",
@@ -300,7 +300,6 @@ _config_stm_generic = {
                             "scan_time": "",
                             "forward_speed_bias": "",
                             "backward_speed_bias": "",
-                            "SCAN_DATA[scan_data]": "",
                             "scan_points_bias": {
                                 "raw_path": "/Bias Spectroscopy/Num Pixel",
                             },
@@ -309,6 +308,7 @@ _config_stm_generic = {
                             "backward_weep": {
                                 "raw_path": "/Bias Spectroscopy/backward sweep"
                             },
+                            "SCAN_DATA[scan_data]": "",
                         },
                     },
                     "CIRCUIT[circuit]": "",
@@ -365,9 +365,8 @@ _config_stm_generic = {
                             },
                         },
                     ],
-                    # TODO handle it in different function
                     "calibration_type": {
-                        "raw_path": "/Piezo Configuration/Active Calib.",
+                        "raw_path": "@default:active",
                     },
                     "calibration_name": {
                         "raw_path": "/Piezo Configuration/Active Calib."
@@ -393,11 +392,10 @@ _config_stm_generic = {
                         },
                     ],
                     "drift_correction_status": {
-                        "raw_path": "/Piezo Configuration/Drift correction status"
-                        # TODO: Replace the above path with the following paths and include the functionality
-                        # in _get_data_unit_and_others function
-                        #  ["/Piezo Configuration/Drift correction status",
-                        #   "/Piezo Calibration/Drift correction status"],
+                        "raw_path": [
+                            "/Piezo Configuration/Drift correction status",
+                            "/Piezo Calibration/Drift correction status",
+                        ]
                     },
                     "hv_gain_N[hv_gain_n]": [
                         {"X": {"raw_path": "/Piezo Configuration/HV Gain X"}},
@@ -463,11 +461,11 @@ _config_stm_generic = {
                         "tip_lift": {
                             "raw_path": "/Z-Controller/TipLift",
                             "@units": "/Z-Controller/TipLift/@unit",
-                        },  # TODO: add to under stm[spm] definition
+                        },
                         "z": {
                             "raw_path": "/Z-Controller/Z",
                             "@units": "/Z-Controller/Z/@unit",
-                        },  # TODO:add to uder stm[spm] definition
+                        },
                     },
                     "z_offset": "",
                     "tip_position_z": "",
@@ -563,9 +561,7 @@ _config_stm_generic = {
         },
         "scan_mode": "",
         "scan_type": "",
-        # TODO: ADD experiment_identifier, in NXspm app def
-        "experiment_identifier": "",  # TODO: use NXidentifier
+        "experiment_identifier": "",
         "experiment_description": {"raw_path": "/COMMENT"},
-        # TODO: Check if axes unit comes from "/Z-Controller/Z/@unit" in Scan_controller
     }
 }
