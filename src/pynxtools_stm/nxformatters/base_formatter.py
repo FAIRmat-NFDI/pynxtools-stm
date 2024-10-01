@@ -42,12 +42,6 @@ class NXdata:
     title: Optional[str] = None
 
 
-# # Delte the NXscan_control class is not needed
-# @dataclass
-# class NXscan_control:
-#     # TODO construct is later
-
-
 class SPMformatter(ABC):
     # Map function to deal specific group. Map key should be the same as it is
     # in config file
