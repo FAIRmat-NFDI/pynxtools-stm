@@ -4,7 +4,7 @@ from pathlib import Path
 import itertools
 from dataclasses import dataclass
 import re
-from pynxtools_stm.configs.nanonis_sxm_generic_stm import _config_stm_generic
+from pynxtools_stm.configs.nanonis_sxm_generic_stm import _nanonis_stm_sxm_generic_5e
 import pynxtools_stm.nxformatters.helpers as fhs
 from pynxtools.dataconverter.template import Template
 from pynxtools_stm.nxformatters.helpers import (
@@ -17,34 +17,15 @@ from pynxtools_stm.nxformatters.helpers import (
 import numpy as np
 
 
-# TODO: Future Dev: Try to read ScanData(NXdata) from config.json file
-# So that If any different scan data comes along with file.
 # TODO: add test to check if user example config file is the same as given default
 # config file with this package.
-# TODO: Add the NXScanControl class to the base_formatter.py
-# Under BaseFormatter class
-# TODO: Check why NXdata plot does not work
+# TODO: Check why link to NXdata does not work
 # # Create links for NXdata in entry level
 # entry = parent_path.split("/")[1]
 # print("##### NXdata]", f"/{entry}/DATA[{field_nm}]")
 # self.template[f"/{entry}/{field_nm}"] = {
 #     "link": get_link_compatible_key(f"{parent_path}/{group_name}")
 # }
-@dataclass
-class NXScanControl:  # TODO: Rename this class NXimageScanControl and create another class for BiasSpectroscopy
-    # Put the class in the base_formatter.py under BaseFormatter class
-    x_points = None
-    y_points = None
-    x_start = None
-    x_start_unit = None
-    y_start = None
-    y_start_unit = None
-    x_end = None
-    x_end_unit = None
-    y_end = None
-    y_end_unit = None
-    fast_axis = None  # lower case x, y
-    slow_axis = None  # lower case x, y
 
 
 class NanonisSXMSTM(SPMformatter):
@@ -63,89 +44,16 @@ class NanonisSXMSTM(SPMformatter):
         entry: Optional[str] = None,
     ):
         super().__init__(template, raw_file, eln_dict, config_file, entry)
-        self.config_dict: Dict = self._get_conf_dict(config_file)
-
-    def rearrange_data_according_to_axes(self, data):
-        """Rearrange array data according to the fast and slow axes.
-
-        Parameters
-        ----------
-        data : np.ndarray
-            Two dimensional array data from scan.
-        """
-        if NXScanControl.fast_axis == "x":
-            if NXScanControl.slow_axis == "y":
-                return data
-            elif NXScanControl.slow_axis == "-y":
-                return np.flipud(data)
-        elif NXScanControl.fast_axis == "-x":
-            if NXScanControl.slow_axis == "y":
-                return np.fliplr(data)
-            elif NXScanControl.slow_axis == "-y":
-                np.flip(data)
+        # self.config_dict: Dict = self._get_conf_dict(config_file)
 
     def get_nxformatted_template(self):
-        # parent_path = "/ENTRY[entry]/experiment_instrument/scan_environment"
-        # scan_control_dict = self.config_dict["ENTRY[entry]"]["experiment_instrument"][
-        #     "scan_environment"
-        # ]["SCAN_CONTROL[scan_control]"]
-        # self._construct_nxscan_controlers(
-        #     template=self.template,
-        #     partial_conf_dict=scan_control_dict,
-        #     parent_path=parent_path,
-        #     group_name="scan_control",
-        # )
         self.work_though_config_nested_dict(self.config_dict, "")
-
-    def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
-        for key, val in config_dict.items():
-            if val is None or val == "":
-                continue
-            if key in self._grp_to_func:
-                # First fill the default values
-                self.work_though_config_nested_dict(
-                    config_dict=val, parent_path=f"{parent_path}/{key}"
-                )
-                method = getattr(self, self._grp_to_func[key])
-                method(val, parent_path, key)
-
-            # end dict of the definition path that has raw_path key
-            elif isinstance(val, dict) and "raw_path" in val:
-                if "#note" in val:
-                    continue
-                data, unit, other_attrs = _get_data_unit_and_others(
-                    data_dict=self.raw_data, end_dict=val
-                )
-                self.template[f"{parent_path}/{key}"] = to_intended_t(data)
-                self.template[f"{parent_path}/{key}/@units"] = unit
-                if other_attrs:
-                    for k, v in other_attrs.items():
-                        self.template[f"{parent_path}/{key}/@{k}"] = v
-            # variadic fields that would have several values according to the dimentions
-            elif isinstance(val, list) and isinstance(val[0], dict):
-                for item in val:
-                    part_to_embed, path_dict = (
-                        item.popitem()
-                    )  # Current only one item is valid
-                    if "#note" in path_dict:
-                        continue
-                    data, unit, other_attrs = _get_data_unit_and_others(
-                        data_dict=self.raw_data, end_dict=path_dict
-                    )
-                    temp_key = f"{parent_path}/{replace_variadic_name_part(key, part_to_embed=part_to_embed)}"
-                    self.template[temp_key] = to_intended_t(data)
-                    self.template[f"{temp_key}/@units"] = unit
-                    if other_attrs:
-                        for k, v in other_attrs.items():
-                            self.template[f"{temp_key}/@{k}"] = v
-            else:
-                self.work_though_config_nested_dict(val, f"{parent_path}/{key}")
 
     def _get_conf_dict(self, config_file: str = None):
         if config_file is not None:
             return fhs.read_config_file(config_file)
         else:
-            return _config_stm_generic
+            return _nanonis_stm_sxm_generic_5e
 
     def construct_scan_pattern_grp(
         self,
@@ -163,10 +71,10 @@ class NanonisSXMSTM(SPMformatter):
             concept_field=forward_speed_k,
         )
         self.template[
-            f"{parent_path}/{group_name}/forward_speed_N[forward_speed_{NXScanControl.fast_axis}]"
+            f"{parent_path}/{group_name}/forward_speed_N[forward_speed_{self.NXScanControl.fast_axis}]"
         ] = to_intended_t(forward_speed)
         self.template[
-            f"{parent_path}/{group_name}/forward_speed_N[forward_speed_{NXScanControl.fast_axis}]/@units"
+            f"{parent_path}/{group_name}/forward_speed_N[forward_speed_{self.NXScanControl.fast_axis}]/@units"
         ] = unit
         backward_speed_k = "backward_speed_N[backward_speed_n]"
         backward_speed, unit, _ = _get_data_unit_and_others(
@@ -175,10 +83,10 @@ class NanonisSXMSTM(SPMformatter):
             concept_field=backward_speed_k,
         )
         self.template[
-            f"{parent_path}/{group_name}/backward_speed_N[backward_speed_{NXScanControl.fast_axis}]"
+            f"{parent_path}/{group_name}/backward_speed_N[backward_speed_{self.NXScanControl.fast_axis}]"
         ] = to_intended_t(backward_speed)
         self.template[
-            f"{parent_path}/{group_name}/backward_speed_N[backward_speed_{NXScanControl.fast_axis}]/@units"
+            f"{parent_path}/{group_name}/backward_speed_N[backward_speed_{self.NXScanControl.fast_axis}]/@units"
         ] = unit
 
         # scan_point fields
@@ -189,8 +97,6 @@ class NanonisSXMSTM(SPMformatter):
             partial_conf_dict=partial_conf_dict,  # dict that contains concept field
             concept_field=scan_point,
         )
-        # TODO remove the global variables
-        global gbl_scan_points, gbl_scan_ranges
         gbl_scan_points = re.findall(_scientific_num_pattern, scan_points)
         if gbl_scan_points:
             gbl_scan_points = [float(x) for x in gbl_scan_points]
@@ -199,9 +105,9 @@ class NanonisSXMSTM(SPMformatter):
                 f"{parent_path}/{group_name}/scan_points_N[scan_points_{self._axes[ind]}]"
             ] = point
             if self._axes[ind] == "x":
-                NXScanControl.x_points = point
+                self.NXScanControl.x_points = point
             elif self._axes[ind] == "y":
-                NXScanControl.y_points = point
+                self.NXScanControl.y_points = point
         # step_size
         if len(gbl_scan_points) == len(gbl_scan_ranges):
             for ind, (rng, pnt) in enumerate(zip(gbl_scan_ranges, gbl_scan_points)):
@@ -236,11 +142,11 @@ class NanonisSXMSTM(SPMformatter):
             self.template[off_key] = offset
             self.template[f"{off_key}/@units"] = unit
             if self._axes[ind] == "x":
-                NXScanControl.x_start = offset
-                NXScanControl.x_start_unit = unit
+                self.NXScanControl.x_start = offset
+                self.NXScanControl.x_start_unit = unit
             elif self._axes[ind] == "y":
-                NXScanControl.y_start = offset
-                NXScanControl.y_start_unit = unit
+                self.NXScanControl.y_start = offset
+                self.NXScanControl.y_start_unit = unit
             self.template[
                 f"{parent_path}/{group_name}/scan_offset__N[scan_offset_{self._axes[ind]}]/@units"
             ] = unit
@@ -264,12 +170,12 @@ class NanonisSXMSTM(SPMformatter):
             self.template[rng_key] = rng
             self.template[f"{rng_key}/@units"] = unit
 
-            if self._axes[ind] == "x" and NXScanControl.x_start is not None:
-                NXScanControl.x_end = rng + NXScanControl.x_start
-                NXScanControl.x_end_unit = unit
-            elif self._axes[ind] == "y" and NXScanControl.y_start is not None:
-                NXScanControl.y_end = rng + NXScanControl.y_start
-                NXScanControl.y_end_unit = unit
+            if self._axes[ind] == "x" and self.NXScanControl.x_start is not None:
+                self.NXScanControl.x_end = rng + self.NXScanControl.x_start
+                self.NXScanControl.x_end_unit = unit
+            elif self._axes[ind] == "y" and self.NXScanControl.y_start is not None:
+                self.NXScanControl.y_end = rng + self.NXScanControl.y_start
+                self.NXScanControl.y_end_unit = unit
 
             self.template[
                 f"{parent_path}/{group_name}/scan_range__N[scan_range_{self._axes[ind]}]/@units"
@@ -298,7 +204,7 @@ class NanonisSXMSTM(SPMformatter):
             calibration
         )
         offset = to_intended_t(plot_data_info.get("offset", None))
-        self.template[f"{parent_path}/{group_name}/{field_nm}/@calibration"] = offset
+        self.template[f"{parent_path}/{group_name}/{field_nm}/@offset"] = offset
         # x and y axis
         self.template[f"{parent_path}/{group_name}/x"] = plot_data_info["x_axis"]
         x_unit = plot_data_info["x_units"]
@@ -352,15 +258,15 @@ class NanonisSXMSTM(SPMformatter):
                                 "calibration": row[4],
                                 "offset": row[5],
                                 "x_axis": np.linspace(
-                                    NXScanControl.x_start,
-                                    NXScanControl.x_end,
-                                    int(NXScanControl.x_points),
+                                    self.NXScanControl.x_start,
+                                    self.NXScanControl.x_end,
+                                    int(self.NXScanControl.x_points),
                                 ),
                                 "x_units": row[2],
                                 "y_axis": np.linspace(
-                                    NXScanControl.y_start,
-                                    NXScanControl.y_end,
-                                    int(NXScanControl.y_points),
+                                    self.NXScanControl.y_start,
+                                    self.NXScanControl.y_end,
+                                    int(self.NXScanControl.y_points),
                                 ),
                                 "y_units": row[2],
                             },
@@ -370,15 +276,15 @@ class NanonisSXMSTM(SPMformatter):
                                 "calibration": row[4],
                                 "offset": row[5],
                                 "x_axis": np.linspace(
-                                    NXScanControl.x_start,
-                                    NXScanControl.x_end,
-                                    int(NXScanControl.x_points),
+                                    self.NXScanControl.x_start,
+                                    self.NXScanControl.x_end,
+                                    int(self.NXScanControl.x_points),
                                 ),
                                 "x_units": row[2],
                                 "y_axis": np.linspace(
-                                    NXScanControl.y_start,
-                                    NXScanControl.y_end,
-                                    int(NXScanControl.y_points),
+                                    self.NXScanControl.y_start,
+                                    self.NXScanControl.y_end,
+                                    int(self.NXScanControl.y_points),
                                 ),
                                 "y_units": row[2],
                             },
@@ -393,15 +299,15 @@ class NanonisSXMSTM(SPMformatter):
                             "calibration": row[4],
                             "offset": row[5],
                             "x_axis": np.linspace(
-                                NXScanControl.x_start,
-                                NXScanControl.x_end,
-                                int(NXScanControl.x_points),
+                                self.NXScanControl.x_start,
+                                self.NXScanControl.x_end,
+                                int(self.NXScanControl.x_points),
                             ),
                             "x_units": row[2],
                             "y_axis": np.linspace(
-                                NXScanControl.y_start,
-                                NXScanControl.y_end,
-                                int(NXScanControl.y_points),
+                                self.NXScanControl.y_start,
+                                self.NXScanControl.y_end,
+                                int(self.NXScanControl.y_points),
                             ),
                             "y_units": row[2],
                         }
@@ -419,12 +325,6 @@ class NanonisSXMSTM(SPMformatter):
         parent_path: str,
         group_name="scan_control",
     ):
-        # Rethink about the global variables
-        global gbl_scan_points, gbl_scan_ranges
-
-        # gbl_scan_ranges = None
-        # gbl_scan_points = None
-
         # find independent_scan_axes
         # independent_axes = "/ENTRY[entry]/experiment_instrument/scan_environment/SCAN_CONTROL[scan_control]/independent_scan_axes"
         independent_axes = "independent_scan_axes"
@@ -434,13 +334,6 @@ class NanonisSXMSTM(SPMformatter):
             concept_field=independent_axes,
         )
         direction = self._arange_axes(direction.strip())
-        # Axis could be 'X', '-X', 'Y', '-Y'
-        NXScanControl.fast_axis = (
-            direction[0][-1].lower() if len(direction) > 0 else None
-        )
-        NXScanControl.slow_axis = (
-            direction[1][-1].lower() if len(direction) > 1 else None
-        )
         self.template[f"{parent_path}/{group_name}/independent_scan_axes"] = str(
             direction
         )

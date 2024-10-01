@@ -26,6 +26,12 @@ from pathlib import Path
 from dataclasses import dataclass
 from pynxtools_stm.parsers import SPMParser
 from pynxtools.dataconverter.template import Template
+from pynxtools_stm.nxformatters.helpers import (
+    _get_data_unit_and_others,
+    to_intended_t,
+    replace_variadic_name_part,
+)
+import numpy as np
 
 
 @dataclass
@@ -43,6 +49,31 @@ class NXdata:
 
 
 class SPMformatter(ABC):
+    # Map function to deal specific group. Map key should be the same as it is
+    # in config file
+    _grp_to_func = {}  # Placeholder
+    _axes = []  # Placeholder
+
+    # Class used to colleted data from several subgroups of ScanControl and reuse them
+    # in the subgroups
+    @dataclass
+    class NXScanControl:  # TODO: Rename this class NXimageScanControl and create another class for BiasSpectroscopy
+        # Put the class in the base_formatter.py under BaseFormatter class
+        x_points = None
+        y_points = None
+        x_start = None
+        x_start_unit = None
+        y_start = None
+        y_start_unit = None
+        x_range = None
+        y_range = None
+        x_end = None
+        x_end_unit = None
+        y_end = None
+        y_end_unit = None
+        fast_axis = None  # lower case x, y
+        slow_axis = None  # lower case x, y
+
     def __init__(
         self,
         template: Template,
@@ -57,6 +88,7 @@ class SPMformatter(ABC):
         self.eln: Dict = eln_dict
         self.raw_data: Dict = self.get_raw_data_dict()
         self.entry: str = entry
+        self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
 
     # def __anylize_raw_file(self):
     #     instrument_name: Optional[str] = None
@@ -68,24 +100,113 @@ class SPMformatter(ABC):
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
 
+    def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
+        for key, val in config_dict.items():
+            if val is None or val == "":
+                continue
+            if key in self._grp_to_func:
+                # First fill the default values
+                self.work_though_config_nested_dict(
+                    config_dict=val, parent_path=f"{parent_path}/{key}"
+                )
+                method = getattr(self, self._grp_to_func[key])
+                method(val, parent_path, key)
+
+            # end dict of the definition path that has raw_path key
+            elif isinstance(val, dict) and "raw_path" in val:
+                if "#note" in val:
+                    continue
+                data, unit, other_attrs = _get_data_unit_and_others(
+                    data_dict=self.raw_data, end_dict=val
+                )
+                self.template[f"{parent_path}/{key}"] = to_intended_t(data)
+                self.template[f"{parent_path}/{key}/@units"] = unit
+                if other_attrs:
+                    for k, v in other_attrs.items():
+                        self.template[f"{parent_path}/{key}/@{k}"] = v
+            # variadic fields that would have several values according to the dimentions
+            elif isinstance(val, list) and isinstance(val[0], dict):
+                for item in val:
+                    part_to_embed, path_dict = (
+                        item.popitem()
+                    )  # Current only one item is valid
+                    if "#note" in path_dict:
+                        continue
+                    data, unit, other_attrs = _get_data_unit_and_others(
+                        data_dict=self.raw_data, end_dict=path_dict
+                    )
+                    temp_key = f"{parent_path}/{replace_variadic_name_part(key, part_to_embed=part_to_embed)}"
+                    self.template[temp_key] = to_intended_t(data)
+                    self.template[f"{temp_key}/@units"] = unit
+                    if other_attrs:
+                        for k, v in other_attrs.items():
+                            self.template[f"{temp_key}/@{k}"] = v
+            else:
+                self.work_though_config_nested_dict(val, f"{parent_path}/{key}")
+
+    def rearrange_data_according_to_axes(self, data):
+        """Rearrange array data according to the fast and slow axes.
+
+        Parameters
+        ----------
+        data : np.ndarray
+            Two dimensional array data from scan.
+        """
+        if self.NXScanControl.fast_axis == "x":
+            if self.NXScanControl.slow_axis == "-y":
+                return np.flipud(data)
+            return data
+        elif self.NXScanControl.fast_axis == "-x":
+            if self.NXScanControl.slow_axis == "y":
+                return np.fliplr(data)
+            elif self.NXScanControl.slow_axis == "-y":
+                np.flip(data)
+        elif self.NXScanControl.fast_axis == "-y":
+            if self.NXScanControl.slow_axis == "x":
+                return np.flipud(data)
+            elif self.NXScanControl.slow_axis == "-x":
+                return np.flip(data)
+        elif self.NXScanControl.fast_axis == "y":
+            if self.NXScanControl.slow_axis == "-x":
+                return np.fliplr(data)
+            return data
+
     def get_raw_data_dict(self):
         return SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)
 
     def _arange_axes(self, direction="down"):
+        fast_slow = None
         if direction.lower() == "down":
-            return ["-Y", "X"]
+            fast_slow = ["-Y", "X"]
+            self.NXScanControl.fast_axis = fast_slow[0].lower()
+            self.NXScanControl.slow_axis = fast_slow[1].lower()
         elif direction.lower() == "up":
-            return ["Y", "X"]
+            fast_slow = ["Y", "X"]
+            self.NXScanControl.fast_axis = fast_slow[0].lower()
+            self.NXScanControl.slow_axis = fast_slow[1].lower()
         elif direction.lower() == "right":
-            return ["X", "Y"]
+            fast_slow = ["X", "Y"]
+            self.NXScanControl.fast_axis = fast_slow[0].lower()
+            self.NXScanControl.slow_axis = fast_slow[1].lower()
         elif direction.lower() == "left":
-            return ["-X", "Y"]
+            fast_slow = ["-X", "Y"]
+            self.NXScanControl.fast_axis = fast_slow[0].lower()
+            self.NXScanControl.slow_axis = fast_slow[1].lower()
+
+        return fast_slow
 
     @abstractmethod
     def get_nxformatted_template(self): ...
 
     @abstractmethod
-    def _construct_nxscan_controllers(self):
+    def _construct_nxscan_controllers(
+        self,
+        partial_conf_dict,
+        parent_path: str,
+        group_name: str,
+        *arg,
+        **kwarg,
+    ):
         ...
         # TODO: if NXscan_control is implementd please try to construct
         # scan_controller here

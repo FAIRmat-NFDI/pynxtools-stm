@@ -21,26 +21,7 @@ A default configuration file for Nanonis STM data from SXM file.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# TODO for tuture Find what is rt frequency for NanonisMain software add it to the appropiate group and base class
-
-# TODO: careate config file and include test with config file and wihout config file
-# TODO:Future develoüpment Try to include functionality to collect NXdata description from config file
-# for example:
-# "/ENTRY[entry]/DATA[data]": {"0": ["/Z/forward",
-#    "/Z/backward"],
-#  "1": ["/Bias/forward",
-#    "/Bias/backward"],
-#  "2": ["/Current/forward",
-#    "/Current/backward"],
-#  "3": ["/LI_Demod_2_X/forward",
-#    "/LI_Demod_2_X/backward"],
-#  "4": ["/LI_Demod_2_Y/forward",
-#    "/LI_Demod_2_Y/backward"],
-#  "5": ["/LI_Demod_1_X/forward",
-#    "/LI_Demod_1_X/backward"],
-#  "6": ["/LI_Demod_1_Y/forward",
-#    "/LI_Demod_1_Y/backward"]},
-_config_stm_generic = {
+_nanonis_stm_sxm_generic_5e = {
     "ENTRY[entry]": {
         "@defaut": {
             "raw_path": "@default:/entry/experiment_instrument/scan_environment/scan_control/mesh_scan/current_backward"
@@ -472,7 +453,7 @@ _config_stm_generic = {
                     "controller_name": {"raw_path": "/Z-Controller/Controller name"},
                     "controller_status": {
                         "raw_path": "/Z-Controller/Controller status"
-                    },  # TODO: add to under stm[spm] definition
+                    },
                     "switch_off_delay": {
                         "raw_path": "/Z-Controller/Switch off delay",
                         "@units": "/Z-Controller/Switch off delay/@unit",
@@ -487,8 +468,6 @@ _config_stm_generic = {
                     "raw_path": "/NanonisMain/RT Frequency",
                     "@units": "/NanonisMain/RT Frequency/@unit",
                 },
-                # TODO: Add rcs_model, acquisition_time, animation_time, measurement_time, indicators_period
-                # to NXspm under the real_time_controller group
                 "rcs_model": {
                     "raw_path": "/NanonisMain/RT Release",
                 },
@@ -504,10 +483,6 @@ _config_stm_generic = {
                     "raw_path": "/NanonisMain/Measurements Period",
                     "@units": "/NanonisMain/Measurements Period/@unit",
                 },
-                # TODO: Check where the Bias Spectroscopy/Itegration time should be stored
-                # I suspect it should be stored under bias_swep group
-                #  {"raw_path": "/Bias Spectroscopy/Integration time",
-                #   "@units": "/Bias Spectroscopy/Integration time/@unit",},
                 "indicators_period": {
                     "raw_path": "/NanonisMain/Indicators Period",
                     "@units": "/NanonisMain/Indicators Period/@unit",
@@ -561,7 +536,7 @@ _config_stm_generic = {
         },
         "scan_mode": "",
         "scan_type": "",
-        "experiment_identifier": "",
+        "experiment_identifier": {"identifier": ""},
         "experiment_description": {"raw_path": "/COMMENT"},
     }
 }
