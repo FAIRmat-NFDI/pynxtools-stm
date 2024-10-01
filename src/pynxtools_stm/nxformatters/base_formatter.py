@@ -74,7 +74,6 @@ class SPMformatter(ABC):
         raw_file: Union[str, Path],
         eln_dict: Dict,
         config_file: str = None,  # Incase it is not provided by users
-        # data_dict: Optional[Dict] = None,
         entry: Optional[str] = None,
     ):
         self.template: Template = template
@@ -84,13 +83,6 @@ class SPMformatter(ABC):
         self.entry: str = entry
         self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
 
-    # def __anylize_raw_file(self):
-    #     instrument_name: Optional[str] = None
-    #     file_ext: Optional[str] = None
-    #     vendor: Optional[str] = None
-    #     vendor_software_version: Optional[str] = None
-
-    #     return instrument_name, file_ext, vendor, vendor_software_version
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
 
@@ -200,14 +192,4 @@ class SPMformatter(ABC):
         group_name: str,
         *arg,
         **kwarg,
-    ):
-        ...
-        # TODO: if NXscan_control is implementd please try to construct
-        # scan_controller here
-
-    # @abstractmethod
-    # def __construct_nxlockin(self): ...
-    # @abstractmethod
-    # def __construct_nxdata(self):
-    #     ...
-    #     # TODO construct code here
+    ): ...

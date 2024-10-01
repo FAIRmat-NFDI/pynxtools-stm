@@ -41,7 +41,7 @@ def read_config_file(config_file: str) -> Dict:
     return config_file
 
 
-def __verify_unit(
+def _verify_unit(
     base_key=None, conf_dict=None, data_dict=None, unit=None, concept=None
 ):
     unit_derived = None
@@ -154,7 +154,7 @@ def _get_data_unit_and_others(
     else:
         unit = data_dict.get(unit_des, None)
     # TODO: write a function that write other attributes in general and use that func where this function is used
-    return raw_data, __verify_unit(unit=unit), val_copy
+    return raw_data, _verify_unit(unit=unit), val_copy
 
 
 # pylint: disable=too-many-return-statements
@@ -287,3 +287,25 @@ def replace_variadic_name_part(name, part_to_embed):
         return "[".join([f_part, f_part_mod]) + "]"
     else:
         return name
+
+
+def transfer_plain_template_to_nested_dict(template, nested_dict):
+    """TODO: Write a doc compatibel with doc test write test in pytest."""
+
+    def split_each_key(key, final_val, nested_dict):
+        parts = key.split("/", 1)
+        if len(parts) < 2:
+            parts.append("")
+        k1, rest = parts
+        k1_val = nested_dict.get(k1, None)
+        if k1_val is None and rest != "":
+            nested_dict[k1] = dict()
+            split_each_key(rest, final_val, nested_dict[k1])
+        elif rest == "":
+            nested_dict[k1] = final_val
+        elif isinstance(k1_val, dict):
+            split_each_key(rest, final_val, k1_val)
+
+    for key, value in template.items():
+        _, rest = key.split("/", 1)
+        split_each_key(key=rest, final_val=value, nested_dict=nested_dict)

@@ -114,5 +114,19 @@ def transfer_plain_config_to_nested_config(template, nested_dict):
             split_each_key(rest, final_val, k1_val)
 
     for key, value in template.items():
-        parts, rest = key.split("/", 1)
+        _, rest = key.split("/", 1)
         split_each_key(key=rest, final_val=value, nested_dict=nested_dict)
+
+
+# def nested_path_to_slash_separated_path(
+#     nested_dict: dict, flattened_dict: dict, parent_path=""
+# ):
+#     """Convert nested dict into slash separeted path upto certain level."""
+#     start = "/"
+
+#     for key, val in nested_dict.items():
+#         path = parent_path + start + key
+#         if isinstance(val, dict):
+#             nested_path_to_slash_separated_path(val, flattened_dict, path)
+#         else:
+#             flattened_dict[path] = val

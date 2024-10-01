@@ -53,7 +53,7 @@ SCAN_SIDE = None
 
 
 # pylint: disable=invalid-name
-class SXMGenericNanonis(SPMBase):
+class SxmGenericNanonis(SPMBase):
     """Specific class for stm reader from nanonis company."""
 
     def __init__(self, file_name):
@@ -503,7 +503,7 @@ def get_stm_raw_file_info(raw_file):
 
     base_name = os.path.basename(raw_file)
     raw_name = base_name.rsplit(".")[0]
-    data_dict = SXMGenericNanonis(raw_file).__get_nested_metadata_dict_and_signal()
+    data_dict = SxmGenericNanonis(raw_file).__get_nested_metadata_dict_and_signal()
     temp_file = f"{raw_name}.txt"
     with open(temp_file, mode="w", encoding="utf-8") as txt_f:
         for key, val in data_dict.items():

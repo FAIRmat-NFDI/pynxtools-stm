@@ -22,7 +22,8 @@ TODO: Add simple description of the module
 #
 
 from typing import Dict, Union, Callable, Optional, Iterable, Any
-from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
+from pynxtools_stm.parsers.nanonis_sxm import SxmGenericNanonis
+from pynxtools_stm.parsers.nanonis_dat import DatGenericNanonis
 import pynxtools_stm.parsers.helpers as phs
 import logging
 from pathlib import Path, PosixPath
@@ -51,14 +52,14 @@ class SPMParser:
     __parser_navigation: Dict[str, par_nav_t] = {
         "sxm": {
             "nanonis": {
-                "Generic 5e": SXMGenericNanonis,
-                "Generic 4.5": SXMGenericNanonis,
+                "Generic 5e": SxmGenericNanonis,
+                "Generic 4.5": SxmGenericNanonis,
             }
         },
         "dat": {
             "nanonis": {
-                "Generic 5e": "StsNanonisGeneric",
-                "Generic 4.5": "StsNanonisGeneric",
+                "Generic 5e": DatGenericNanonis,
+                "Generic 4.5": DatGenericNanonis,
             }
         },
     }
@@ -66,7 +67,7 @@ class SPMParser:
     def __get_appropriate_parser(
         self,
         file: Union[str, Path],
-        eln_dict: Dict = {},
+        eln_dict: Optional[Dict] = {},
         file_ext: Optional[str] = None,
     ) -> Iterable[Callable]:
         """Search for appropriate prser and pass it the reader.
@@ -164,19 +165,19 @@ def get_nanonis_sxm_parsed_data(file_path: str):
     Dict
         The parsed data from the Nanonis SXM file.
     """
-    # from pynxtools_stm.parsers.nanonis_sxm import SXMGenericNanonis
+    # from pynxtools_stm.parsers.nanonis_sxm import SxmGenericNanonis
     #
-    # nanonis_sxm = SXMGenericNanonis(file_path)
+    # nanonis_sxm = SxmGenericNanonis(file_path)
     # return nanonis_sxm.get_parsed_data()
     return SPMParser().get_raw_data_dict(file_path)
 
 
-def write_stm_raw_file_info(raw_file):
+def write_spm_raw_file_data(raw_file):
     """Parse the raw_file into a organised dictionary. It helps users as well as developers
     to understand how the reader works and modify the config file."""
 
     base_name = os.path.basename(raw_file)
-    raw_name = base_name.rsplit(".")[0]
+    raw_name = base_name.split(".", 1)[0]
     data_dict = get_nanonis_sxm_parsed_data(raw_file)
     temp_file = f"{raw_name}.txt"
     with open(temp_file, mode="w", encoding="utf-8") as txt_f:
