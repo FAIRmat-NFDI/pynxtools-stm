@@ -39,6 +39,9 @@ _nanonis_stm_sxm_generic_5e = {
                 "cryo_shield_temp": "",
                 "scan_name": {"raw_path": "/Scan/series name"},
                 "SCAN_CONTROL[scan_control]": {
+                    "scan_name": {  # TODO check it is in appdef
+                        "raw_path": "/Scan/series name"
+                    },
                     "mesh_SCAN[mesh_scan]": {
                         "backward_speed_N[backward_speed_n]": {
                             "#note": "Derived in construct_scan_pattern_grp",
@@ -206,7 +209,7 @@ _nanonis_stm_sxm_generic_5e = {
                     {
                         "d2": {
                             "raw_path": "/Lock-in/Reference phase D2",
-                            "@units": "/Lock-in/Reference phase D1/@unit",
+                            "@units": "/Lock-in/Reference phase D2/@unit",
                         }
                     },
                 ],
@@ -294,7 +297,7 @@ _nanonis_stm_sxm_generic_5e = {
                     },
                     "CIRCUIT[circuit]": "",
                 },
-                "current_sensor": {
+                "current_sensor": {  # TODO: ADD it to NXstm
                     "AMPLIFIER[amplifier]": {"current_gain": ""},
                     "current": "",
                     "current_calibration": {
@@ -326,29 +329,6 @@ _nanonis_stm_sxm_generic_5e = {
                             }
                         },
                     ],
-                    "calibration_coeffecient_N[calibration_coeffecient_n]": [
-                        {
-                            "X": {
-                                "raw_path": "/Piezo Configuration/Calib. X",
-                                "@units": "/Piezo Configuration/Calib. X/@unit",
-                            }
-                        },
-                        {
-                            "Y": {
-                                "raw_path": "/Piezo Configuration/Calib. Y",
-                                "@units": "/Piezo Configuration/Calib. Y/@unit",
-                            }
-                        },
-                        {
-                            "Z": {
-                                "raw_path": "/Piezo Configuration/Calib. Z",
-                                "@units": "/Piezo Configuration/Calib. Z/@unit",
-                            },
-                        },
-                    ],
-                    "calibration_type": {
-                        "raw_path": "@default:active",
-                    },
                     "calibration_name": {
                         "raw_path": "/Piezo Configuration/Active Calib."
                     },
@@ -424,6 +404,31 @@ _nanonis_stm_sxm_generic_5e = {
                                 }
                             },
                         ]
+                    },
+                    "calibration": {
+                        "calibration_type": {
+                            "raw_path": "@default:active",
+                        },
+                        "calibration_coeffecient_N[calibration_coeffecient_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Configuration/Calib. X",
+                                    "@units": "/Piezo Configuration/Calib. X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Configuration/Calib. Y",
+                                    "@units": "/Piezo Configuration/Calib. Y/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Configuration/Calib. Z",
+                                    "@units": "/Piezo Configuration/Calib. Z/@unit",
+                                },
+                            },
+                        ],
                     },
                 },
                 "POSITIONER_SPM[positioner_spm]": {

@@ -171,9 +171,22 @@ class NanonisSxmSTM(SPMformatter):
             elif self._axes[ind] == "y":
                 self.NXScanControl.y_start = offset
                 self.NXScanControl.y_start_unit = unit
-            self.template[
-                f"{parent_path}/{group_name}/scan_offset__N[scan_offset_{self._axes[ind]}]/@units"
-            ] = unit
+
+        # Scan Angle
+        scan_angle = "scan_angle_N[scan_angle_n]"
+
+        scan_angles, unit, _ = _get_data_unit_and_others(
+            data_dict=self.raw_data,
+            partial_conf_dict=partial_conf_dict,
+            concept_field=scan_angle,
+        )
+        scan_angles = to_intended_t(re.findall(_scientific_num_pattern, scan_angles))
+        for ind, angle in enumerate(scan_angles):
+            ang_key = (
+                f"{parent_path}/{group_name}/scan_angle_N[scan_angle_{self._axes[ind]}]"
+            )
+            self.template[ang_key] = angle
+            self.template[f"{ang_key}/@units"] = unit
 
         # scan range
         scan_range = "scan_range_N[scan_range_n]"
@@ -363,6 +376,7 @@ class NanonisSxmSTM(SPMformatter):
         )
         scan_region_grp = "scan_region"
         scan_region_dict = partial_conf_dict.get(scan_region_grp, None)
+        # Intended order: construct_scan_region_grp
         if scan_region_dict is not None:
             self.construct_scan_region_grp(
                 partial_conf_dict=scan_region_dict,

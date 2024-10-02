@@ -124,10 +124,6 @@ def _get_data_unit_and_others(
     if end_dict is None:
         end_dict: dict[str:any] = partial_conf_dict[concept_field]
 
-    # # Skip the non-general data
-    # if "#note" in end_dict:
-    #     return None, None, {}
-
     raw_path = end_dict.get("raw_path", "")
 
     # if raw_path have multiple possibel path to the raw data
@@ -149,7 +145,12 @@ def _get_data_unit_and_others(
     except KeyError:
         pass
 
-    if unit_des and unit_des.startswith("@default:"):
+    if unit_des and isinstance(unit_des, list):
+        for unit_item in unit_des:
+            unit = data_dict.get(unit_item, None)
+            if unit is not None:
+                break
+    elif unit_des and unit_des.startswith("@default:"):
         unit = unit_des.split("@default:")[-1]
     else:
         unit = data_dict.get(unit_des, None)

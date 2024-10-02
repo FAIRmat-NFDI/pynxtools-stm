@@ -61,5 +61,58 @@ class NanonisDatSTS(SPMformatter):
 
     def get_nxformatted_template(self):
         self.work_though_config_nested_dict(self.config_dict, "")
-    
-    def 
+
+    def construct_scan_region_grp(
+        self,
+        partial_conf_dict,
+        parent_path: str,
+        group_name="scan_region",
+    ):
+        # scan range e.g. raw data path "3.11737E-9;29.1583E-9;15E-9;15E-9;0E+0"
+        # that consists [offset_x, offset_y, range_x, range_y, angle]
+        scan_range = "scan_range_N[scan_range_n]"
+        scan_ranges, unit, _ = _get_data_unit_and_others(
+            data_dict=self.raw_data,
+            partial_conf_dict=partial_conf_dict,
+            concept_field=scan_range,
+        )
+
+        gbl_scan_ranges = re.findall(_scientific_num_pattern, scan_ranges)
+        gbl_scan_ranges = [float(x) for x in gbl_scan_ranges]
+        scan_offset = gbl_scan_ranges[:2]
+        scan_ranges = gbl_scan_ranges[2:4]
+        scan_angles = gbl_scan_ranges[4:]
+        if len(scan_angles) == 1:
+            scan_angles = scan_angles * len(scan_ranges)
+        # Angles unit
+        scan_angle = "scan_angle_N[scan_angle_n]"
+        _, ang_unit, _ = _get_data_unit_and_others(
+            data_dict=self.raw_data,
+            partial_conf_dict=partial_conf_dict,
+            concept_field=scan_angle,
+        )
+        for ind, off, rng, ang in enumerate(zip(scan_offset, scan_ranges, scan_angles)):
+            off_key = f"{parent_path}/{group_name}/scan_offset_N[scan_offset_{self._axes[ind]}]"
+            rng_key = (
+                f"{parent_path}/{group_name}/scan_range_N[scan_range_{self._axes[ind]}]"
+            )
+            ang_key = (
+                f"{parent_path}/{group_name}/scan_angle_N[scan_angle_{self._axes[ind]}]"
+            )
+            self.template[rng_key] = rng
+            self.template[f"{rng_key}/@units"] = unit
+            self.template[off_key] = off
+            self.template[f"{off_key}/@units"] = unit
+            self.template[ang_key] = ang
+            self.template[f"{ang_key}/@units"] = ang_unit
+
+            if self._axes[ind] == "x":
+                self.NXScanControl.x_start = off
+                self.NXScanControl.x_start_unit = unit
+                self.NXScanControl.x_end = rng + off
+                self.NXScanControl.x_end_unit = unit
+            elif self._axes[ind] == "y":
+                self.NXScanControl.y_start = off
+                self.NXScanControl.y_start_unit = unit
+                self.NXScanControl.y_end = rng + off
+                self.NXScanControl.y_end_unit = unit
