@@ -264,7 +264,8 @@ def replace_variadic_name_part(name, part_to_embed):
                  ('yy_M_N[yy_m_n]', 'x') : 'yy_M_N[yy_x]',
                  ('Myy[myy]', 'x') : 'Myy[xyy]',
                  ('y_M_yy[y_m_yy]', 'x') : 'y_M_yy[y_x_yy]',
-                 ('y_M_N_yy[y_x_yy]', 'x') : 'y_M_N_yy[y_x_yy]',}
+                 ('y_M_N_yy[y_x_yy]', 'x') : 'y_M_N_yy[y_x_yy]',
+                 ('yy_ff[yy_mn]', 'x'): 'yy_ff[yy_mn]',}
     """
     f_part, _ = name.split("[") if "[" in name else (name, "")
     ind_start = None
@@ -282,7 +283,7 @@ def replace_variadic_name_part(name, part_to_embed):
     elif ind_end is not None and ind_start is not None:
         replacement_p = f_part[ind_start:ind_end]
         # if replacement_p end with '_'
-        if replacement_p.endwith("_"):
+        if replacement_p.endswith("_"):
             replacement_p = replacement_p[:-1]
         f_part_mod = f_part.replace(replacement_p, part_to_embed)
         return "[".join([f_part, f_part_mod]) + "]"

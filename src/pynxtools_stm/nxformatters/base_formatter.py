@@ -33,6 +33,8 @@ from pynxtools_stm.nxformatters.helpers import (
 )
 import numpy as np
 
+from pynxtools_stm.nxformatters.helpers import replace_variadic_name_part
+
 
 @dataclass
 class NXdata:
@@ -193,3 +195,92 @@ class SPMformatter(ABC):
         *arg,
         **kwarg,
     ): ...
+
+    def _NXdata__grp_from_conf_description(
+        self, partial_conf_dict, parent_path: str, group_name: str
+    ):
+        """Example NXdata dict descrioption from config
+        {
+            "data": {
+                "name": "temperature1(filter)",
+                "raw_path": "/dat_mat_components/Temperature 1 [filt]/value",
+                "@units": "/dat_mat_components/Temperature 1 [filt]/unit",
+            },
+            "0": {
+                "name": "Bias Voltage",
+                "raw_path": [
+                    "/dat_mat_components/Bias calc/value",
+                    "/dat_mat_components/Bias/value",
+                ],
+                "@units": [
+                    "/dat_mat_components/Bias calc/unit",
+                    "/dat_mat_components/Bias/unit",
+                ],
+                "axis_ind": 0,
+            },
+            "title": "Bias Spectroscopy Temperature1(filter)",
+            "grp_name": "temperature1(filter)",
+        }
+
+        "data" -> Signal data of "temperature1(filter)" denoted by
+                  the name key.
+        "0" -> Index of the axis if "axis_ind" is not provided.
+                Here both are same. Name of the axis is denotec
+                by the name key.
+        "title" -> Title of the main plot.
+        "grp_name" -> Name of the NXdata group.
+
+        To get the proper relation please visit:
+        """
+        grp_name_to_embed = partial_conf_dict.get("grp_name", "")
+        nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed)
+        data_dict = partial_conf_dict.get("data")
+        nxdata_nm = data_dict.pop("name", "").replace(" ", "_")
+        nxdata_d_arr, d_unit, d_others = _get_data_unit_and_others(
+            self.raw_data, end_dict=data_dict
+        )
+
+        nxdata_title = partial_conf_dict.get("title")
+        nxdata_axes = []
+        nxdata_indices = []
+        axdata_unit_other_list = []
+        for key, val in partial_conf_dict.items():
+            if key == "data":
+                continue
+            if isinstance(val, dict):
+                try:
+                    index = int(key)
+                except ValueError:
+                    continue
+                nxdata_axes.append(val.pop("name", "").replace(" ", "_"))
+                index = val.pop("axis_ind", index)
+                nxdata_indices.append(index)
+                axdata_unit_other_list.append(
+                    _get_data_unit_and_others(self.raw_data, end_dict=val)
+                )
+
+        self.template[f"{parent_path}/{nxdata_group}/@title"] = nxdata_title
+        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}"] = nxdata_d_arr
+        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@units"] = d_unit
+        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@long_name"] = (
+            f"{nxdata_nm} ({d_unit})"
+        )
+        self.template[f"{parent_path}/{nxdata_group}/@signal"] = nxdata_nm
+        if d_others:
+            for k, v in d_others.items():
+                self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@{k}"] = v
+        self.template[f"{parent_path}/{nxdata_group}/@axes"] = nxdata_axes
+
+        for ind, index, axis in enumerate(zip(nxdata_indices, nxdata_axes)):
+            self.template[f"{parent_path}/{nxdata_group}/@{axis}_indices"] = index
+            self.template[f"{parent_path}/{nxdata_group}/{axis}"] = (
+                axdata_unit_other_list[ind][0]
+            )
+            unit = axdata_unit_other_list[ind][1]
+            self.template[f"{parent_path}/{nxdata_group}/{axis}/@units"] = unit
+            self.template[f"{parent_path}/{nxdata_group}/{axis}/@long_name"] = (
+                f"{axis} ({unit})"
+            )
+            if axdata_unit_other_list[ind][2]:
+                for k, v in axdata_unit_other_list[ind][2].items():
+                    self.template[f"{parent_path}/{nxdata_group}/{axis}/@{k}"] = v

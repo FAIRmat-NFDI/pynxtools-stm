@@ -31,7 +31,7 @@ _nanonis_stm_sxm_generic_5e = {
             "cryo_temperature": "",
             "cryo_shield_temperature": "",
             "scan_environment": {
-                "stm_head_temp": {
+                "tip_temp": {
                     "raw_path": "/Temperature 1/Temperature 1",
                     "@units": "@default:K",
                 },

@@ -102,7 +102,7 @@ class SPMReader(BaseReader):
                     )
         # TODO: Get experiment type from eln, so include `experiment_type`
         # in application definition
-        experirment_type = "stm"
+        experirment_type = "sts"
         # Get callable object that has parser inside
         if experirment_type == "stm" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonis_sxm_stm import NanonisSxmSTM
@@ -114,7 +114,16 @@ class SPMReader(BaseReader):
                 config_file=config_file,
             )
             nss.get_nxformatted_template()
+        elif experirment_type == "sts" and raw_file_ext == "dat":
+            from pynxtools_stm.nxformatters.nanonis_dat_sts import NanonisDatSTS
 
+            nds = NanonisDatSTS(
+                template=template,
+                raw_file=data_file,
+                eln_dict=eln_dict,
+                config_file=config_file,
+            )
+            nds.get_nxformatted_template()
         # set_default_attr_in_group(template)
 
         # manually_filter_data_type(template)

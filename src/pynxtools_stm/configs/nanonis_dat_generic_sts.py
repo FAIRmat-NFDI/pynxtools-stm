@@ -194,7 +194,178 @@ _nanonis_sts_dat_generic_5e = {
                             "step_size_bias": "",
                             "reset_bias": "",
                             "backward_weep": {},
-                            "SCAN_DATA[scan_data]": "",  # TODO: Plotable data data will come here
+                            "SCAN_DATA[scan_data]": [
+                                {
+                                    "data": {
+                                        "name": "Current",
+                                        "raw_path": "/dat_mat_components/Current/value",
+                                        "@units": "/dat_mat_components/Current/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": [
+                                            "/dat_mat_components/Bias calc/value",
+                                            "/dat_mat_components/Bias/value",
+                                        ],
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
+                                    },
+                                    "title": "Bias Spectroscopy",
+                                    "grp_name": "current",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 1X",
+                                        "raw_path": "/dat_mat_components/LI Demod 1 X/value",
+                                        "@units": "/dat_mat_components/LI Demod 1 X/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": [
+                                            "/dat_mat_components/Bias calc/value",
+                                            "/dat_mat_components/Bias/value",
+                                        ],
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
+                                    },
+                                    "title": "Lockin Signal 1X",
+                                    "grp_name": "Lockin Demod 1X",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 1Y",
+                                        "raw_path": "/dat_mat_components/LI Demod 1 Y/value",
+                                        "@units": "/dat_mat_components/LI Demod 1 Y/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": [
+                                            "/dat_mat_components/Bias calc/value",
+                                            "/dat_mat_components/Bias/value",
+                                        ],
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
+                                    },
+                                    "title": "Lockin Signal 1Y",
+                                    "grp_name": "Lockin Demod 1Y",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 2X",
+                                        "raw_path": "/dat_mat_components/LI Demod 2 X/value",
+                                        "@units": "/dat_mat_components/LI Demod 2 X/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": [
+                                            "/dat_mat_components/Bias calc/value",
+                                            "/dat_mat_components/Bias/value",
+                                        ],
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
+                                    },
+                                    "title": "Lockin Signal 2X",
+                                    "grp_name": "Lockin Demod 2X",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 2Y",
+                                        "raw_path": "/dat_mat_components/LI Demod 2 Y/value",
+                                        "@units": "/dat_mat_components/LI Demod 2 Y/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": [
+                                            "/dat_mat_components/Bias calc/value",
+                                            "/dat_mat_components/Bias/value",
+                                        ],
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
+                                    },
+                                    "title": "Lockin Signal 2Y",
+                                    "grp_name": "Lockin Demod 2Y",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Current(filter)",
+                                        "raw_path": "/dat_mat_components/Current [filt]/value",
+                                        "@units": "/dat_mat_components/Current [filt]/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": "/dat_mat_components/Bias [filt]/value",
+                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                    },
+                                    "title": "Bias Spectroscopy(filter)",
+                                    "grp_name": "Current(filter)",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 1X(filter)",
+                                        "raw_path": "/dat_mat_components/LI Demod 1 X [filt]/value",
+                                        "@units": "/dat_mat_components/LI Demod 1 X [filt]/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": "/dat_mat_components/Bias [filt]/value",
+                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                    },
+                                    "title": "Lockin Demod 1X(filter)",
+                                    "grp_name": "Lockin_Demod_1X(filter)",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 1Y(filter)",
+                                        "raw_path": "/dat_mat_components/LI Demod 1 Y [filt]/value",
+                                        "@units": "/dat_mat_components/LI Demod 1 Y [filt]/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": "/dat_mat_components/Bias [filt]/value",
+                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                    },
+                                    "title": "Lockin Demod 1Y(filter)",
+                                    "grp_name": "Lockin_Demod_1Y(filter)",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 2X(filter)",
+                                        "raw_path": "/dat_mat_components/LI Demod 2 X [filt]/value",
+                                        "@units": "/dat_mat_components/LI Demod 2 X [filt]/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": "/dat_mat_components/Bias [filt]/value",
+                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                    },
+                                    "title": "Lockin Demod 2X(filter)",
+                                    "grp_name": "Lockin_Demod_2X(filter)",
+                                },
+                                {
+                                    "data": {
+                                        "name": "Lockin Demod 2Y(filter)",
+                                        "raw_path": "/dat_mat_components/LI Demod 2 Y [filt]/value",
+                                        "@units": "/dat_mat_components/LI Demod 2 Y [filt]/unit",
+                                    },
+                                    "0": {
+                                        "name": "Bias Voltage",
+                                        "raw_path": "/dat_mat_components/Bias [filt]/value",
+                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                    },
+                                    "title": "Lockin Demod 2Y(filter)",
+                                    "grp_name": "Lockin_Demod_2Y(filter)",
+                                },
+                            ],  # TODO: Plotable data data will come here
                         },
                     },
                     "CIRCUIT[circuit]": "",
@@ -221,8 +392,6 @@ _nanonis_sts_dat_generic_5e = {
                 "independent_controllers": None,
                 "measurement_sensors": None,
             },
-            "cryo_shield_temperature": {"temperature": {"@units": None}},
-            "cryo_temperature": {"temperature": {"@units": None}},
             "current_sensor": {
                 "AMPLIFIER[amplifier]": {"current_gain": None},
                 "current": {"@units": None},
@@ -404,17 +573,6 @@ _nanonis_sts_dat_generic_5e = {
                                 "@units": "/Scan/speed backw./unit",
                             }
                         ],
-                        "channel_NAME_N[scan_name_n]": {
-                            "#note": "Derived in construct_scan_pattern_grp",
-                            "raw_path": "/Scan/channels/Current/unit",
-                        },
-                        "scan_points_N[scan_points_n]": {
-                            "#note": "Derived in construct_scan_pattern_grp",
-                            "raw_path": [
-                                "/Scan/pixels/line/value",
-                                "/Scan/lines/value",
-                            ],
-                        },
                         "scan_speed": {"@units": None},
                         "scan_time": {"@units": None},
                         "SCAN_DATA[scan_data]": None,
@@ -443,19 +601,13 @@ _nanonis_sts_dat_generic_5e = {
                 },
                 "cryo_bottom_temp": {"@units": None},
                 "cryo_shield_temp": {"@units": None},
-                "cryo_shield_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
+                "tip_temp": {
+                    "raw_path": "/Temperature 1/Temperature 1/value",
+                    "@units": "/Temperature 1/Temperature 1/unit",
                 },
-                "cryo_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
-                },
-                "stm_head_temp": {"@units": None},
-                "tip_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
-                },
+                "cryo_shield_temperature": "",
+                "cryo_temperature": "",
+                "tip_temperature": "",
                 "sample_bias_votage": {
                     "bias_voltage": {
                         "raw_path": "/Bias/Bias/value",
@@ -469,7 +621,64 @@ _nanonis_sts_dat_generic_5e = {
                     },
                 },
             },
-            "tip_temperature": {"temperature": {"@units": None}},
+            "TEMPERATURE[cryo_shield_temperature]": {
+                "CHANNEL_temp[channel_temp]": "",
+                "temperature_calibration": {"coefficients": ""},
+                "TEMPERATURE_DATA[temperature_data]": "",
+            },
+            "TEMPERATURE[cryo_temperature]": {
+                "CHANNEL_temp[channel_temp]": "",
+                "temperature_calibration": {"coefficients": ""},
+                "TEMPERATURE_DATA[temperature_data]": "",
+            },
+            "TEMPERATURE[tip_temperature]": {
+                "CHANNEL_temp[channel_temp]": "",
+                "temperature_calibration": {"coefficients": ""},
+                "TEMPERATURE_DATA[temperature_data]": [
+                    {
+                        "data": {
+                            "name": "temperature1",
+                            "raw_path": "/dat_mat_components/Temperature 1/value",
+                            "@units": "/dat_mat_components/Temperature 1/unit",
+                        },
+                        "0": {  # axis index
+                            "name": "Bias Voltage",
+                            "raw_path": [
+                                "/dat_mat_components/Bias calc/value",
+                                "/dat_mat_components/Bias/value",
+                            ],
+                            "@units": [
+                                "/dat_mat_components/Bias calc/unit",
+                                "/dat_mat_components/Bias/unit",
+                            ],
+                            "axis_ind": 0,
+                        },
+                        "title": "Bias Spectroscopy Temperature1",
+                        "grp_name": "temperature1",
+                    },
+                    {
+                        "data": {
+                            "name": "temperature1(filter)",
+                            "raw_path": "/dat_mat_components/Temperature 1 [filt]/value",
+                            "@units": "/dat_mat_components/Temperature 1 [filt]/unit",
+                        },
+                        "0": {
+                            "name": "Bias Voltage",
+                            "raw_path": [
+                                "/dat_mat_components/Bias calc/value",
+                                "/dat_mat_components/Bias/value",
+                            ],
+                            "@units": [
+                                "/dat_mat_components/Bias calc/unit",
+                                "/dat_mat_components/Bias/unit",
+                            ],
+                            "axis_ind": 0,
+                        },
+                        "title": "Bias Spectroscopy Temperature1(filter)",
+                        "grp_name": "temperature1(filter)",
+                    },
+                ],
+            },
         },
         "reproducibility_indicators": {
             "bias_sweep": None,

@@ -41,7 +41,11 @@ import numpy as np
 
 
 class NanonisDatSTS(SPMformatter):
-    _grp_to_func = {}
+    _grp_to_func = {
+        "scan_region": "construct_scan_region_grp",
+        "TEMPERATURE_DATA[temperature_data]": "construct_temperature_data_grp",
+        "SCAN_DATA[scan_data]": "construct_scan_data_grp",
+    }
     _axes = ["x", "y", "z"]
 
     def __init__(
@@ -116,3 +120,25 @@ class NanonisDatSTS(SPMformatter):
                 self.NXScanControl.y_start_unit = unit
                 self.NXScanControl.y_end = rng + off
                 self.NXScanControl.y_end_unit = unit
+
+    def construct_temperature_data_grp(
+        self,
+        partial_conf_dict,  # TODO rename partial_conf_dict to partial_conf_dict_or_list everywhere
+        parent_path: str,
+        group_name="TEMPERATURE_DATA[temperature_data]",
+    ):
+        if isinstance(partial_conf_dict, list):
+            for conf_dict in partial_conf_dict:
+                self._NXdata__grp_from_conf_description(
+                    conf_dict, parent_path, group_name
+                )
+
+    def construct_scan_data_grp(self, partial_conf_dict, parent_path: str, group_name):
+        if isinstance(partial_conf_dict, list):
+            for conf_dict in partial_conf_dict:
+                self._NXdata__grp_from_conf_description(
+                    conf_dict, parent_path, group_name
+                )
+
+    def _construct_nxscan_controllers(self, partial_conf_dict, parent_path, group_name):
+        pass
