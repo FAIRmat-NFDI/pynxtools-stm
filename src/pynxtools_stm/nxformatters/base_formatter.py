@@ -248,11 +248,8 @@ class SPMformatter(ABC):
         To get the proper relation please visit:
         """
         grp_name_to_embed = partial_conf_dict.get("grp_name", "")
-        nxdata_group = (
-            replace_variadic_name_part(group_name, grp_name_to_embed)
-            .replace(" ", "_")
-            .lower()
-        )
+        grp_name_to_embed_fit = grp_name_to_embed.replace(" ", "_").lower()
+        nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed_fit)
         data_dict = partial_conf_dict.get("data")
         nxdata_nm = data_dict.pop("name", "")
         nxdata_d_arr, d_unit, d_others = _get_data_unit_and_others(
@@ -292,8 +289,6 @@ class SPMformatter(ABC):
         if not (len(nxdata_axes) == len(nxdata_indices) == len(axdata_unit_other_list)):
             return
 
-        self.template[f"{parent_path}/{nxdata_group}/@axes"] = nxdata_axes
-
         for ind, (index, axis) in enumerate(zip(nxdata_indices, nxdata_axes)):
             axis_fit = axis.replace(" ", "_").lower()
             self.template[f"{parent_path}/{nxdata_group}/@{axis_fit}_indices"] = index
@@ -308,3 +303,7 @@ class SPMformatter(ABC):
             if axdata_unit_other_list[ind][2]:
                 for k, v in axdata_unit_other_list[ind][2].items():
                     self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/{k}"] = v
+
+        self.template[f"{parent_path}/{nxdata_group}/@axes"] = [
+            ax.replace(" ", "_").lower() for ax in nxdata_axes
+        ]
