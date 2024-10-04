@@ -130,7 +130,7 @@ def _get_data_unit_and_others(
     if isinstance(raw_path, list):
         for path in raw_path:
             raw_data = data_dict.get(path, "")
-            if raw_data != "":
+            if isinstance(raw_data, np.ndarray) or raw_data != "":
                 break
     elif raw_path.startswith("@default:"):
         raw_data = raw_path.split("@default:")[-1]

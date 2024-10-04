@@ -43,8 +43,8 @@ import numpy as np
 class NanonisDatSTS(SPMformatter):
     _grp_to_func = {
         "scan_region": "construct_scan_region_grp",
-        "TEMPERATURE_DATA[temperature_data]": "construct_temperature_data_grp",
-        "SCAN_DATA[scan_data]": "construct_scan_data_grp",
+        # "TEMPERATURE_DATA[temperature_data]": "construct_temperature_data_grp",
+        # "SCAN_DATA[scan_data]": "construct_scan_data_grp",
     }
     _axes = ["x", "y", "z"]
 
@@ -72,14 +72,20 @@ class NanonisDatSTS(SPMformatter):
         parent_path: str,
         group_name="scan_region",
     ):
+        # Note: This function is for 'scan_region' under the scan_control
+        # and 'scan_region' from 'bias_spec_scan_control'
+
         # scan range e.g. raw data path "3.11737E-9;29.1583E-9;15E-9;15E-9;0E+0"
         # that consists [offset_x, offset_y, range_x, range_y, angle]
-        scan_range = "scan_range_N[scan_range_n]"
-        scan_ranges, unit, _ = _get_data_unit_and_others(
-            data_dict=self.raw_data,
-            partial_conf_dict=partial_conf_dict,
-            concept_field=scan_range,
-        )
+        if parent_path.endswith("bias_spec_scan_control"):
+            scan_range = "scan_range_N[scan_range_n]"
+            scan_ranges, unit, _ = _get_data_unit_and_others(
+                data_dict=self.raw_data,
+                partial_conf_dict=partial_conf_dict,
+                concept_field=scan_range,
+            )
+        else:
+            return
 
         gbl_scan_ranges = re.findall(_scientific_num_pattern, scan_ranges)
         gbl_scan_ranges = [float(x) for x in gbl_scan_ranges]

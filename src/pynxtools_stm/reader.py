@@ -67,7 +67,7 @@ def manually_filter_data_type(template):
 class SPMReader(BaseReader):
     """Reader for XPS."""
 
-    supported_nxdls = ["NXstm"]
+    supported_nxdls = ["NXstm", "NXspm", "NXafm"]
 
     def read(
         self,
@@ -135,6 +135,7 @@ class SPMReader(BaseReader):
                 continue
 
             filled_template[key] = val
+        print(" ### : ", template)
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
 

@@ -90,6 +90,8 @@ class SPMformatter(ABC):
 
     def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
         for key, val in config_dict.items():
+            if isinstance(val, str):
+                x = val
             if val is None or val == "":
                 continue
             if key in self._grp_to_func:
@@ -114,21 +116,34 @@ class SPMformatter(ABC):
                         self.template[f"{parent_path}/{key}/@{k}"] = v
             # variadic fields that would have several values according to the dimentions
             elif isinstance(val, list) and isinstance(val[0], dict):
+                # Skip if the dict is designed for NXdata which shlould be handled
+                # by in separate function
+
                 for item in val:
-                    part_to_embed, path_dict = (
-                        item.popitem()
-                    )  # Current only one item is valid
-                    if "#note" in path_dict:
-                        continue
-                    data, unit, other_attrs = _get_data_unit_and_others(
-                        data_dict=self.raw_data, end_dict=path_dict
-                    )
-                    temp_key = f"{parent_path}/{replace_variadic_name_part(key, part_to_embed=part_to_embed)}"
-                    self.template[temp_key] = to_intended_t(data)
-                    self.template[f"{temp_key}/@units"] = unit
-                    if other_attrs:
-                        for k, v in other_attrs.items():
-                            self.template[f"{temp_key}/@{k}"] = v
+                    # Handle to construct nxdata group
+                    if "title" in item or "grp_name" in item:
+                        self._NXdata__grp_from_conf_description(
+                            partial_conf_dict=item,
+                            parent_path=parent_path,
+                            group_name=key,
+                        )
+                    else:  # Handle fields and attributes
+                        print("### ##", item)
+                        part_to_embed, path_dict = (
+                            item.popitem()
+                        )  # Current only one item is valid
+                        # with #note tag this will be handled in a specific function
+                        if "#note" in path_dict:
+                            continue
+                        data, unit, other_attrs = _get_data_unit_and_others(
+                            data_dict=self.raw_data, end_dict=path_dict
+                        )
+                        temp_key = f"{parent_path}/{replace_variadic_name_part(key, part_to_embed=part_to_embed)}"
+                        self.template[temp_key] = to_intended_t(data)
+                        self.template[f"{temp_key}/@units"] = unit
+                        if other_attrs:
+                            for k, v in other_attrs.items():
+                                self.template[f"{temp_key}/@{k}"] = v
             else:
                 self.work_though_config_nested_dict(val, f"{parent_path}/{key}")
 
@@ -200,7 +215,7 @@ class SPMformatter(ABC):
         self, partial_conf_dict, parent_path: str, group_name: str
     ):
         """Example NXdata dict descrioption from config
-        {
+        partial_conf_dict = {
             "data": {
                 "name": "temperature1(filter)",
                 "raw_path": "/dat_mat_components/Temperature 1 [filt]/value",
@@ -233,54 +248,63 @@ class SPMformatter(ABC):
         To get the proper relation please visit:
         """
         grp_name_to_embed = partial_conf_dict.get("grp_name", "")
-        nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed)
+        nxdata_group = (
+            replace_variadic_name_part(group_name, grp_name_to_embed)
+            .replace(" ", "_")
+            .lower()
+        )
         data_dict = partial_conf_dict.get("data")
-        nxdata_nm = data_dict.pop("name", "").replace(" ", "_")
+        nxdata_nm = data_dict.pop("name", "")
         nxdata_d_arr, d_unit, d_others = _get_data_unit_and_others(
             self.raw_data, end_dict=data_dict
         )
-
+        if not isinstance(nxdata_d_arr, np.ndarray):
+            return
         nxdata_title = partial_conf_dict.get("title")
         nxdata_axes = []
         nxdata_indices = []
         axdata_unit_other_list = []
         for key, val in partial_conf_dict.items():
-            if key == "data":
+            if key == "data":  # handled above
                 continue
             if isinstance(val, dict):
                 try:
                     index = int(key)
                 except ValueError:
                     continue
-                nxdata_axes.append(val.pop("name", "").replace(" ", "_"))
+                nxdata_axes.append(val.pop("name", ""))
                 index = val.pop("axis_ind", index)
                 nxdata_indices.append(index)
                 axdata_unit_other_list.append(
                     _get_data_unit_and_others(self.raw_data, end_dict=val)
                 )
-
+        field_nm_fit = nxdata_nm.replace(" ", "_").lower()
         self.template[f"{parent_path}/{nxdata_group}/@title"] = nxdata_title
-        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}"] = nxdata_d_arr
-        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@units"] = d_unit
-        self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@long_name"] = (
+        self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"] = nxdata_d_arr
+        self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@units"] = d_unit
+        self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@long_name"] = (
             f"{nxdata_nm} ({d_unit})"
         )
-        self.template[f"{parent_path}/{nxdata_group}/@signal"] = nxdata_nm
+        self.template[f"{parent_path}/{nxdata_group}/@signal"] = field_nm_fit
         if d_others:
             for k, v in d_others.items():
-                self.template[f"{parent_path}/{nxdata_group}/{nxdata_nm}/@{k}"] = v
+                self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@{k}"] = v
+        if not (len(nxdata_axes) == len(nxdata_indices) == len(axdata_unit_other_list)):
+            return
+
         self.template[f"{parent_path}/{nxdata_group}/@axes"] = nxdata_axes
 
-        for ind, index, axis in enumerate(zip(nxdata_indices, nxdata_axes)):
-            self.template[f"{parent_path}/{nxdata_group}/@{axis}_indices"] = index
-            self.template[f"{parent_path}/{nxdata_group}/{axis}"] = (
+        for ind, (index, axis) in enumerate(zip(nxdata_indices, nxdata_axes)):
+            axis_fit = axis.replace(" ", "_").lower()
+            self.template[f"{parent_path}/{nxdata_group}/@{axis_fit}_indices"] = index
+            self.template[f"{parent_path}/{nxdata_group}/{axis_fit}"] = (
                 axdata_unit_other_list[ind][0]
             )
             unit = axdata_unit_other_list[ind][1]
-            self.template[f"{parent_path}/{nxdata_group}/{axis}/@units"] = unit
-            self.template[f"{parent_path}/{nxdata_group}/{axis}/@long_name"] = (
+            self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/@units"] = unit
+            self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/@long_name"] = (
                 f"{axis} ({unit})"
             )
             if axdata_unit_other_list[ind][2]:
                 for k, v in axdata_unit_other_list[ind][2].items():
-                    self.template[f"{parent_path}/{nxdata_group}/{axis}/@{k}"] = v
+                    self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/{k}"] = v
