@@ -27,9 +27,6 @@ _nanonis_stm_sxm_generic_5e = {
             "raw_path": "@default:/entry/experiment_instrument/scan_environment/scan_control/mesh_scan/current_backward"
         },
         "experiment_instrument": {
-            "tip_temperature": "",
-            "cryo_temperature": "",
-            "cryo_shield_temperature": "",
             "scan_environment": {
                 "tip_temp": {
                     "raw_path": "/Temperature 1/Temperature 1",
