@@ -29,7 +29,7 @@ _nanonis_sts_dat_generic_5e = {
                 "modulation_status": {
                     "raw_path": "/Lock-in/Lock-in status/value",
                 },
-                "modulation_frequency": {
+                "reference_frequency": {
                     "raw_path": "/Lock-in/Frequency/value",
                     "@units": "/Lock-in/Frequency/unit",
                 },
@@ -40,7 +40,7 @@ _nanonis_sts_dat_generic_5e = {
                     "raw_path": "@default:Current",
                     "@units": "/Lock-in/Demodulated signal/Current/unit",
                 },
-                "modulation_amplitude": {  # TODO: Modify amplitude unit to ANY in NXlockin
+                "reference_amplitude": {  # TODO: Modify amplitude unit to ANY in NXlockin
                     "raw_path": "/Lock-in/Amplitude/value",
                     "@units": "/Lock-in/Modulated signal/Bias/unit",
                 },
@@ -703,14 +703,14 @@ _nanonis_sts_dat_generic_5e = {
             "current": None,
             "current_gain": None,
             "current_offset": None,
-            "modulation_frequency": None,
+            "reference_frequency": None,
             "modulation_signal_type": None,
         },
         "resolution_indicators": {
             "bias_sweep": None,
             "cryo_bottom_temp": None,
             "cryo_shield_temp": None,
-            "modulation_frequency": None,
+            "reference_frequency": None,
             "modulation_signal_type": None,
             "stm_head_temp": None,
         },

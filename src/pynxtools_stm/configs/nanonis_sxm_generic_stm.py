@@ -141,7 +141,7 @@ _nanonis_stm_sxm_generic_5e = {
                 "AMPLIFIER[amplifier]": {"current_gain": {"raw_path": "/Current/Gain"}},
             },
             "LOCKIN[lockin]": {
-                "modulation_frequency": {
+                "reference_frequency": {
                     "raw_path": "/Lock-in/Frequency",
                     "@units": "@default:Hz",
                 },
@@ -526,11 +526,11 @@ _nanonis_stm_sxm_generic_5e = {
                     "current": "",
                     "current_gain": "",
                     "current_offset": "",
-                    "modulation_frequency": "",
+                    "reference_frequency": "",
                     "modulation_signal_type": "",
                 },
                 "resolution_indicators": {
-                    "modulation_frequency": "",
+                    "reference_frequency": "",
                     "modulation_signal_type": "",
                 },
                 "start_time": "",

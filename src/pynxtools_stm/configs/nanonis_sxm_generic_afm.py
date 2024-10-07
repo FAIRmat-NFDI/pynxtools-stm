@@ -35,6 +35,10 @@ _nanonis_afm_sxm_generic_5e = {
                         "raw_path": "/Oscillation Control/Center Frequency",
                         "@units": "/Oscillation Control/Center Frequency/@unit",
                     },
+                    "frequency_bandwidth": {
+                        "raw_path": "/Oscillation Control/Range",
+                        "@units": "/Oscillation Control/Range/@unit",
+                    },
                     "reference_phase": {
                         "raw_path": "/Oscillation Control/Reference Phase",
                         "@units": "/Oscillation Control/Reference Phase/@unit",
@@ -82,7 +86,30 @@ _nanonis_afm_sxm_generic_5e = {
                             },
                         },
                     },
-                    "phase_lock_loop": "",  # TODO: fix type in NXcantilever
+                    "oscillator_excitation": {
+                        "raw_path": "//Oscillation Control/Excitation",
+                        "@units": "/Oscillation Control/Excitation/@unit",
+                    },
+                    "phase_lock_loop": {
+                        "sensitivity_factor": {
+                            "raw_path": "/Oscillation Control/PLL-Setup Q-Factor",
+                            "@units": "/Oscillation Control/Sensitivity/@unit",
+                        },
+                        "frequency_demodulation_bandwidth": "",
+                        "amplitude_demodulation_bandwidth": {
+                            "raw_data": "/Oscillation Control/PLL-Setup Demod. Bandwidth Amp",
+                            "@units": "/Oscillation Control/PLL-Setup Demod. Bandwidth Amp/@unit",
+                        },
+                        "phase_demodulation_bandwidth": {
+                            "raw_path": "/Oscillation Control/PLL-Setup Demod. Bandwidth Pha",
+                            "@units": "/Oscillation Control/PLL-Setup Demod. Bandwidth Pha/@unit",
+                        },
+                        "demodulated_signal": "",
+                        "amplitude_excitation": {
+                            "raw_path": "/Oscillation Control/PLL-Setup amplitude/excitation",
+                            "@units": "/Oscillation Control/PLL-Setup amplitude/excitation/@unit",
+                        },
+                    },
                     "frequency_shift": {
                         "raw_path": "/Oscillation Control/FrequencyShift",
                         "@units": "/Oscillation Control/FrequencyShift/@unit",
@@ -91,17 +118,33 @@ _nanonis_afm_sxm_generic_5e = {
                         "raw_path": "/Oscillation Control/Cut off frq",
                         "@units": "/Oscillation Control/Cut off frq/@unit",
                     },
-                    "frequency_bandwidth": {
-                        "raw_path": "/Oscillation Control/Range",
-                        "@units": "/Oscillation Control/Range/@unit",
-                    },
                     "target_amplitude": "",
                     "active_frequency": "",
                 },
             },
             "LOCKIN[lockin]": {
-                "modulation_frequency": None,
-                "modulation_signal_type": None,
+                "reference_frequency": {
+                    "raw_path": "/Lock-in/Frequency",
+                    "@units": "@default:Hz",
+                },
+                "modulation_signal_type": {
+                    "raw_path": "/Lock-in/Modulated signal",
+                    "@units": "/Lock-in/Modulated signal/@unit",
+                },
+                "demodulated_signal": {
+                    "raw_path": "/Lock-in/Demodulated signal",
+                    "@units": "/Lock-in/Demodulated signal/@unit",
+                },
+                "modulation_status": {"raw_path": "/Lock-in/Lock-in status"},
+                "demodulated_frequency": "",
+                "demodulated_amplitude": "",
+                "demodulator_channels": "",
+                "recorded_channels": "",
+                "ref_phase_N[ref_phase_n]": {
+                    "raw_path": "/Lock-in/Reference phase",
+                    "@units": "/Lock-in/Reference phase/@unit",
+                },
+                "harmonic_order_N[harmonic_order_n]": {"raw_path": "/Lock-in/Harmonic"},
             },
             "bias_spectroscopy_environment": {
                 "BIAS_SPECTROSCOPY[bias_spectroscopy]": {
@@ -161,20 +204,70 @@ _nanonis_afm_sxm_generic_5e = {
                 "z": {"@units": None},
             },
             "scan_environment": {
+                "scan_name": {"raw_path": "/Scan/series name"},
                 "SCAN_CONTROL[scan_control]": {
+                    "scan_name": {  # TODO check it is in appdef
+                        "raw_path": "/Scan/series name"
+                    },
+                    # TODO: include the functino from
+                    # nanosnis stm_template.py, This part is
+                    # copied from stm.
                     "mesh_SCAN[mesh_scan]": {
-                        "SCAN_DATA[scan_data]": None,
-                        "backward_speed_N[backward_speed_n]": {"@units": None},
-                        "forward_speed_N[forward_speed_n]": {"@units": None},
-                        "scan_speed": {"@units": None},
-                        "scan_time": {"@units": None},
+                        "backward_speed_N[backward_speed_n]": {
+                            "#note": "Derived in construct_scan_pattern_grp",
+                            "raw_path": "/Scan/speed backw.",
+                            "@units": "/Scan/speed backw./@unit",
+                        },
+                        "forward_speed_N[forward_speed_n]": {
+                            "#note": "Derived in construct_scan_pattern_grp",
+                            "raw_path": "/Scan/speed forw.",
+                            "@units": "/Scan/speed forw./@unit",
+                        },
+                        "scan_speed_N[scan_speed_n]": "",
+                        "channel_NAME_N[scan_name_n]": "",
+                        "scan_points_N[scan_points_n]": {
+                            "#note": "Derived in construct_scan_pattern_grp",
+                            "raw_path": "/SCAN/PIXELS",
+                            "@units": "",
+                        },
+                        "stepping_N[stepping_n]": {
+                            "raw_path": "@default:1",
+                            "@units": "",
+                        },
+                        "step_size_N[step_size_n]": {"raw_path": "", "@units": ""},
+                        "scan_time": "",
+                        "SCAN_DATA[scan_data]": {
+                            "raw_path": "/DATA/INFO",
+                            "@units": "",
+                        },
                     },
+                    # TODO: include the functino from
+                    # nanosnis stm_template.py, This part is
+                    # copied from stm.
                     "scan_region": {
-                        "scan_angle_N[scan_angle_n]": {"@units": None},
-                        "scan_offset": {"@units": None},
-                        "scan_range": {"@units": None},
+                        "scan_angle_N[scan_angle_n]": {
+                            "raw_path": "/SCAN/ANGLE",
+                            "@units": "@default:deg",
+                        },
+                        "scan_offset_N[scan_offset_n]": {
+                            "#note": "Derived in function 'construct_scan_region_grp'.",
+                            "raw_path": "/SCAN/OFFSET",
+                            "@units": "/Z-Controller/Z/@unit",
+                        },
+                        "scan_range_N[scan_range_n]": {
+                            "#note": "Derived in function 'construct_scan_region_grp'.",
+                            "raw_path": "/SCAN/RANGE",
+                            "@units": "/Z-Controller/Z/@unit",
+                        },
                     },
-                    "scan_type": None,
+                    "independent_scan_axes": {"raw_path": "/SCAN/DIR", "@units": ""},
+                    "scan_resolution_N": "",
+                    "accuracy_N": "",
+                    "scan_type": {"raw_path": "@default:mesh", "@units": ""},
+                    "scan_control_type": {
+                        "raw_path": "@default:continuous",
+                        "@units": "",
+                    },
                 },
                 "cryo_bottom_temp": {"@units": None},
                 "cryo_shield_temp": {"@units": None},
@@ -199,14 +292,14 @@ _nanonis_afm_sxm_generic_5e = {
             "current": None,
             "current_gain": None,
             "current_offset": None,
-            "modulation_frequency": None,
+            "reference_frequency": None,
             "modulation_signal_type": None,
         },
         "resolution_indicators": {
             "bias_sweep": None,
             "cryo_bottom_temp": None,
             "cryo_shield_temp": None,
-            "modulation_frequency": None,
+            "reference_frequency": None,
             "modulation_signal_type": None,
             "stm_head_temp": None,
         },
