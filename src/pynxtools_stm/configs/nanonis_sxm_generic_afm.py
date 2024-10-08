@@ -23,7 +23,18 @@ A default configuration file for Nanonis STM data from SXM file.
 
 _nanonis_afm_sxm_generic_5e = {
     "ENTRY[entry]": {
+        "@defaut": {
+            "raw_path": "@default:/entry/experiment_instrument/scan_environment/scan_control/mesh_scan/current_backward"
+        },
         "definition": {"@version": None},
+        "collection_identifier": "",
+        "end_time": "",
+        "entry_identifier": "",
+        "start_time": "",
+        "scan_mode": "",
+        "scan_type": "",
+        "experiment_identifier": {"identifier": ""},
+        "experiment_description": {"raw_path": "/COMMENT"},
         "experiment_instrument": {
             "CANTILEVER_SPM[cantilever_spm]": {
                 "cantilever_oscillator": {
@@ -166,6 +177,7 @@ _nanonis_afm_sxm_generic_5e = {
                 "independent_controllers": None,
                 "measurement_sensors": None,
             },
+            "tip_temperature": None,
             "cryo_shield_temperature": None,
             "cryo_temperature": None,
             "current_sensor": {
@@ -179,31 +191,157 @@ _nanonis_afm_sxm_generic_5e = {
             },
             "piazo_sensor": {
                 "PIEZO_CONFIG_SPM[piezo_config_spm]": {
-                    "2nd_order_corr_N[2nd_order_corr_n]": {"@units": None},
-                    "calibration_coeffecient_N[calibration_coeffecient_n]": {
-                        "@units": None
+                    "2nd_order_corr_N[2nd_order_corr_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Calibration/2nd order corr X",
+                                "@units": "/Piezo Calibration/2nd order corr X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Calibration/2nd order corr Y",
+                                "@units": "/Piezo Calibration/2nd order corr Y/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Calibration/2nd order corr Z",
+                                "@units": "/Piezo Calibration/2nd order corr Z/@unit",
+                            }
+                        },
+                    ],
+                    "calibration_name": {
+                        "raw_path": "/Piezo Calibration/Active Calib."
                     },
-                    "calibration_type": None,
-                    "drift_N[drift_n]": None,
-                    "drift_correction_status": None,
-                    "hv_gain_N[hv_gain_n]": None,
-                    "tilt_N[tilt_n]": {"@units": None},
+                    "drift_N[drift_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Calibration/Drift X",
+                                "@units": "/Piezo Calibration/Drift X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Calibration/Drift Y",
+                                "@units": "/Piezo Calibration/Drift Y/@unit",
+                            }
+                        },
+                        {
+                            "Z": {
+                                "raw_path": "/Piezo Calibration/Drift Z",
+                                "@units": "/Piezo Calibration/Drift Z/@unit",
+                            }
+                        },
+                    ],
+                    "drift_correction_status": {
+                        "raw_path": [
+                            "/Piezo Configuration/Drift correction status",
+                            "/Piezo Calibration/Drift correction status",
+                        ]
+                    },
+                    "hv_gain_N[hv_gain_n]": [
+                        {"X": {"raw_path": "/Piezo Calibration/HV Gain X"}},
+                        {"Y": {"raw_path": "/Piezo Calibration/HV Gain Y"}},
+                        {"Z": {"raw_path": "/Piezo Calibration/HV Gain Z"}},
+                    ],
+                    "tilt_N[tilt_n]": [
+                        {
+                            "X": {
+                                "raw_path": "/Piezo Calibration/Tilt X",
+                                "@units": "/Piezo Calibration/Tilt X/@unit",
+                            }
+                        },
+                        {
+                            "Y": {
+                                "raw_path": "/Piezo Calibration/Tilt Y",
+                                "@units": "/Piezo Calibration/Tilt X/@unit",
+                            }
+                        },
+                    ],
+                    "piezo_material": {
+                        "curvature_radius_N": [
+                            {
+                                "x": {
+                                    "raw_path": "/Piezo Calibration/Curvature radius X",
+                                    "@units": "/Piezo Calibration/Curvature radius X/@unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "raw_path": "/Piezo Calibration/Curvature radius Y",
+                                    "@units": "/Piezo Calibration/Curvature radius Y/@unit",
+                                }
+                            },
+                        ]
+                    },
+                    "calibration": {
+                        "calibration_type": {
+                            "raw_path": "@default:active",
+                        },
+                        "calibration_coeffecient_N[calibration_coeffecient_n]": [
+                            {
+                                "X": {
+                                    "raw_path": "/Piezo Calibration/Calib. X",
+                                    "@units": "/Piezo Calibration/Calib. X/@unit",
+                                }
+                            },
+                            {
+                                "Y": {
+                                    "raw_path": "/Piezo Calibration/Calib. Y",
+                                    "@units": "/Piezo Calibration/Calib. Y/@unit",
+                                }
+                            },
+                            {
+                                "Z": {
+                                    "raw_path": "/Piezo Calibration/Calib. Z",
+                                    "@units": "/Piezo Calibration/Calib. Z/@unit",
+                                },
+                            },
+                        ],
+                    },
                 },
                 "POSITIONER_SPM[positioner_spm]": {
                     "z_controller": {
-                        "controller_name": None,
-                        "controller_status": None,
-                        "set_point": {"@units": None},
-                        "switch_off_delay": {"@units": None},
-                        "tip_lift": {"@units": None},
-                        "z": None,
-                    }
+                        "K_i_value[k_i_value]": {"raw_path": "/Z-Controller/P gain"},
+                        "K_p_value[k_p_value]": {"raw_path": "/Z-Controller/I gain"},
+                        "setpoint": {
+                            "raw_path": "/Z-Controller/Setpoint",
+                            "@units": "/Z-Controller/Setpoint unit",
+                        },
+                        "switch_off_delay": "",
+                        "K_t_const[k_t_const]": {
+                            "raw_path": "/Z-Controller/Time const",
+                            "@units": "/Z-Controller/Time const/@unit",
+                        },
+                        "tip_lift": {
+                            "raw_path": "/Z-Controller/TipLift",
+                            "@units": "/Z-Controller/TipLift/@unit",
+                        },
+                        "z": {
+                            "raw_path": "/Z-Controller/Z",
+                            "@units": "/Z-Controller/Z/@unit",
+                        },
+                    },
+                    "z_offset": "",
+                    "tip_position_z": "",
+                    "controller_name": {"raw_path": "/Z-Controller/Controller name"},
+                    "controller_status": {
+                        "raw_path": "/Z-Controller/Controller status"
+                    },
+                    "switch_off_delay": {
+                        "raw_path": "/Z-Controller/Switch off delay",
+                        "@units": "/Z-Controller/Switch off delay/@unit",
+                    },
                 },
                 "x": {"@units": None},
                 "y": {"@units": None},
                 "z": {"@units": None},
             },
             "scan_environment": {
+                "cryo_bottom_temp": {"@units": None},
+                "cryo_shield_temp": {"@units": None},
+                "tip_temp": {"@units": None},
                 "scan_name": {"raw_path": "/Scan/series name"},
                 "SCAN_CONTROL[scan_control]": {
                     "scan_name": {  # TODO check it is in appdef
@@ -269,23 +407,49 @@ _nanonis_afm_sxm_generic_5e = {
                         "@units": "",
                     },
                 },
-                "cryo_bottom_temp": {"@units": None},
-                "cryo_shield_temp": {"@units": None},
-                "cryo_shield_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
+            },
+            "real_time_controller": {
+                "rcs_frequency": {
+                    "raw_path": "/NanonisMain/RT Frequency",
+                    "@units": "/NanonisMain/RT Frequency/@unit",
                 },
-                "cryo_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
+                "rcs_model": {
+                    "raw_path": "/NanonisMain/RT Release",
                 },
-                "tip_temp": {"@units": None},
-                "tip_temperature": {
-                    "calibration_time": None,
-                    "value": {"@units": None},
+                "acquisition_time": {
+                    "raw_path": "/NanonisMain/Acquisition Period",
+                    "@units": "/NanonisMain/Acquisition Period/@unit",
+                },
+                "animation_time": {
+                    "raw_path": "/NanonisMain/Animations Period",
+                    "@units": "/NanonisMain/Animations Period/@unit",
+                },
+                "measurement_time": {
+                    "raw_path": "/NanonisMain/Measurements Period",
+                    "@units": "/NanonisMain/Measurements Period/@unit",
+                },
+                "indicators_period": {
+                    "raw_path": "/NanonisMain/Indicators Period",
+                    "@units": "/NanonisMain/Indicators Period/@unit",
                 },
             },
-            "tip_temperature": None,
+            "sample_bias_votage": {
+                "bias_voltage": {
+                    "raw_path": "/Bias/Bias",
+                    "@units": "/Bias/Bias/@unit",
+                },
+                "bias_offset": {
+                    "raw_path": "/Bias/Offset",
+                    "@units": "/Bias/Offset/@unit",
+                },
+                "bias_calibration": {
+                    "coefficients": {
+                        "raw_path": "/Bias/Calibration",
+                        "@units": "/Bias/Calibration/@unit",
+                    },
+                    "calibration_time": "",
+                },
+            },
         },
         "reproducibility_indicators": {
             "bias_sweep": None,
@@ -303,6 +467,5 @@ _nanonis_afm_sxm_generic_5e = {
             "modulation_signal_type": None,
             "stm_head_temp": None,
         },
-        "scan_mode": None,
     }
 }

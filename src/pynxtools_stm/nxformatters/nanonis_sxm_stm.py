@@ -30,7 +30,7 @@ from dataclasses import dataclass
 import re
 from pynxtools_stm.configs.nanonis_sxm_generic_stm import _nanonis_stm_sxm_generic_5e
 import pynxtools_stm.nxformatters.helpers as fhs
-from pynxtools.dataconverter.template import Template
+from typing import TYPE_CHECKING
 from pynxtools_stm.nxformatters.helpers import (
     _get_data_unit_and_others,
     _scientific_num_pattern,
@@ -40,6 +40,8 @@ from pynxtools_stm.nxformatters.helpers import (
 )
 import numpy as np
 
+if TYPE_CHECKING:
+    from pynxtools.dataconverter.template import Template
 
 # TODO: add test to check if user example config file is the same as given default
 # config file with this package.
@@ -60,8 +62,7 @@ class NanonisSxmSTM(SPMformatter):
 
     def __init__(
         self,
-        # TODO: fix the type of template
-        template: Template,
+        template: "Template",
         raw_file: Union[str, Path],
         eln_dict: Dict,
         config_file: str = None,  # Incase it is not provided by users

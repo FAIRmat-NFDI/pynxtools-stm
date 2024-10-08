@@ -114,6 +114,16 @@ class SPMReader(BaseReader):
                 config_file=config_file,
             )
             nss.get_nxformatted_template()
+        elif experirment_type == "afm" and raw_file_ext == "sxm":
+            from pynxtools_stm.nxformatters.nanonis_sxm_afm import NanonisSxmAFM
+
+            nss = NanonisSxmSTM(
+                template=template,
+                raw_file=data_file,
+                eln_dict=eln_dict,
+                config_file=config_file,
+            )
+            nss.get_nxformatted_template()
         elif experirment_type == "sts" and raw_file_ext == "dat":
             from pynxtools_stm.nxformatters.nanonis_dat_sts import NanonisDatSTS
 
