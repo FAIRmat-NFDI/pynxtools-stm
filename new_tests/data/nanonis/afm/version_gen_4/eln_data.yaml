@@ -1,0 +1,104 @@
+default:
+  value: null
+  unit: null
+collection_identifier:
+  value: null
+  unit: null
+entry_identifier:
+  value: null
+  unit: null
+end_time:
+  value: null
+  unit: null
+start_time:
+  value: null
+  unit: null
+experiment_identifier:
+  value: null
+  unit: null
+experiment_description:
+  value: null
+  unit: null
+scan_mode: "tapping mode"
+scan_type: "line"
+hardware:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 4'
+  model/@version:
+    value: 'Generic 4'
+software:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 4'
+  model/@version:
+    value: 'Generic 4'
+experiment_instrument:
+  Cantilever_spm:
+    cantilever_oscillator:
+      reference_amplitude:
+        value: null
+        unit: null
+      oscillator_excitation:
+        value: null
+        unit: null
+      phase_lock_loop:
+        amplitude_excitation:
+          value: null
+          unit: null
+      frequency_harmonic:
+        value: null
+        unit: null
+
+    Xy_piezo_sensor:
+    Piezo_config_spm: null
+    Positioner_spm: null
+    piezo_material: null
+  height_piezo_sensor:
+    Piezo_config_spm: null
+    Positioner_spm: null
+    piezo_material: null
+  photo_detector: null
+  piazo_sensor:
+    Piezo_config_spm:
+      calibration:
+        calibration_type:
+          value: 'Active'
+      calibration_name:
+        value: null
+  scan_environment:
+    Scan_control:
+      Mesh_scan:
+        Stepping_N:
+          value: null
+          unit: null
+      scan_type: 
+        value: 'mesh'
+      scan_control_type:
+        value: 'Continuous'
+        
+    XY_piezo_sensor:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+    Xy_piezo_sensor:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+    height_piezo_sensor:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+    independent_controllers: null
+    measurement_sensors: null
+    tip_temperature:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+  tip_temperature: null

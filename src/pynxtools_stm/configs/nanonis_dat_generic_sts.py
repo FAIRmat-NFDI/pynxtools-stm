@@ -574,7 +574,7 @@ _nanonis_sts_dat_generic_5e = {
                 "z": {"raw_path": "/Z/value", "@units": "/Z/unit"},
             },
             "scan_environment": {
-                "scan_name": {  # TODO: Extend in NXspm
+                "scan_name": {
                     "raw_path": "/Scan/series name/value",
                 },
                 "SCAN_CONTROL[bias_spec_scan_control]": {  # TODO: Rename it bias_spec_scan_control

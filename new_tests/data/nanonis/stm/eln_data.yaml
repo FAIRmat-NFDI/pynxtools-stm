@@ -1,0 +1,170 @@
+definition:
+  '@version': null
+hardware:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 4.5'
+  model/@version:
+    value: 'Generic 4.5'
+software:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 4.5'
+  model/@version:
+    value: 'Generic 4.5'
+experiment_instrument:
+  Lockin:
+    modulation_frequency: null
+    modulation_signal_type: null
+  bias_spectroscopy_environment:
+    Bias_spectroscopy:
+      bias_sweep:
+        linear_sweep:
+          reset_bias: null
+          scan_points_bias: null
+          step_size_bias:
+            value: null
+            unit: null
+        scan_region:
+          scan_end_bias:
+            value: null
+            unit: null
+          scan_offset_bias:
+            value: null
+            unit: null
+          scan_range_bias:
+            value: null
+            unit: null
+          scan_start_bias:
+            value: null
+            unit: null
+        settling_time:
+          value: null
+          unit: null
+    independent_controllers: null
+    measurement_sensors: null
+  cryo_shield_temperature: null
+  cryo_temperature: null
+  current_sensor:
+    Amplifier:
+      current_gain: null
+    current:
+      value: null
+      unit: null
+    current_calibration:
+      caliberation_time:
+        value: null
+        unit: null
+      coefficients:
+        value: null
+        unit: null
+    current_offset:
+      value: null
+      unit: null
+  piazo_sensor:
+    Piezo_config_spm:
+      2nd_order_corr_n:
+        value: null
+        unit: null
+      Calibration_coeffecient_n:
+        value: null
+        unit: null
+      calibration_type: null
+      Drift_n: null
+      drift_correction_status: null
+      Hv_gain_n: null
+      Tilt_n:
+        value: null
+        unit: null
+    Positioner_spm:
+      z_controller:
+        controller_name: null
+        controller_status: null
+        set_point:
+          value: null
+          unit: null
+        switch_off_delay:
+          value: null
+          unit: null
+        tip_lift:
+          value: null
+          unit: null
+        z: null
+    x:
+      value: null
+      unit: null
+    y:
+      value: null
+      unit: null
+    z:
+      value: null
+      unit: null
+  scan_environment:
+    Scan_control:
+      Mesh_scan:
+        Scan_data: null
+        Backward_speed_n:
+          value: null
+          unit: null
+        Forward_speed_n:
+          value: null
+          unit: null
+        scan_speed:
+          value: null
+          unit: null
+        scan_time:
+          value: null
+          unit: null
+      scan_region:
+        Scan_angle_n:
+          value: null
+          unit: null
+        scan_offset:
+          value: null
+          unit: null
+        scan_range:
+          value: null
+          unit: null
+      scan_type: null
+    cryo_bottom_temp:
+      value: null
+      unit: null
+    cryo_shield_temp:
+      value: null
+      unit: null
+    cryo_shield_temperature:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+    cryo_temperature:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+    tip_temp:
+      value: null
+      unit: null
+    tip_temperature:
+      calibration_time: null
+      value:
+        value: null
+        unit: null
+  tip_temperature: null
+reproducibility_indicators:
+  bias_sweep: null
+  current: null
+  current_gain: null
+  current_offset: null
+  modulation_frequency: null
+  modulation_signal_type: null
+resolution_indicators:
+  bias_sweep: null
+  cryo_bottom_temp: null
+  cryo_shield_temp: null
+  modulation_frequency: null
+  modulation_signal_type: null
+  stm_head_temp: null
+scan_mode: null
