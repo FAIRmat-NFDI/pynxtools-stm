@@ -74,19 +74,22 @@ class SPMformatter(ABC):
         self,
         template: Template,
         raw_file: Union[str, Path],
-        eln_dict: Dict,
+        eln_file: str,
         config_file: str = None,  # Incase it is not provided by users
         entry: Optional[str] = None,
     ):
         self.template: Template = template
         self.raw_file: Union[str, Path] = raw_file
-        self.eln: Dict = eln_dict
         self.raw_data: Dict = self.get_raw_data_dict()
         self.entry: str = entry
         self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
+        self.eln = self._get_eln_dict(eln_file)  # Placeholder
 
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
+
+    @abstractmethod
+    def _get_eln_dict(self, eln_file: str): ...
 
     def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
         for key, val in config_dict.items():
@@ -175,7 +178,7 @@ class SPMformatter(ABC):
             return data
 
     def get_raw_data_dict(self):
-        return SPMParser().get_raw_data_dict(self.raw_file, eln_dict=self.eln)
+        return SPMParser().get_raw_data_dict(self.raw_file, eln=self.eln)
 
     def _arange_axes(self, direction="down"):
         fast_slow = None

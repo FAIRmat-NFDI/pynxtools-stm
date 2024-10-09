@@ -52,16 +52,20 @@ class NanonisDatSTS(SPMformatter):
         self,
         template: Template,
         raw_file: str | Path,
-        eln_dict: Dict,
+        eln_file: Dict,
         config_file: str = None,
         entry: str | None = None,
     ):
-        super().__init__(template, raw_file, eln_dict, config_file, entry)
+        super().__init__(template, raw_file, eln_file, config_file, entry)
 
     def _get_conf_dict(self, config_file: str = None):
         if config_file:
             return fhs.read_config_file(config_file)
         return _nanonis_sts_dat_generic_5e
+
+    def _get_eln_dict(self, eln_file: str):
+        # TODO: Implement this function
+        raise NotImplementedError
 
     def get_nxformatted_template(self):
         self.work_though_config_nested_dict(self.config_dict, "")

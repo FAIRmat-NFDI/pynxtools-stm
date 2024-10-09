@@ -71,11 +71,11 @@ class NanonisSxmAFM(SPMformatter):
         # TODO: fix the type of template
         template: "Template",
         raw_file: Union[str, Path],
-        eln_dict: Dict,
+        eln_file: Dict,
         config_file: str = None,  # Incase it is not provided by users
         entry: Optional[str] = None,
     ):
-        super().__init__(template, raw_file, eln_dict, config_file, entry)
+        super().__init__(template, raw_file, eln_file, config_file, entry)
         # self.config_dict: Dict = self._get_conf_dict(config_file)
         self.nanonis_sxm_stm = NanonisSxmSTM(self.template, self.raw_file, self.eln)
         # Use AFM specific config file and the resulting dict
@@ -89,6 +89,10 @@ class NanonisSxmAFM(SPMformatter):
             return fhs.read_config_file(config_file)
         else:
             return _nanonis_afm_sxm_generic_5e
+
+    def _get_eln_dict(self, eln_file: str):
+        # TODO: Implement this function
+        raise NotImplementedError
 
     def construct_scan_pattern_grp(
         self,

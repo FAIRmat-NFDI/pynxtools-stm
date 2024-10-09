@@ -79,7 +79,7 @@ class SPMReader(BaseReader):
         General read menthod to prepare the template.
         """
         filled_template: Union[Dict, None] = Template()
-        eln_dict: Union[Dict[str, Any], None] = None
+        eln_file: str = None
         config_file: Optional[str] = None
         data_file: Optional[str] = ""
         experirment_type: Optional[str] = None
@@ -93,16 +93,16 @@ class SPMReader(BaseReader):
                 raw_file_ext = ext
             if ext == "json":
                 config_file = file
-            if ext in ["yaml", "yml"]:
-                with open(file, mode="r", encoding="utf-8") as fl_obj:
-                    eln_dict = flatten_and_replace(
-                        FlattenSettings(
-                            yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED
-                        )
-                    )
+            # if ext in ["yaml", "yml"]:
+            #     with open(file, mode="r", encoding="utf-8") as fl_obj:
+            #         eln_dict = flatten_and_replace(
+            #             FlattenSettings(
+            #                 yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED
+            #             )
+            #         )
         # TODO: Get experiment type from eln, so include `experiment_type`
         # in application definition
-        experirment_type = "sts"
+        experirment_type = "afm"
         # Get callable object that has parser inside
         if experirment_type == "stm" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonis_sxm_stm import NanonisSxmSTM
@@ -110,27 +110,27 @@ class SPMReader(BaseReader):
             nss = NanonisSxmSTM(
                 template=template,
                 raw_file=data_file,
-                eln_dict=eln_dict,
+                eln_file=eln_file,
                 config_file=config_file,
             )
             nss.get_nxformatted_template()
         elif experirment_type == "afm" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonis_sxm_afm import NanonisSxmAFM
 
-            nss = NanonisSxmSTM(
+            nsa = NanonisSxmAFM(
                 template=template,
                 raw_file=data_file,
-                eln_dict=eln_dict,
+                eln_file=eln_file,
                 config_file=config_file,
             )
-            nss.get_nxformatted_template()
+            nsa.get_nxformatted_template()
         elif experirment_type == "sts" and raw_file_ext == "dat":
             from pynxtools_stm.nxformatters.nanonis_dat_sts import NanonisDatSTS
 
             nds = NanonisDatSTS(
                 template=template,
                 raw_file=data_file,
-                eln_dict=eln_dict,
+                eln_file=eln_file,
                 config_file=config_file,
             )
             nds.get_nxformatted_template()

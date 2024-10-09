@@ -24,7 +24,7 @@ A default configuration file for Nanonis STM data from SXM file.
 _nanonis_afm_sxm_generic_5e = {
     "ENTRY[entry]": {
         "@defaut": {
-            "raw_path": "@default:/entry/experiment_instrument/scan_environment/scan_control/mesh_scan/current_backward"
+            "raw_path": "@default:/entry/experiment_instrument/scan_environment/scan_control/mesh_scan/amplitude_backward/amplitude_backward",
         },
         "definition": {"@version": None},
         "collection_identifier": "",
@@ -53,7 +53,7 @@ _nanonis_afm_sxm_generic_5e = {
                     "reference_phase": {
                         "raw_path": "/Oscillation Control/Reference Phase",
                         "@units": "/Oscillation Control/Reference Phase/@unit",
-                    },  # TODO: Add it in NXcantilever_spm
+                    },
                     "frequency_harmonic": {"raw_path": "/Oscillation Control/Harmonic"},
                     "cantilever_phase_positioner": {
                         "actuator": {
@@ -81,7 +81,7 @@ _nanonis_afm_sxm_generic_5e = {
                             },
                         },
                     },
-                    "cantilever_amplitude_positioner": {  # TODO: Add it in NXcantilever_spm
+                    "cantilever_amplitude_positioner": {
                         "actuator": {
                             "feedback": {
                                 "K_p_value[k_p_value]": {
@@ -108,7 +108,7 @@ _nanonis_afm_sxm_generic_5e = {
                         },
                         "frequency_demodulation_bandwidth": "",
                         "amplitude_demodulation_bandwidth": {
-                            "raw_data": "/Oscillation Control/PLL-Setup Demod. Bandwidth Amp",
+                            "raw_path": "/Oscillation Control/PLL-Setup Demod. Bandwidth Amp",
                             "@units": "/Oscillation Control/PLL-Setup Demod. Bandwidth Amp/@unit",
                         },
                         "phase_demodulation_bandwidth": {
@@ -344,12 +344,7 @@ _nanonis_afm_sxm_generic_5e = {
                 "tip_temp": {"@units": None},
                 "scan_name": {"raw_path": "/Scan/series name"},
                 "SCAN_CONTROL[scan_control]": {
-                    "scan_name": {  # TODO check it is in appdef
-                        "raw_path": "/Scan/series name"
-                    },
-                    # TODO: include the functino from
-                    # nanosnis stm_template.py, This part is
-                    # copied from stm.
+                    "scan_name": {"raw_path": "/Scan/series name"},
                     "mesh_SCAN[mesh_scan]": {
                         "backward_speed_N[backward_speed_n]": {
                             "#note": "Derived in construct_scan_pattern_grp",
@@ -379,9 +374,6 @@ _nanonis_afm_sxm_generic_5e = {
                             "@units": "",
                         },
                     },
-                    # TODO: include the functino from
-                    # nanosnis stm_template.py, This part is
-                    # copied from stm.
                     "scan_region": {
                         "scan_angle_N[scan_angle_n]": {
                             "raw_path": "/SCAN/ANGLE",

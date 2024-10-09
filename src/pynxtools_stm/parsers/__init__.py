@@ -67,14 +67,14 @@ class SPMParser:
     def __get_appropriate_parser(
         self,
         file: Union[str, Path],
-        eln_dict: Optional[Dict] = {},
+        eln: Optional[Dict] = {},
         file_ext: Optional[str] = None,
     ) -> Iterable[Callable]:
         """Search for appropriate prser and pass it the reader.
 
         Parameters
         ----------
-        eln_dict : Dict
+        eln : Dict
             User provided eln file (yaml) that must contain all the info about
             experiment, vendor's name and version of the vendor's software.
 
@@ -92,7 +92,7 @@ class SPMParser:
                     file_ext = file.rsplit(".", 1)[-1]
         parser: Optional[Callable] = None
         # experiment_t_key: str = "/ENTRY[entry]/experiment_type"
-        # experiment_t: str = eln_dict[experiment_t_key]
+        # experiment_t: str = eln[experiment_t_key]
         try:
             experiment_dict: SPMParser.par_nav_t = self.__parser_navigation[file_ext]
         except KeyError as exc:
@@ -102,7 +102,7 @@ class SPMParser:
             ) from exc
 
         vendor_key: str = "/ENTRY[entry]/INSTRUMENT[instrument]/software/vendor"
-        vendor_n: str = eln_dict.get(vendor_key, None)
+        vendor_n: str = eln.get(vendor_key, None)
         try:
             vendor_dict: SPMParser.par_nav_t = experiment_dict.get(vendor_n, {})  # type: ignore[assignment]
         except (KeyError, ValueError):
@@ -111,7 +111,7 @@ class SPMParser:
         software_v_key: str = (
             "/ENTRY[entry]/INSTRUMENT[instrument]/software/model/@version"
         )
-        software_v: str = eln_dict.get(software_v_key, None)
+        software_v: str = eln.get(software_v_key, None)
         try:
             parser_cls: Callable = vendor_dict.get(software_v, None)  # type: ignore[assignment]
             if isinstance(parser_cls, Callable):
@@ -132,12 +132,12 @@ class SPMParser:
     def get_raw_data_dict(
         self,
         file: Union[str, Path],
-        eln_dict: Dict = None,
+        eln: Dict = None,
         file_ext: Optional[str] = None,
     ):
         """Get the raw data from the file."""
         parsers: Iterable[callable] = self.__get_appropriate_parser(
-            file=file, eln_dict=eln_dict or {}, file_ext=file_ext
+            file=file, eln=eln or {}, file_ext=file_ext
         )
         raw_data_dict: Optional[Dict[str, Any]] = None
         for parser in parsers:

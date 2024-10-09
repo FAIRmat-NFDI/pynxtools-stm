@@ -64,11 +64,11 @@ class NanonisSxmSTM(SPMformatter):
         self,
         template: "Template",
         raw_file: Union[str, Path],
-        eln_dict: Dict,
+        eln_file: Dict,
         config_file: str = None,  # Incase it is not provided by users
         entry: Optional[str] = None,
     ):
-        super().__init__(template, raw_file, eln_dict, config_file, entry)
+        super().__init__(template, raw_file, eln_file, config_file, entry)
         # self.config_dict: Dict = self._get_conf_dict(config_file)
 
     def get_nxformatted_template(self):
@@ -79,6 +79,10 @@ class NanonisSxmSTM(SPMformatter):
             return fhs.read_config_file(config_file)
         else:
             return _nanonis_stm_sxm_generic_5e
+
+    def _get_eln_dict(self, eln_file: str):
+        # TODO: Implement the method to get the ELN data
+        raise NotImplementedError
 
     def construct_scan_pattern_grp(
         self,
