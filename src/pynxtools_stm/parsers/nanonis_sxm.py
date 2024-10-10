@@ -156,6 +156,32 @@ class SxmGenericNanonis(SPMBase):
         h_comp_iter = iter(re.split("\n:|:\n", h_part))
         return dict(zip(h_comp_iter, h_comp_iter)), scan_file.signals
 
+    def __get_aligned_scan_metadata_dict(self, prepend_part, text):
+        """Scan metadata from descriptive text.
+
+        Parameters
+        ----------
+        text : str
+            descriptive text that contains scan metadata.
+
+        Return
+        ------
+        dict
+            A dictionary that contains scan metadata.
+        """
+        scan_metadata_dict = {}
+        lines = text.split("\n")
+        header = lines[0].split("\t")
+
+        for line in lines[1:]:
+            if line == "":
+                continue
+            parts = line.split("\t")
+            startting = prepend_part + "/" + parts[2]
+            for meta_tag, value in zip(header[1:], parts[1:]):
+                scan_metadata_dict[startting + "/" + meta_tag] = value
+        return scan_metadata_dict
+
     def __get_nested_metadata_dict_and_signal(self):
         """
         Get meradata and signal from spm file.
@@ -170,6 +196,8 @@ class SxmGenericNanonis(SPMBase):
         temp_flattened_dict = {}
         nested_path_to_slash_separated_path(nesteded_matadata_dict, temp_flattened_dict)
         flattened_dict = {}
+        scan_metadata_dict = None
+
         for key, val in temp_flattened_dict.items():
             # list of tuples of (data path, data) and (unit path/unit and unit value)
             tuple_li = self.convert_key_to_unit_and_entity(
@@ -180,7 +208,24 @@ class SxmGenericNanonis(SPMBase):
                     flattened_dict[tup[0]] = tup[1]
             else:
                 flattened_dict[key] = val
+            # Alingment of scan data with info, e.g.
+            # /DATA/INFO : 	Channel	Name	Unit	Direction	Calibration	Offset
+            # 14	Z	m	both	-3.484E-9	0.000E+0
+            # 3	Input_4	V	both	1.000E+0	0.000E+0
+            # 0	Current	A	both	-1.000E-10	-8.014E-13
+            # 16	Phase	deg	both	1.800E+1	0.000E+0
+            # 17	Amplitude	m	both	4.235E-11	0.000E+0
+            # 18	Frequency_Shift	Hz	both	3.815E+0	0.000E+0
+            # 19	Excitation	V	both	1.000E-2	0.000E+0
+            # 20	LIX_1_omega	A	both	1.000E+0	0.000E+0
+            # 21	LIY_1_omega	A	both	1.000E+0	0.000E+0
+            if key == "/DATA/INFO":
+                scan_metadata_dict = self.__get_aligned_scan_metadata_dict(
+                    "/DATA/INFO", text=val
+                )
 
+        if scan_metadata_dict:
+            flattened_dict.update(scan_metadata_dict)
         flattened_dict.update(temp_flattened_dict_sig)
         return flattened_dict
 

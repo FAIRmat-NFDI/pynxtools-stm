@@ -213,7 +213,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         # "@long_name": "Bias Voltage",
                                     },
-                                    "title": "Bias Spectroscopy",
+                                    "@title": "Bias Spectroscopy",
                                     "grp_name": "current",
                                 },
                                 {
@@ -233,7 +233,7 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias/unit",
                                         ],
                                     },
-                                    "title": "Lockin Signal 1X",
+                                    "@title": "Lockin Signal 1X",
                                     "grp_name": "Lockin Demod 1X",
                                 },
                                 {
@@ -253,7 +253,7 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias/unit",
                                         ],
                                     },
-                                    "title": "Lockin Signal 1Y",
+                                    "@title": "Lockin Signal 1Y",
                                     "grp_name": "Lockin Demod 1Y",
                                 },
                                 {
@@ -273,7 +273,7 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias/unit",
                                         ],
                                     },
-                                    "title": "Lockin Signal 2X",
+                                    "@title": "Lockin Signal 2X",
                                     "grp_name": "Lockin Demod 2X",
                                 },
                                 {
@@ -293,7 +293,7 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias/unit",
                                         ],
                                     },
-                                    "title": "Lockin Signal 2Y",
+                                    "@title": "Lockin Signal 2Y",
                                     "grp_name": "Lockin Demod 2Y",
                                 },
                                 {
@@ -311,7 +311,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         "@units": "/dat_mat_components/Bias [filt]/unit",
                                     },
-                                    "title": "Bias Spectroscopy(filter)",
+                                    "@title": "Bias Spectroscopy(filter)",
                                     "grp_name": "Current(filter)",
                                 },
                                 {
@@ -329,7 +329,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         "@units": "/dat_mat_components/Bias [filt]/unit",
                                     },
-                                    "title": "Lockin Demod 1X(filter)",
+                                    "@title": "Lockin Demod 1X(filter)",
                                     "grp_name": "Lockin_Demod_1X(filter)",
                                 },
                                 {
@@ -347,7 +347,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         "@units": "/dat_mat_components/Bias [filt]/unit",
                                     },
-                                    "title": "Lockin Demod 1Y(filter)",
+                                    "@title": "Lockin Demod 1Y(filter)",
                                     "grp_name": "Lockin_Demod_1Y(filter)",
                                 },
                                 {
@@ -365,7 +365,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         "@units": "/dat_mat_components/Bias [filt]/unit",
                                     },
-                                    "title": "Lockin Demod 2X(filter)",
+                                    "@title": "Lockin Demod 2X(filter)",
                                     "grp_name": "Lockin_Demod_2X(filter)",
                                 },
                                 {
@@ -383,7 +383,7 @@ _nanonis_sts_dat_generic_5e = {
                                         ],
                                         "@units": "/dat_mat_components/Bias [filt]/unit",
                                     },
-                                    "title": "Lockin Demod 2Y(filter)",
+                                    "@title": "Lockin Demod 2Y(filter)",
                                     "grp_name": "Lockin_Demod_2Y(filter)",
                                 },
                             ],  # TODO: Plotable data data will come here
@@ -671,7 +671,7 @@ _nanonis_sts_dat_generic_5e = {
                             ],
                             "axis_ind": 0,
                         },
-                        "title": "Bias Spectroscopy Temperature1",
+                        "@title": "Bias Spectroscopy Temperature1",
                         "grp_name": "temperature1",
                     },
                     {
@@ -692,7 +692,7 @@ _nanonis_sts_dat_generic_5e = {
                             ],
                             "axis_ind": 0,
                         },
-                        "title": "Bias Spectroscopy Temperature1(filter)",
+                        "@title": "Bias Spectroscopy Temperature1(filter)",
                         "grp_name": "temperature1(filter)",
                     },
                 ],

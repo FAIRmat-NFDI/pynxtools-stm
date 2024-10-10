@@ -172,14 +172,22 @@ def get_nanonis_sxm_parsed_data(file_path: str):
     return SPMParser().get_raw_data_dict(file_path)
 
 
-def write_spm_raw_file_data(raw_file):
+def write_spm_raw_file_data(raw_file, output_file=None):
     """Parse the raw_file into a organised dictionary. It helps users as well as developers
     to understand how the reader works and modify the config file."""
 
     base_name = os.path.basename(raw_file)
     raw_name = base_name.split(".", 1)[0]
-    data_dict = get_nanonis_sxm_parsed_data(raw_file)
-    temp_file = f"{raw_name}.txt"
+    # TODO: fix it
+    data_dict = SPMParser().get_raw_data_dict(raw_file)
+    if (
+        output_file is not None
+        and isinstance(output_file, str)
+        and output_file.endswith(".txt")
+    ):
+        temp_file = output_file
+    else:
+        temp_file = f"{raw_name}.txt"
     with open(temp_file, mode="w", encoding="utf-8") as txt_f:
         for key, val in data_dict.items():
             txt_f.write(f"{key} : {val}\n")

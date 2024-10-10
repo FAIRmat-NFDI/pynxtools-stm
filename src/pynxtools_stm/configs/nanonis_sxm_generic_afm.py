@@ -369,10 +369,80 @@ _nanonis_afm_sxm_generic_5e = {
                         },
                         "step_size_N[step_size_n]": {"raw_path": "", "@units": ""},
                         "scan_time": "",
-                        "SCAN_DATA[scan_data]": {
-                            "raw_path": "/DATA/INFO",
-                            "@units": "",
-                        },
+                        "SCAN_DATA[scan_data]": [
+                            {
+                                "data": {
+                                    "name": "imput_4",
+                                    "raw_path": "/Input_4/forward",
+                                    "@units": "/DATA/INFO/Input_4/Unit",
+                                },
+                                "@title": "Input-4 Plot of AFM Experiment (Forward Direction)",
+                                "grp_name": "input_4_forward",
+                            },
+                            {
+                                "data": {
+                                    "name": "imput_4",
+                                    "raw_path": "/Input_4/backward",
+                                    "@units": "/DATA/INFO/Input_4/Unit",
+                                },
+                                "@title": "Input-4 Plot of AFM Experiment (Backward Direction)",
+                                "grp_name": "input_4_backward",
+                            },
+                            {
+                                "data": {
+                                    "name": "lix_1_omega",
+                                    "raw_path": "/LIX_1_omega/foward",
+                                    "@units": "/DATA/INFO/LIX_1_omega/Unit",
+                                },
+                                "@title": "Lockin X-1 Plot of AFM Experiment (Forward Direction)",
+                                "grp_name": "lix_1_omega_forward",
+                            },
+                            {
+                                "data": {
+                                    "name": "lix_1_omega",
+                                    "raw_path": "/LIX_1_omega/backward",
+                                    "@units": "/DATA/INFO/LIX_1_omega/Unit",
+                                },
+                                "@title": "Lockin X-1 Plot of AFM Experiment (Backward Direction)",
+                                "grp_name": "lix_1_omega_backward",
+                            },
+                            {
+                                "data": {
+                                    "name": "liy_1_omega",
+                                    "raw_path": "/LIY_1_omega/foward",
+                                    "@units": "/DATA/INFO/LIY_1_omega/Unit",
+                                },
+                                "@title": "Lockin Y-1 Plot of AFM Experiment (Forward Direction)",
+                                "grp_name": "liy_1_omega_forward",
+                            },
+                            {
+                                "data": {
+                                    "name": "liy_1_omega",
+                                    "raw_path": "/LIY_1_omega/backward",
+                                    "@units": "/DATA/INFO/LIY_1_omega/Unit",
+                                },
+                                "@title": "Lockin Y-1 Plot of AFM Experiment (Backward Direction)",
+                                "grp_name": "lixy_1_omega_backward",
+                            },
+                            {
+                                "data": {
+                                    "name": "frequency_shift",
+                                    "raw_path": "/Frequency_Shift/forward",
+                                    "@units": "/DATA/INFO/Frequency_Shift/Unit",
+                                },
+                                "@title": "Frequency Shift Plot of AFM Experiment (Forward Direction)",
+                                "grp_name": "frequency_shift_forward",
+                            },
+                            {
+                                "data": {
+                                    "name": "frequency_shift",
+                                    "raw_path": "/Frequency_Shift/backward",
+                                    "@units": "/DATA/INFO/Frequency_Shift/Unit",
+                                },
+                                "@title": "Frequency Shift Plot of AFM Experiment (Backward Direction)",
+                                "grp_name": "frequency_shift_backward",
+                            },
+                        ],
                     },
                     "scan_region": {
                         "scan_angle_N[scan_angle_n]": {
@@ -443,6 +513,92 @@ _nanonis_afm_sxm_generic_5e = {
                 },
             },
         },
+        "DATA[data]": [
+            {
+                "data": {
+                    "name": "z",
+                    "raw_path": "/Z/forward",
+                    "@units": "/DATA/INFO/Z/Unit",
+                },
+                # "0": {
+                #     "name": "Bias Voltage",
+                #     "raw_path": [
+                #         "/Excitation/forward",
+                #         "/dat_mat_components/Bias/value",
+                #     ],
+                #     "@units": [
+                #         "/dat_mat_components/Bias calc/unit",
+                #         "/dat_mat_components/Bias/unit",
+                #     ],
+                #     # "@long_name": "Bias Voltage",
+                # },
+                "@title": "Height Plot of AFM Experiment (Foward Direction)",
+                "grp_name": "z_forward",
+            },
+            {
+                "data": {
+                    "name": "z",
+                    "raw_path": "/Z/backward",
+                    "@units": "/DATA/INFO/Z/Unit",
+                },
+                "@title": "Height Plot of AFM Experiment (Backward Direction)",
+                "grp_name": "z_backward",
+            },
+            {
+                "data": {
+                    "name": "excitation",
+                    "raw_path": "/Excitation/forward",
+                    "@units": "/DATA/INFO/Excitation/Unit",
+                },
+                "@title": "Excitation Plot of AFM Experiment (Forward Direction)",
+                "grp_name": "excitation_forward",
+            },
+            {
+                "data": {
+                    "name": "excitation",
+                    "raw_path": "/Excitation/backward",
+                    "@units": "/DATA/INFO/Excitation/Unit",
+                },
+                "@title": "Excitation Plot of AFM Experiment (Backward Direction)",
+                "grp_name": "excitation _backward",
+            },
+            {
+                "data": {
+                    "name": "phase",
+                    "raw_path": "/Phase/Foward",
+                    "@units": "/DATA/INFO/Phase/Unit",
+                },
+                "@title": "Phase Plot of AFM Experiment (Forward Direction)",
+                "grp_name": "phase_forward",
+            },
+            {
+                "data": {
+                    "name": "phase",
+                    "raw_path": "/Phase/Backward",
+                    "@units": "/DATA/INFO/Phase/Unit",
+                },
+                "@title": "Phase Plot of AFM Experiment (Backward Direction)",
+                "grp_name": "phase_backward",
+            },
+            {
+                "data": {
+                    "name": "current",
+                    "raw_path": "/Current/forward",
+                    "@units": "/DATA/INFO/Current/Unit",
+                },
+                "@title": "Current Plot of AFM Experiment (Forward Direction)",
+                "grp_name": "current_forward",
+            },
+            {
+                "data": {
+                    "name": "current",
+                    "raw_path": "/Current/backward",
+                    "@units": "/DATA/INFO/Current/Unit",
+                },
+                "@title": "Current Plot of AFM Experiment (Backward Direction)",
+                "grp_name": "current_backward",
+            },
+        ],
         "reproducibility_indicators": {
             "bias_sweep": None,
             "current": None,

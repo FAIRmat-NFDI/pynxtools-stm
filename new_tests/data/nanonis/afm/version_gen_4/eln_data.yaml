@@ -22,19 +22,13 @@ experiment_description:
 scan_mode: "tapping mode"
 scan_type: "line"
 hardware:
-  vendor:
-    value: 'Nanonis'
-  model:
-    value: 'Generic 4'
-  model/@version:
-    value: 'Generic 4'
+  vendor: 'Nanonis'
+  model: 'Generic 4'
+  model/@version: 'Generic 4'
 software:
-  vendor:
-    value: 'Nanonis'
-  model:
-    value: 'Generic 4'
-  model/@version:
-    value: 'Generic 4'
+  vendor: 'Nanonis'
+  model: 'Generic 4'
+  model/@version: 'Generic 4'
 experiment_instrument:
   Cantilever_spm:
     cantilever_oscillator:
@@ -64,8 +58,7 @@ experiment_instrument:
   piazo_sensor:
     Piezo_config_spm:
       calibration:
-        calibration_type:
-          value: 'Active'
+        calibration_type: 'Active'
       calibration_name:
         value: null
   scan_environment:
@@ -74,10 +67,8 @@ experiment_instrument:
         Stepping_N:
           value: null
           unit: null
-      scan_type: 
-        value: 'mesh'
-      scan_control_type:
-        value: 'Continuous'
+      scan_type:  'mesh'
+      scan_control_type: 'Continuous'
         
     XY_piezo_sensor:
       calibration_time: null

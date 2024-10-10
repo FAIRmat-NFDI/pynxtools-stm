@@ -84,6 +84,7 @@ class SPMformatter(ABC):
         self.entry: str = entry
         self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
         self.eln = self._get_eln_dict(eln_file)  # Placeholder
+        self.group_index = 0
 
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
@@ -236,7 +237,7 @@ class SPMformatter(ABC):
                 ],
                 "axis_ind": 0,
             },
-            "title": "Bias Spectroscopy Temperature1(filter)",
+            "@title": "Bias Spectroscopy Temperature1(filter)",
             "grp_name": "temperature1(filter)",
         }
 
@@ -250,7 +251,13 @@ class SPMformatter(ABC):
 
         To get the proper relation please visit:
         """
-        grp_name_to_embed = partial_conf_dict.get("grp_name", "")
+        grp_name_to_embed = partial_conf_dict.get(
+            "grp_name", f"data_{self.group_index}"
+        )
+        if "grp_name" in partial_conf_dict:
+            del partial_conf_dict["grp_name"]
+
+        self.group_index += 1
         grp_name_to_embed_fit = grp_name_to_embed.replace(" ", "_").lower()
         nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed_fit)
         data_dict = partial_conf_dict.get("data")
@@ -260,10 +267,11 @@ class SPMformatter(ABC):
         )
         if not isinstance(nxdata_d_arr, np.ndarray):
             return
-        nxdata_title = partial_conf_dict.get("title")
+        # nxdata_title = partial_conf_dict.get("title", "title")
         nxdata_axes = []
         nxdata_indices = []
         axdata_unit_other_list = []
+        # Handle axes
         for key, val in partial_conf_dict.items():
             if key == "data":  # handled above
                 continue
@@ -279,7 +287,9 @@ class SPMformatter(ABC):
                     _get_data_unit_and_others(self.raw_data, end_dict=val)
                 )
         field_nm_fit = nxdata_nm.replace(" ", "_").lower()
-        self.template[f"{parent_path}/{nxdata_group}/@title"] = nxdata_title
+        self.template[f"{parent_path}/{nxdata_group}/@title"] = (
+            f"Title Data Group {self.group_index}"
+        )
         self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"] = nxdata_d_arr
         self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@units"] = d_unit
         self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@long_name"] = (
@@ -303,10 +313,16 @@ class SPMformatter(ABC):
             self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/@long_name"] = (
                 f"{axis} ({unit})"
             )
-            if axdata_unit_other_list[ind][2]:
+            if axdata_unit_other_list[ind][2]:  # Other attributes
                 for k, v in axdata_unit_other_list[ind][2].items():
                     self.template[f"{parent_path}/{nxdata_group}/{axis_fit}/{k}"] = v
 
         self.template[f"{parent_path}/{nxdata_group}/@axes"] = [
             ax.replace(" ", "_").lower() for ax in nxdata_axes
         ]
+        # Read grp attributes from config file
+        for key, val in partial_conf_dict.items():
+            if key in ("grp_name",) or isinstance(val, dict) or key.startswith("#"):
+                continue
+            elif key.startswith("@"):
+                self.template[f"{parent_path}/{nxdata_group}/{key}"] = val
