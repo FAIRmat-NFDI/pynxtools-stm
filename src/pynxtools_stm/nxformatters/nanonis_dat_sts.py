@@ -24,7 +24,6 @@ to NeXus application definition NXstm.
 from pynxtools_stm.nxformatters.base_formatter import SPMformatter
 from typing import Dict, Optional, Union
 from pathlib import Path
-import itertools
 from dataclasses import dataclass
 import re
 from pynxtools_stm.configs.nanonis_dat_generic_sts import _nanonis_sts_dat_generic_5e
@@ -68,6 +67,7 @@ class NanonisDatSTS(SPMformatter):
         raise NotImplementedError
 
     def get_nxformatted_template(self):
+        self._format_template_from_eln()
         self.work_though_config_nested_dict(self.config_dict, "")
 
     def construct_scan_region_grp(
@@ -149,6 +149,32 @@ class NanonisDatSTS(SPMformatter):
                 self._NXdata__grp_from_conf_description(
                     conf_dict, parent_path, group_name
                 )
+
+    def _NXdata__grp_from_conf_description(
+        self, partial_conf_dict, parent_path: str, group_name: str
+    ):
+        # TODO: Collect the flip number from eln and multiply it with the
+        # data field of the NXdata group
+        flip_num = 1
+        partial_conf_dict_c = partial_conf_dict.copy()
+        return super()._NXdata__grp_from_conf_description(
+            partial_conf_dict_c, parent_path, group_name
+        )
+        grp_name_to_embed = partial_conf_dict.get(
+            "grp_name", f"data_{self.group_index}"
+        )
+        if "grp_name" in partial_conf_dict:
+            del partial_conf_dict["grp_name"]
+
+        grp_name_to_embed_fit = grp_name_to_embed.replace(" ", "_").lower()
+        nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed_fit)
+        grp_data = partial_conf_dict.get("data", None)
+        fld_nm = grp_data.get("name", "")
+        field_nm_fit = fld_nm.replace(" ", "_").lower()
+        fld_data = self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"]
+        self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"] = (
+            flip_num * fld_data
+        )
 
     def _construct_nxscan_controllers(self, partial_conf_dict, parent_path, group_name):
         pass

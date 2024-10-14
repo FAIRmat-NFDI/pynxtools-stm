@@ -26,6 +26,8 @@ from pathlib import Path
 from dataclasses import dataclass
 from pynxtools_stm.parsers import SPMParser
 from pynxtools.dataconverter.template import Template
+from pynxtools.dataconverter.readers.utils import FlattenSettings, flatten_and_replace
+import yaml
 from pynxtools_stm.nxformatters.helpers import (
     _get_data_unit_and_others,
     to_intended_t,
@@ -34,6 +36,22 @@ from pynxtools_stm.nxformatters.helpers import (
 import numpy as np
 
 from pynxtools_stm.nxformatters.helpers import replace_variadic_name_part
+
+REPLACE_NESTED: Dict[str, str] = {}
+
+CONVERT_DICT = {
+    "Positioner_spm": "POSITIONER_SPM[positioner_spm]",
+    "Temperature": "TEMPERATURE[temperature]",
+    "Scan_control": "SCAN_CONTROL[scan_control]",
+    "unit": "@units",
+    "version": "@version",
+    "default": "@default",
+    "Sample": "SAMPLE[sample]",
+    "User": "USER[user]",
+    "Data": "DATA[data]",
+    "Source": "SOURCE[source]",
+    "Mesh_scan": "mesh_SCAN[mesh_scan]",
+}
 
 
 @dataclass
@@ -80,22 +98,24 @@ class SPMformatter(ABC):
     ):
         self.template: Template = template
         self.raw_file: Union[str, Path] = raw_file
+        self.eln = self._get_eln_dict(eln_file)  # Placeholder
         self.raw_data: Dict = self.get_raw_data_dict()
         self.entry: str = entry
         self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
-        self.eln = self._get_eln_dict(eln_file)  # Placeholder
         self.group_index = 0
 
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
 
-    @abstractmethod
-    def _get_eln_dict(self, eln_file: str): ...
+    def _get_eln_dict(self, eln_file: str):
+        with open(eln_file, mode="r", encoding="utf-8") as fl_obj:
+            eln_dict = flatten_and_replace(
+                FlattenSettings(yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED)
+            )
+        return eln_dict
 
     def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
         for key, val in config_dict.items():
-            if isinstance(val, str):
-                x = val
             if val is None or val == "":
                 continue
             if key in self._grp_to_func:
@@ -132,7 +152,6 @@ class SPMformatter(ABC):
                             group_name=key,
                         )
                     else:  # Handle fields and attributes
-                        print("### ##", item)
                         part_to_embed, path_dict = (
                             item.popitem()
                         )  # Current only one item is valid
@@ -204,6 +223,10 @@ class SPMformatter(ABC):
 
     @abstractmethod
     def get_nxformatted_template(self): ...
+
+    def _format_template_from_eln(self):
+        for key, val in self.eln.items():
+            self.template[key] = to_intended_t(val)
 
     @abstractmethod
     def _construct_nxscan_controllers(

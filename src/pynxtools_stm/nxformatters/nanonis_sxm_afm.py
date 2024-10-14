@@ -77,11 +77,12 @@ class NanonisSxmAFM(SPMformatter):
     ):
         super().__init__(template, raw_file, eln_file, config_file, entry)
         # self.config_dict: Dict = self._get_conf_dict(config_file)
-        self.nanonis_sxm_stm = NanonisSxmSTM(self.template, self.raw_file, self.eln)
+        self.nanonis_sxm_stm = NanonisSxmSTM(self.template, self.raw_file, eln_file)
         # Use AFM specific config file and the resulting dict
         self.nanonis_sxm_stm.config_dict = self.config_dict
 
     def get_nxformatted_template(self):
+        self._format_template_from_eln()
         self.work_though_config_nested_dict(self.config_dict, "")
 
     def _get_conf_dict(self, config_file: str = None):
@@ -89,10 +90,6 @@ class NanonisSxmAFM(SPMformatter):
             return fhs.read_config_file(config_file)
         else:
             return _nanonis_afm_sxm_generic_5e
-
-    def _get_eln_dict(self, eln_file: str):
-        # TODO: Implement this function
-        raise NotImplementedError
 
     def construct_scan_pattern_grp(
         self,

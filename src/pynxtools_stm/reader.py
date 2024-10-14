@@ -32,18 +32,6 @@ from pynxtools import get_nexus_version
 # from pynxtools_stm.helper import set_default_attr_in_group
 
 
-CONVERT_DICT = {
-    "Instrument": "INSTRUMENT[instrument]",
-    "Environment": "ENVIRONMENT[environment]",
-    "Sample_bias": "SAMPLE_BIAS[sample_bias]",
-    "unit": "@units",
-    "version": "@version",
-    "default": "@default",
-    "Sample": "SAMPLE[sample]",
-    "User": "USER[user]",
-    "Data": "DATA[data]",
-    "Source": "SOURCE[source]",
-}
 # For flatened key-value pair from nested dict.
 REPLACE_NESTED: Dict[str, str] = {}
 
@@ -93,13 +81,13 @@ class SPMReader(BaseReader):
                 raw_file_ext = ext
             if ext == "json":
                 config_file = file
-            # if ext in ["yaml", "yml"]:
-            #     with open(file, mode="r", encoding="utf-8") as fl_obj:
-            #         eln_dict = flatten_and_replace(
-            #             FlattenSettings(
-            #                 yaml.safe_load(fl_obj), CONVERT_DICT, REPLACE_NESTED
-            #             )
-            #         )
+            if ext in ["yaml", "yml"]:
+                eln_file = file
+        if not eln_file:
+            raise ValueError("ELN file is required for the reader to work.")
+        if not data_file:
+            raise ValueError("Data file is required for the reader to work.")
+
         # TODO: Get experiment type from eln, so include `experiment_type`
         # in application definition
         experirment_type = "afm"
