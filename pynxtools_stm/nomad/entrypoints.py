@@ -15,26 +15,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-"""Entry points for mpes examples."""
+"""Entry points for STS and STM examples."""
 
-try:
-    from nomad.config.models.plugins import ExampleUploadEntryPoint
-except ImportError as exc:
-    raise ImportError(
-        "Could not import nomad package. Please install the package 'nomad-lab'."
-    ) from exc
+from nomad.config.models.plugins import ExampleUploadEntryPoint
 
 sts_example = ExampleUploadEntryPoint(
     title="Scanning Tunneling Spectroscopy (STS)",
-    category="FAIRmat examples",
-    description="""TODO: Add description""",
-    path="nomad/examples",
-    local_path="examples/data/uploads/mpes.zip",
+    category="SPM experiments examples",
+    description="""This example presents the capabilities of the NOMAD platform to store standarized Scanning Tunneling Spectroscopy (sts) data.""",
+    path="pynxtools-stm/nomad/examples",
+    local_path="examples/data/sts",
 )
 stm_example = ExampleUploadEntryPoint(
     title="Scanning Tunneling Microscopy (STM)",
-    category="FAIRmat examples",
-    description="""TODO: Add description""",
-    path="nomad/examples",
-    local_path="examples/data/uploads/mpes.zip",
+    category="SPM experiments examples",
+    description="""This example presents the capabilities of the NOMAD platform to store standarized Scanning Tunneling Microscopy (stm)""",
+    path="pynxtools-stm/nomad/examples",
+    local_path="examples/data/stm",
 )
