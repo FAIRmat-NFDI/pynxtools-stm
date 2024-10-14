@@ -26,7 +26,6 @@ from pynxtools.dataconverter.helpers import convert_data_dict_path_to_hdf5_path
 
 
 # Here are some data or data type or unit or data to skip:
-UNIT_TO_SKIP = ["on/off", "off", "on", "off/on"]
 
 
 def fill_template_from_eln_data(eln_data_dict, template):

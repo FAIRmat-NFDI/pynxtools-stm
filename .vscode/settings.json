@@ -5,7 +5,11 @@
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "editor.tabCompletion": "on",
+    "github.copilot.chat.experimental.temporalContext.enabled": true,
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
     "github.copilot.enable": {
-        "markdown": "true"
+        "python": true,
+        "json": true
     }
 }

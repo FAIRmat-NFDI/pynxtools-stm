@@ -1,4 +1,4 @@
-default:
+\@default:
   value: null
   unit: null
 collection_identifier:
@@ -63,33 +63,5 @@ experiment_instrument:
         value: null
   scan_environment:
     Scan_control:
-      Mesh_scan:
-        Stepping_N:
-          value: null
-          unit: null
       scan_type:  'mesh'
-      scan_control_type: 'Continuous'
-        
-    XY_piezo_sensor:
-      calibration_time: null
-      value:
-        value: null
-        unit: null
-    Xy_piezo_sensor:
-      calibration_time: null
-      value:
-        value: null
-        unit: null
-    height_piezo_sensor:
-      calibration_time: null
-      value:
-        value: null
-        unit: null
-    independent_controllers: null
-    measurement_sensors: null
-    tip_temperature:
-      calibration_time: null
-      value:
-        value: null
-        unit: null
-  tip_temperature: null
+      scan_control_type: 'continuous'
