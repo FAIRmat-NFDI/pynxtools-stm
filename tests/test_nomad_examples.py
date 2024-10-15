@@ -20,17 +20,14 @@
 import os
 import pytest
 
-# try:
-#     from nomad.parsing.parser import ArchiveParser
-#     from nomad.datamodel import EntryArchive, Context
-# except ImportError:
-#     pytest.skip(
-#         "Skipping NOMAD example tests because nomad is not installed",
-#         allow_module_level=True,
-#     )
-
-from nomad.parsing.parser import ArchiveParser
-from nomad.datamodel import EntryArchive, Context
+try:
+    # Check if nomad is installed properly
+    import nomad
+except ImportError:
+    pytest.skip(
+        "Skipping NOMAD example tests because nomad is not installed",
+        allow_module_level=True,
+    )
 
 from pynxtools.testing.nomad_example import (
     get_file_parameter,
@@ -38,62 +35,39 @@ from pynxtools.testing.nomad_example import (
     example_upload_entry_point_valid,
 )
 
-from pynxtools_mpes.nomad.entrypoints import sts_example, stm_example
+from pynxtools_stm.nomad.entrypoints import sts_example, stm_example
+from pynxtools_stm.nomad.nomad_example_paths import STM_EXAMPLE_PATH, STS_EXAMPLE_PATH
 
 
 @pytest.mark.parametrize(
-    "mainfile", [
-        (get_file_parameter(
-                os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "pynxtools_stm",
-                    "nomad",
-                    "examples",
-                    "spm",
-                    "sts",
-                )
-            )
-        ),
-        (get_file_parameter(
-                os.path.join(
-                    os.path.dirname(__file__),
-                    "..",
-                    "pynxtools_stm",
-                    "nomad",
-                    "examples",
-                    "spm",
-                    "stm",
-                )
-            )
-        ),
-    ],
-    ids=["sts", "stm"],
+    "mainfile",
+    list(get_file_parameter(STS_EXAMPLE_PATH))
+    + list(get_file_parameter(STS_EXAMPLE_PATH)),
 )
 def test_parse_nomad_examples(mainfile):
     """Test if NOMAD examples work."""
-    parse_nomad_examples(mainfile)
+    print(mainfile)
+    archive_dict = parse_nomad_examples(mainfile)
 
 
 @pytest.mark.parametrize(
-    ("entrypoint", "expected_local_path"),
+    ("entrypoint", "example_path"),
     [
         pytest.param(
-            sts_example,
-            "examples/data/uploads/sts.zip",
-            id="sts_example",
+            stm_example,
+            STM_EXAMPLE_PATH,
+            id="stm_example",
         ),
         pytest.param(
-            stm_example,
-            "examples/data/uploads/stm.zip",
-            id="stm_example",
+            sts_example,
+            STS_EXAMPLE_PATH,
+            id="sts_example",
         ),
     ],
 )
-def test_nomad_example_upload_entry_point_valid(entrypoint, expected_local_path):
+def test_example_upload_entry_point_valid(entrypoint, example_path):
     """Test if NOMAD ExampleUploadEntryPoint works."""
     example_upload_entry_point_valid(
         entrypoint=entrypoint,
-        plugin_package="pynxtools-stm",
-        expected_local_path=expected_local_path,
+        example_path=example_path,
     )

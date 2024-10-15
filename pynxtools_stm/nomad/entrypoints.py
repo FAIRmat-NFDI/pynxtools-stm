@@ -22,14 +22,14 @@ from nomad.config.models.plugins import ExampleUploadEntryPoint
 sts_example = ExampleUploadEntryPoint(
     title="Scanning Tunneling Spectroscopy (STS)",
     category="SPM experiments examples",
-    description="""This example presents the capabilities of the NOMAD platform to store standarized Scanning Tunneling Spectroscopy (sts) data.""",
-    path="pynxtools-stm/nomad/examples/spm/sts",
-    local_path="examples/data/uploads/sts.zip",
+    description="""This example presents the capabilities of the NOMAD platform to store standardized Scanning Tunneling Spectroscopy (sts) data.""",
+    plugin_package="pynxtools_stm",
+    resources=["nomad/examples/sts/*"],
 )
 stm_example = ExampleUploadEntryPoint(
     title="Scanning Tunneling Microscopy (STM)",
     category="SPM experiments examples",
-    description="""This example presents the capabilities of the NOMAD platform to store standarized Scanning Tunneling Microscopy (stm)""",
-    path="pynxtools-stm/nomad/examples/spm/stm",
-    local_path="examples/data/uploads/stm.zip",
+    description="""This example presents the capabilities of the NOMAD platform to store standardized Scanning Tunneling Microscopy (stm)""",
+    plugin_package="pynxtools_stm",
+    resources=["nomad/examples/stm/*"],
 )

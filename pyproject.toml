@@ -23,7 +23,8 @@ classifiers = [
 ]
 dependencies = [
     "findiff",
-    "pynxtools>=0.7.1",
+    # "pynxtools>=0.8.2",
+    "pynxtools@git+https://github.com/FAIRmat-NFDI/pynxtools.git@move-nomad-examples-to-plugin#egg=pynxtools",
 ]
 
 [project.urls]
