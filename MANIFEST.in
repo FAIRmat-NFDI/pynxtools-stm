@@ -1,1 +1,5 @@
-recursive-include pynxtools_stm/examples **
+prune *
+exclude *
+recursive-include pynxtools_stm **
+include README.md pyproject.toml LICENSE CITATION.cff
+recursive-include pynxtools_stm/nomad/examples **

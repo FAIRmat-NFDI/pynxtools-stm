@@ -50,6 +50,10 @@ docs = [
 [project.entry-points."pynxtools.reader"]
 sts = "pynxtools_stm.reader:STMReader"
 
+[project.entry-points.'nomad.plugin']
+sts_example = "pynxtools_stm.nomad.entrypoints:sts_example"
+stm_example = "pynxtools_stm.nomad.entrypoints:stm_example"
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pynxtools_stm"]
