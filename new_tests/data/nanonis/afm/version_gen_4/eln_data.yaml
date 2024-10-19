@@ -56,11 +56,11 @@ experiment_instrument:
     piezo_material: null
   photo_detector: null
   piazo_sensor:
-    Piezo_config_spm:
+    piezo_configuration:
       calibration:
-        calibration_type: 'Active'
-      calibration_name:
-        value: null
+        calibration_type: 'BBctive'
+        calibration_name: 4K
+        calibration_date: '2019-01-01'
   scan_environment:
     Scan_control:
       scan_type:  'mesh'

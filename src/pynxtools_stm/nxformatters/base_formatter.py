@@ -102,7 +102,6 @@ class SPMformatter(ABC):
         self.raw_data: Dict = self.get_raw_data_dict()
         self.entry: str = entry
         self.config_dict = self._get_conf_dict(config_file) or None  # Placeholder
-        self.group_index = 0
 
     @abstractmethod
     def _get_conf_dict(self, config_file: str = None): ...
@@ -140,13 +139,10 @@ class SPMformatter(ABC):
                         self.template[f"{parent_path}/{key}/@{k}"] = v
             # variadic fields that would have several values according to the dimentions
             elif isinstance(val, list) and isinstance(val[0], dict):
-                # Skip if the dict is designed for NXdata which shlould be handled
-                # by in separate function
-
                 for item in val:
                     # Handle to construct nxdata group
-                    if "title" in item or "grp_name" in item:
-                        self._NXdata__grp_from_conf_description(
+                    if "@title" in item or "grp_name" in item and "data" in item:
+                        self._NXdata_grp_from_conf_description(
                             partial_conf_dict=item,
                             parent_path=parent_path,
                             group_name=key,
@@ -238,8 +234,8 @@ class SPMformatter(ABC):
         **kwarg,
     ): ...
 
-    def _NXdata__grp_from_conf_description(
-        self, partial_conf_dict, parent_path: str, group_name: str
+    def _NXdata_grp_from_conf_description(
+        self, partial_conf_dict, parent_path: str, group_name: str, group_index=0
     ):
         """Example NXdata dict descrioption from config
         partial_conf_dict = {
@@ -274,13 +270,10 @@ class SPMformatter(ABC):
 
         To get the proper relation please visit:
         """
-        grp_name_to_embed = partial_conf_dict.get(
-            "grp_name", f"data_{self.group_index}"
-        )
+        grp_name_to_embed = partial_conf_dict.get("grp_name", f"data_{group_index}")
         if "grp_name" in partial_conf_dict:
             del partial_conf_dict["grp_name"]
 
-        self.group_index += 1
         grp_name_to_embed_fit = grp_name_to_embed.replace(" ", "_").lower()
         nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed_fit)
         data_dict = partial_conf_dict.get("data")
@@ -311,7 +304,7 @@ class SPMformatter(ABC):
                 )
         field_nm_fit = nxdata_nm.replace(" ", "_").lower()
         self.template[f"{parent_path}/{nxdata_group}/@title"] = (
-            f"Title Data Group {self.group_index}"
+            f"Title Data Group {group_index}"
         )
         self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"] = nxdata_d_arr
         self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}/@units"] = d_unit

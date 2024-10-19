@@ -79,18 +79,12 @@ experiment_instrument:
       '@version': null
     vendor: null
   piazo_sensor:
-    Piezo_config_spm:
+    piezo_configuration::
       calibration:
-        calibration_type:
-          value: 'active'
-      piezo_material:
-        name:
-          value: null
-        type:
-          value: null
-        density:
-          value: null
-          unit: null
+        calibration_type: 'Active'
+        caliberation_name: '4k'
+        calibration_date: '2019-01-01'
+
     Positioner_spm:
       z_controller:
         controller_status:

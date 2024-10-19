@@ -423,94 +423,7 @@ _nanonis_sts_dat_generic_5e = {
                 "current_offset": {"@units": None},
             },
             "piazo_sensor": {
-                "PIEZO_CONFIG_SPM[piezo_config_spm]": {
-                    "2nd_order_corr_N[2nd_order_corr_n]": [
-                        {
-                            "x": {
-                                "raw_path": "/Piezo Configuration/2nd order corr X/value",
-                                "@units": "/Piezo Configuration/2nd order corr X/unit",
-                            }
-                        },
-                        {
-                            "y": {
-                                "raw_path": "/Piezo Configuration/2nd order corr Y/value",
-                                "@units": "/Piezo Configuration/2nd order corr Y/unit",
-                            }
-                        },
-                    ],
-                    "drift_N[drift_n]": [
-                        {
-                            "x": {
-                                "value": "/Piezo Configuration/Drift X/value",
-                                "unit": "/Piezo Configuration/Drift X/unit",
-                            }
-                        },
-                        {
-                            "y": {
-                                "value": "/Piezo Configuration/Drift Y/value",
-                                "unit": "/Piezo Configuration/Drift Y/unit",
-                            }
-                        },
-                        {
-                            "z": {
-                                "value": "/Piezo Configuration/Drift Z/value",
-                                "unit": "/Piezo Configuration/Drift Z/unit",
-                            }
-                        },
-                    ],
-                    "hv_gain_N[hv_gain_n]": [
-                        {"x": {"value": "/Piezo Configuration/HV Gain X/value"}},
-                        {"y": {"value": "/Piezo Configuration/HV Gain Y/value"}},
-                        {"z": {"value": "/Piezo Configuration/HV Gain Z/value"}},
-                    ],
-                    "tilt_N[tilt_n]": [
-                        {
-                            "x": {
-                                "value": "/Piezo Configuration/Tilt X/value",
-                                "@units": "/Piezo Configuration/Tilt X/unit",
-                            }
-                        },
-                        {
-                            "y": {
-                                "value": "/Piezo Configuration/Tilt Y/value",
-                                "@units": "/Piezo Configuration/Tilt Y/unit",
-                            }
-                        },
-                        {
-                            "z": {
-                                "value": "/Piezo Configuration/Tilt Z/value",
-                                "@units": "/Piezo Configuration/Tilt Z/unit",
-                            }
-                        },
-                    ],
-                    "drift_correction_status": {
-                        "raw_path": [
-                            "/Piezo Configuration/Drift correction status/value",
-                            "/Piezo Calibration/Drift correction status/value",
-                        ]
-                    },
-                    "piezo_material": {
-                        "curvature_radius_N": [
-                            {
-                                "x": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius X/value",
-                                    "@units": "/Piezo Configuration/Curvature radius X/unit",
-                                }
-                            },
-                            {
-                                "y": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius Y/value",
-                                    "@units": "/Piezo Configuration/Curvature radius Y/unit",
-                                }
-                            },
-                            {
-                                "z": {
-                                    "raw_path": "/Piezo Configuration/Curvature radius Z/value",
-                                    "@units": "/Piezo Configuration/Curvature radius Z/unit",
-                                }
-                            },
-                        ],
-                    },
+                "piezo_configuration": {
                     "calibration": {
                         "calibration_type": {
                             "raw_path": "@default:active",
@@ -532,6 +445,93 @@ _nanonis_sts_dat_generic_5e = {
                                 "z": {
                                     "raw_path": "/Piezo Configuration/Calib. Z/value",
                                     "@units": "/Piezo Configuration/Calib. Z/unit",
+                                }
+                            },
+                        ],
+                        "2nd_order_corr_N[2nd_order_corr_n]": [
+                            {
+                                "x": {
+                                    "raw_path": "/Piezo Configuration/2nd order corr X/value",
+                                    "@units": "/Piezo Configuration/2nd order corr X/unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "raw_path": "/Piezo Configuration/2nd order corr Y/value",
+                                    "@units": "/Piezo Configuration/2nd order corr Y/unit",
+                                }
+                            },
+                        ],
+                        "drift_N[drift_n]": [
+                            {
+                                "x": {
+                                    "value": "/Piezo Configuration/Drift X/value",
+                                    "unit": "/Piezo Configuration/Drift X/unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "value": "/Piezo Configuration/Drift Y/value",
+                                    "unit": "/Piezo Configuration/Drift Y/unit",
+                                }
+                            },
+                            {
+                                "z": {
+                                    "value": "/Piezo Configuration/Drift Z/value",
+                                    "unit": "/Piezo Configuration/Drift Z/unit",
+                                }
+                            },
+                        ],
+                        "hv_gain_N[hv_gain_n]": [
+                            {"x": {"value": "/Piezo Configuration/HV Gain X/value"}},
+                            {"y": {"value": "/Piezo Configuration/HV Gain Y/value"}},
+                            {"z": {"value": "/Piezo Configuration/HV Gain Z/value"}},
+                        ],
+                        "tilt_N[tilt_n]": [
+                            {
+                                "x": {
+                                    "value": "/Piezo Configuration/Tilt X/value",
+                                    "@units": "/Piezo Configuration/Tilt X/unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "value": "/Piezo Configuration/Tilt Y/value",
+                                    "@units": "/Piezo Configuration/Tilt Y/unit",
+                                }
+                            },
+                            {
+                                "z": {
+                                    "value": "/Piezo Configuration/Tilt Z/value",
+                                    "@units": "/Piezo Configuration/Tilt Z/unit",
+                                }
+                            },
+                        ],
+                        "drift_correction_status": {
+                            "raw_path": [
+                                "/Piezo Configuration/Drift correction status/value",
+                                "/Piezo Calibration/Drift correction status/value",
+                            ]
+                        },
+                    },
+                    "piezo_material": {
+                        "curvature_radius_N": [
+                            {
+                                "x": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius X/value",
+                                    "@units": "/Piezo Configuration/Curvature radius X/unit",
+                                }
+                            },
+                            {
+                                "y": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius Y/value",
+                                    "@units": "/Piezo Configuration/Curvature radius Y/unit",
+                                }
+                            },
+                            {
+                                "z": {
+                                    "raw_path": "/Piezo Configuration/Curvature radius Z/value",
+                                    "@units": "/Piezo Configuration/Curvature radius Z/unit",
                                 }
                             },
                         ],

@@ -138,28 +138,29 @@ class NanonisDatSTS(SPMformatter):
         group_name="TEMPERATURE_DATA[temperature_data]",
     ):
         if isinstance(partial_conf_dict, list):
-            for conf_dict in partial_conf_dict:
-                self._NXdata__grp_from_conf_description(
-                    conf_dict, parent_path, group_name
+            for ind, conf_dict in enumerate(partial_conf_dict):
+                self._NXdata_grp_from_conf_description(
+                    conf_dict, parent_path, group_name, ind
                 )
 
     def construct_scan_data_grp(self, partial_conf_dict, parent_path: str, group_name):
         if isinstance(partial_conf_dict, list):
-            for conf_dict in partial_conf_dict:
-                self._NXdata__grp_from_conf_description(
-                    conf_dict, parent_path, group_name
+            for ind, conf_dict in enumerate(partial_conf_dict):
+                self._NXdata_grp_from_conf_description(
+                    conf_dict, parent_path, group_name, group_index=ind
                 )
 
-    def _NXdata__grp_from_conf_description(
+    def _NXdata_grp_from_conf_description_for_bias_spectrocopy(
         self, partial_conf_dict, parent_path: str, group_name: str
     ):
         # TODO: Collect the flip number from eln and multiply it with the
         # data field of the NXdata group
         flip_num = 1
         partial_conf_dict_c = partial_conf_dict.copy()
-        return super()._NXdata__grp_from_conf_description(
+        super()._NXdata_grp_from_conf_description(
             partial_conf_dict_c, parent_path, group_name
         )
+        # Fit data plot according to the flip number
         grp_name_to_embed = partial_conf_dict.get(
             "grp_name", f"data_{self.group_index}"
         )

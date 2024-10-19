@@ -64,20 +64,11 @@ experiment_instrument:
       value: null
       unit: null
   piazo_sensor:
-    Piezo_config_spm:
-      2nd_order_corr_n:
-        value: null
-        unit: null
-      Calibration_coeffecient_n:
-        value: null
-        unit: null
-      calibration_type: null
-      Drift_n: null
-      drift_correction_status: null
-      Hv_gain_n: null
-      Tilt_n:
-        value: null
-        unit: null
+    piezo_configuration:
+      calibration:
+        calibration_name: '4K'
+        calibration_date: '2019-01-01'
+        calibration_type: 'Active'
     Positioner_spm:
       z_controller:
         controller_name: null

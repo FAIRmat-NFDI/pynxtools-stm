@@ -80,9 +80,9 @@ class NanonisSxmSTM(SPMformatter):
         else:
             return _nanonis_stm_sxm_generic_5e
 
-    def _get_eln_dict(self, eln_file: str):
-        # TODO: Implement the method to get the ELN data
-        raise NotImplementedError
+    # def _get_eln_dict(self, eln_file: str):
+    #     # TODO: Implement the method to get the ELN data
+    #     raise NotImplementedError
 
     def construct_scan_pattern_grp(
         self,
@@ -91,7 +91,6 @@ class NanonisSxmSTM(SPMformatter):
         group_name="scan_mesh",
     ):
         """To construct the scan pattern like scan_mesh, scan_spiral (group) etc."""
-
         # Scanner speed
         forward_speed_k = "forward_speed_N[forward_speed_n]"
         forward_speed, unit, _ = _get_data_unit_and_others(
@@ -263,6 +262,10 @@ class NanonisSxmSTM(SPMformatter):
         parent_path: str,
         group_name="SCAN_DATA[scan_data]",
     ):
+        if isinstance(partial_conf_dict, list):
+            # NXdata group will be handled in the general function
+            # walk_through_config_nested_dict
+            return None
         # create multiple groups for scan_data for multiple scans
         data, _, _ = _get_data_unit_and_others(
             data_dict=self.raw_data,
