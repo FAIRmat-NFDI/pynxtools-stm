@@ -25,8 +25,6 @@ to NeXus application definition NXstm.
 from pynxtools_stm.nxformatters.base_formatter import SPMformatter
 from typing import Dict, Optional, Union
 from pathlib import Path
-import itertools
-from dataclasses import dataclass
 import re
 from pynxtools_stm.configs.nanonis_sxm_generic_stm import _nanonis_stm_sxm_generic_5e
 import pynxtools_stm.nxformatters.helpers as fhs
@@ -35,8 +33,6 @@ from pynxtools_stm.nxformatters.helpers import (
     _get_data_unit_and_others,
     _scientific_num_pattern,
     to_intended_t,
-    get_link_compatible_key,
-    replace_variadic_name_part,
 )
 import numpy as np
 
@@ -54,9 +50,12 @@ if TYPE_CHECKING:
 # }
 
 
+# TODO: Add tests for both config files with described NXdata
+# and without described NXdata (for stm and afm)
 class NanonisSxmSTM(SPMformatter):
     _grp_to_func = {
         "SCAN_CONTROL[scan_control]": "_construct_nxscan_controllers",
+        # "DATA[data]": "construct_scan_data_grps",
     }
     _axes = ["x", "y", "z"]
 
@@ -69,7 +68,6 @@ class NanonisSxmSTM(SPMformatter):
         entry: Optional[str] = None,
     ):
         super().__init__(template, raw_file, eln_file, config_file, entry)
-        # self.config_dict: Dict = self._get_conf_dict(config_file)
 
     def get_nxformatted_template(self):
         self.work_though_config_nested_dict(self.config_dict, "")
@@ -79,10 +77,6 @@ class NanonisSxmSTM(SPMformatter):
             return fhs.read_config_file(config_file)
         else:
             return _nanonis_stm_sxm_generic_5e
-
-    # def _get_eln_dict(self, eln_file: str):
-    #     # TODO: Implement the method to get the ELN data
-    #     raise NotImplementedError
 
     def construct_scan_pattern_grp(
         self,
@@ -145,11 +139,12 @@ class NanonisSxmSTM(SPMformatter):
 
         # scan_data group
         scan_data = "SCAN_DATA[scan_data]"
-        self.construct_scan_data_grps(
-            partial_conf_dict=partial_conf_dict[scan_data],
-            parent_path=f"{parent_path}/{group_name}",
-            group_name=scan_data,
-        )
+        if partial_conf_dict.get(scan_data):
+            self.construct_scan_data_grps(
+                partial_conf_dict=partial_conf_dict[scan_data],
+                parent_path=f"{parent_path}/{group_name}",
+                group_name=scan_data,
+            )
 
     def construct_scan_region_grp(
         self,
@@ -226,7 +221,16 @@ class NanonisSxmSTM(SPMformatter):
         raw_key = plot_data_info["data_path"]
         axes = ["x", "y"]
         field_nm = raw_key[1:].replace("/", "_").lower()
-        group_name = group_name.replace("scan_data", field_nm)
+        # Replace group name with field name
+
+        # Group 1 captures the content inside square brackets
+        pattern1 = r".*?\[([a-z0-9_]+)\]"
+
+        # Check for Pattern 1 first (find lowercase content inside square brackets)
+        match1 = re.search(pattern1, group_name)
+        if match1:
+            part_to_be_replaced = match1.group(1)
+            group_name = group_name.replace(part_to_be_replaced, field_nm)
         self.template[f"{parent_path}/{group_name}/@signal"] = field_nm
         self.template[f"{parent_path}/{group_name}/@axes"] = axes
         title = raw_key[1:].replace("/", " ").upper()

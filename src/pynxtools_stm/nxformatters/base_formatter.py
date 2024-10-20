@@ -114,9 +114,13 @@ class SPMformatter(ABC):
         return eln_dict
 
     def work_though_config_nested_dict(self, config_dict: Dict, parent_path: str):
+        if "#note" in config_dict:
+            return
         for key, val in config_dict.items():
             if val is None or val == "":
                 continue
+            # Special case, will be handled in a specific function registerd in
+            # self._grp_to_func
             if key in self._grp_to_func:
                 # First fill the default values
                 self.work_though_config_nested_dict(
@@ -163,6 +167,7 @@ class SPMformatter(ABC):
                         if other_attrs:
                             for k, v in other_attrs.items():
                                 self.template[f"{temp_key}/@{k}"] = v
+
             else:
                 self.work_though_config_nested_dict(val, f"{parent_path}/{key}")
 

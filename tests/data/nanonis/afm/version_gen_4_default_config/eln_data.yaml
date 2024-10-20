@@ -1,6 +1,7 @@
 \@default:
   value: null
   unit: null
+experiment_technique: 'AFM'
 collection_identifier:
   value: null
   unit: null

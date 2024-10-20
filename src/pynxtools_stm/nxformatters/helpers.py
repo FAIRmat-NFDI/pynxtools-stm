@@ -5,7 +5,6 @@ from typing import Optional, Dict, Tuple
 import logging
 from copy import deepcopy
 import numpy as np
-import re
 import json
 
 ureg = UnitRegistry()
@@ -33,7 +32,7 @@ def read_config_file(config_file: str) -> Dict:
     if isinstance(config_file, PosixPath):
         config_file = str(config_file.absulute())
 
-    if config_file.startswith("json"):
+    if config_file.endswith("json"):
         with open(config_file, mode="r", encoding="utf-8") as f_obj:
             config_file = json.load(f_obj)
     else:
@@ -249,7 +248,6 @@ def get_link_compatible_key(key):
             new_parts.append(part[ind_f + 1 : ind_e])
 
     compatible_key = "/" + "/".join(new_parts)
-    print("  #### compatible_key: ", compatible_key)
     return compatible_key
 
 

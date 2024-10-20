@@ -70,7 +70,7 @@ class SPMReader(BaseReader):
         eln_file: str = None
         config_file: Optional[str] = None
         data_file: Optional[str] = ""
-        experirment_type: Optional[str] = None
+        experirment_technique: Optional[str] = None
         raw_file_ext: Optional[str] = None
 
         for file in file_paths:
@@ -83,16 +83,18 @@ class SPMReader(BaseReader):
                 config_file = file
             if ext in ["yaml", "yml"]:
                 eln_file = file
+                with open(file, mode="r", encoding="utf-8") as fl_obj:
+                    eln_dict = yaml.safe_load(fl_obj)
+                    experirment_technique = eln_dict.get("experiment_technique")
+                if experirment_technique is None:
+                    raise ValueError("Experiment technique is not defined in ELN file.")
         if not eln_file:
             raise ValueError("ELN file is required for the reader to work.")
         if not data_file:
             raise ValueError("Data file is required for the reader to work.")
 
-        # TODO: Get experiment type from eln, so include `experiment_type`
-        # in application definition
-        experirment_type = "afm"
         # Get callable object that has parser inside
-        if experirment_type == "stm" and raw_file_ext == "sxm":
+        if experirment_technique == "STM" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonis_sxm_stm import NanonisSxmSTM
 
             nss = NanonisSxmSTM(
@@ -102,7 +104,8 @@ class SPMReader(BaseReader):
                 config_file=config_file,
             )
             nss.get_nxformatted_template()
-        elif experirment_type == "afm" and raw_file_ext == "sxm":
+
+        elif experirment_technique == "AFM" and raw_file_ext == "sxm":
             from pynxtools_stm.nxformatters.nanonis_sxm_afm import NanonisSxmAFM
 
             nsa = NanonisSxmAFM(
@@ -112,7 +115,7 @@ class SPMReader(BaseReader):
                 config_file=config_file,
             )
             nsa.get_nxformatted_template()
-        elif experirment_type == "sts" and raw_file_ext == "dat":
+        elif experirment_technique == "STS" and raw_file_ext == "dat":
             from pynxtools_stm.nxformatters.nanonis_dat_sts import NanonisDatSTS
 
             nds = NanonisDatSTS(
@@ -133,7 +136,6 @@ class SPMReader(BaseReader):
                 continue
 
             filled_template[key] = val
-        print(" ### : ", template)
         # Set nexus def version
         filled_template["/ENTRY[entry]/definition/@version"] = get_nexus_version()
 

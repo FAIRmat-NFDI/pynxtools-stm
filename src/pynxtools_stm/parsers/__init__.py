@@ -178,11 +178,10 @@ def write_spm_raw_file_data(raw_file, output_file=None):
 
     base_name = os.path.basename(raw_file)
     raw_name = base_name.split(".", 1)[0]
-    # TODO: fix it
     data_dict = SPMParser().get_raw_data_dict(raw_file)
     if (
         output_file is not None
-        and isinstance(output_file, str)
+        and os.path.exists(str(output_file).rsplit("/", 1)[0])
         and output_file.endswith(".txt")
     ):
         temp_file = output_file

@@ -1,5 +1,6 @@
 definition:
   '@version': null
+experiment_technique: STM
 hardware:
   vendor:
     value: 'Nanonis'
