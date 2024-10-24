@@ -23,7 +23,7 @@ A default configuration file for Nanonis STS data from dat file.
 
 _nanonis_sts_dat_generic_5e = {
     "ENTRY[entry]": {
-        "definition": {"@version": None},
+        "definition": {"@version": ""},
         "experiment_instrument": {
             "LOCKIN[lockin]": {
                 "modulation_status": {
@@ -135,16 +135,16 @@ _nanonis_sts_dat_generic_5e = {
                                 "raw_path": "/Bias Spectroscopy/Z Avg time/value",
                                 "@units": "/Bias Spectroscopy/Z Avg time/unit",
                             },
-                            "z_controller_time": {},
-                            "z_controller_hold": {},
-                            "record_final_z": {},
+                            "z_controller_time": "",
+                            "z_controller_hold": "",
+                            "record_final_z": "",
                         },
                         "z_offset": {
                             "raw_path": "/Bias Spectroscopy/Z offset/value",
                             "@units": "/Bias Spectroscopy/Z offset/unit",
                         },
                     },
-                    "bias_sweep": {  # TODO: Extend in NXspm
+                    "bias_sweep": {
                         "scan_type": "",
                         "settling_time": {
                             "raw_path": "/Bias Spectroscopy/Settling time/value",
@@ -170,8 +170,10 @@ _nanonis_sts_dat_generic_5e = {
                         "scan_region": {
                             "scan_range_bias": "",
                             "scan_offset_bias": {
-                                "raw_path": "/Bias Spectroscopy/Scanfield/value",
-                                "@units": "/Bias Spectroscopy/Scanfield/unit",
+                                "raw_path": [
+                                    "/Bias/Offset/value",
+                                ],
+                                "@units": "/Bias/Offset/unit",
                             },
                             "scan_angle_N[scan_angle_n]": "",
                             "scan_start_bias": {
@@ -186,8 +188,14 @@ _nanonis_sts_dat_generic_5e = {
                         "linear_sweep": {
                             "scan_speed": "",
                             "scan_time": "",
-                            "forward_speed_bias": "",
-                            "backward_speed_bias": "",
+                            "forward_speed_bias": {
+                                "raw_path": "/Scan/speed forw./value",
+                                "@units": "/Scan/speed forw./unit",
+                            },
+                            "backward_speed_bias": {
+                                "raw_path": "/Scan/speed backw./value",
+                                "@units": "/Scan/speed backw./unit",
+                            },
                             "scan_points_bias": {
                                 "raw_path": "/Bias Spectroscopy/Num Pixel/value"
                             },
@@ -195,27 +203,6 @@ _nanonis_sts_dat_generic_5e = {
                             "reset_bias": "",
                             "backward_weep": "",
                             "SCAN_DATA[scan_data]": [
-                                {
-                                    "data": {
-                                        "name": "Current",
-                                        "raw_path": "/dat_mat_components/Current/value",
-                                        "@units": "/dat_mat_components/Current/unit",
-                                    },
-                                    "0": {
-                                        "name": "Bias Voltage",
-                                        "raw_path": [
-                                            "/dat_mat_components/Bias calc/value",
-                                            "/dat_mat_components/Bias/value",
-                                        ],
-                                        "@units": [
-                                            "/dat_mat_components/Bias calc/unit",
-                                            "/dat_mat_components/Bias/unit",
-                                        ],
-                                        # "@long_name": "Bias Voltage",
-                                    },
-                                    "@title": "Bias Spectroscopy",
-                                    "grp_name": "current",
-                                },
                                 {
                                     "data": {
                                         "name": "Lockin Demod 1X",
@@ -298,24 +285,6 @@ _nanonis_sts_dat_generic_5e = {
                                 },
                                 {
                                     "data": {
-                                        "name": "Current(filter)",
-                                        "raw_path": "/dat_mat_components/Current [filt]/value",
-                                        "@units": "/dat_mat_components/Current [filt]/unit",
-                                    },
-                                    "0": {
-                                        "name": "Bias Voltage",
-                                        "raw_path": [
-                                            "/dat_mat_components/Bias [filt]/value",
-                                            "/dat_mat_components/Bias calc/value",
-                                            "/dat_mat_components/Bias/value",
-                                        ],
-                                        "@units": "/dat_mat_components/Bias [filt]/unit",
-                                    },
-                                    "@title": "Bias Spectroscopy(filter)",
-                                    "grp_name": "Current(filter)",
-                                },
-                                {
-                                    "data": {
                                         "name": "Lockin Demod 1X(filter)",
                                         "raw_path": "/dat_mat_components/LI Demod 1 X [filt]/value",
                                         "@units": "/dat_mat_components/LI Demod 1 X [filt]/unit",
@@ -327,7 +296,10 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias calc/value",
                                             "/dat_mat_components/Bias/value",
                                         ],
-                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
                                     },
                                     "@title": "Lockin Demod 1X(filter)",
                                     "grp_name": "Lockin_Demod_1X(filter)",
@@ -345,7 +317,10 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias calc/value",
                                             "/dat_mat_components/Bias/value",
                                         ],
-                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
                                     },
                                     "@title": "Lockin Demod 1Y(filter)",
                                     "grp_name": "Lockin_Demod_1Y(filter)",
@@ -363,7 +338,10 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias calc/value",
                                             "/dat_mat_components/Bias/value",
                                         ],
-                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
                                     },
                                     "@title": "Lockin Demod 2X(filter)",
                                     "grp_name": "Lockin_Demod_2X(filter)",
@@ -381,7 +359,10 @@ _nanonis_sts_dat_generic_5e = {
                                             "/dat_mat_components/Bias calc/value",
                                             "/dat_mat_components/Bias/value",
                                         ],
-                                        "@units": "/dat_mat_components/Bias [filt]/unit",
+                                        "@units": [
+                                            "/dat_mat_components/Bias calc/unit",
+                                            "/dat_mat_components/Bias/unit",
+                                        ],
                                     },
                                     "@title": "Lockin Demod 2Y(filter)",
                                     "grp_name": "Lockin_Demod_2Y(filter)",
@@ -410,17 +391,17 @@ _nanonis_sts_dat_generic_5e = {
                     },
                     "current_gain": {"raw_path": "/Current/Gain/value"},
                 },
-                "independent_controllers": None,
-                "measurement_sensors": None,
+                "independent_controllers": "",
+                "measurement_sensors": "",
             },
             "current_sensor": {
-                "AMPLIFIER[amplifier]": {"current_gain": None},
-                "current": {"@units": None},
+                "AMPLIFIER[amplifier]": {"current_gain": ""},
+                "current": {"@units": ""},
                 "current_calibration": {
-                    "caliberation_time": {"@units": None},
-                    "coefficients": {"@units": None},
+                    "caliberation_time": {"@units": ""},
+                    "coefficients": {"@units": ""},
                 },
-                "current_offset": {"@units": None},
+                "current_offset": {"@units": ""},
             },
             "piazo_sensor": {
                 "piezo_configuration": {
@@ -577,48 +558,26 @@ _nanonis_sts_dat_generic_5e = {
                 "scan_name": {
                     "raw_path": "/Scan/series name/value",
                 },
-                "SCAN_CONTROL[bias_spec_scan_control]": {  # TODO: Rename it bias_spec_scan_control
-                    "scan_name": {  # TODO: Extend in NXspm
+                "SCAN_CONTROL[bias_spec_scan_control]": {
+                    "scan_name": {
                         "raw_path": "/Scan/series name/value",
                     },
                     "mesh_SCAN[mesh_scan]": {
-                        "forward_speed_N[forward_speed_n]": {
-                            "raw_path": "/Scan/speed forw./value",
-                            "@units": "/Scan/speed forw./unit",
-                        },
-                        "backward_speed_N[backward_speed_n]": {
-                            "raw_path": "/Scan/speed backw./value",
-                            "@units": "/Scan/speed backw./unit",
-                        },
-                        "scan_speed": {"@units": None},
-                        "scan_time": {"@units": None},
-                        "SCAN_DATA[scan_data]": None,
+                        "forward_speed_N[forward_speed_n]": "",
+                        "backward_speed_N[backward_speed_n]": "",
+                        "scan_speed": {"@units": ""},
+                        "scan_time": {"@units": ""},
+                        "SCAN_DATA[scan_data]": "",
                     },
                     "scan_region": {
-                        "scan_angle_N[scan_angle_n]": {
-                            "raw_path": "",
-                            "#note": "Handled in construct_scan_region_grp",
-                            "@units": "@default:deg",
-                        },
-                        "scan_offset_N[scan_offset_n]": {
-                            "#note": "Handled in construct_scan_region_grp",
-                            "raw_path": "/Scan/Scanfield/value",
-                        },
-                        "scan_range_N[scan_range_n]": {
-                            "#note": "Handled in construct_scan_region_grp",
-                            "raw_path": "/Scan/Scanfield/value",
-                            "@units": [
-                                "/Scan/Scanfield/unit",
-                                "/X/unit",
-                                "/Y/unit",
-                                "/Z/unit",
-                            ],
-                        },
+                        "scan_angle_N[scan_angle_n]": "",
+                        "scan_offset_N[scan_offset_n]": "",
+                        "scan_range_N[scan_range_n]": "",
                     },
-                    "scan_type": None,  # Check it it is optional
+                    "scan_type": "",
                 },
-                "cryo_bottom_temp": {"@units": None},
-                "cryo_shield_temp": {"@units": None},
+                "cryo_bottom_temp": {"@units": ""},
+                "cryo_shield_temp": {"@units": ""},
                 "tip_temp": {
                     "raw_path": "/Temperature 1/Temperature 1/value",
                     "@units": "/Temperature 1/Temperature 1/unit",
@@ -698,21 +657,107 @@ _nanonis_sts_dat_generic_5e = {
                 ],
             },
         },
+        "DATA[data]": [
+            {
+                "data": {
+                    "name": "Current",
+                    "raw_path": "/dat_mat_components/Current/value",
+                    "@units": "/dat_mat_components/Current/unit",
+                },
+                "0": {
+                    "name": "Bias Voltage",
+                    "raw_path": [
+                        "/dat_mat_components/Bias calc/value",
+                        "/dat_mat_components/Bias/value",
+                    ],
+                    "@units": [
+                        "/dat_mat_components/Bias calc/unit",
+                        "/dat_mat_components/Bias/unit",
+                    ],
+                    # "@long_name": "Bias Voltage",
+                },
+                "@title": "Bias Spectroscopy",
+                "grp_name": "current",
+            },
+            {
+                "data": {
+                    "name": "Current(filter)",
+                    "raw_path": "/dat_mat_components/Current [filt]/value",
+                    "@units": "/dat_mat_components/Current [filt]/unit",
+                },
+                "0": {
+                    "name": "Bias Voltage",
+                    "raw_path": [
+                        "/dat_mat_components/Bias [filt]/value",
+                        "/dat_mat_components/Bias calc/value",
+                        "/dat_mat_components/Bias/value",
+                    ],
+                    "@units": [
+                        "/dat_mat_components/Bias calc/unit",
+                        "/dat_mat_components/Bias/unit",
+                    ],
+                },
+                "@title": "Bias Spectroscopy(filter)",
+                "grp_name": "Current(filter)",
+            },
+            {
+                "data": {
+                    "name": "Current(filter)",
+                    "raw_path": "/dat_mat_components/Current [filt]/value",
+                    "@units": "/dat_mat_components/Current [filt]/unit",
+                },
+                "0": {
+                    "name": "Bias Voltage",
+                    "raw_path": [
+                        "/dat_mat_components/Bias [filt]/value",
+                        "/dat_mat_components/Bias calc/value",
+                        "/dat_mat_components/Bias/value",
+                    ],
+                    "@units": [
+                        "/dat_mat_components/Bias calc/unit",
+                        "/dat_mat_components/Bias/unit",
+                    ],
+                },
+                "@title": "Bias Spectroscopy(filter)",
+                "grp_name": "Current(filter)",
+            },
+            {
+                "data": {
+                    "name": "Current(backward)",
+                    "raw_path": "/dat_mat_components/Current [bwd]/value",
+                    "@units": "/dat_mat_components/Current [bwd]/unit",
+                },
+                "0": {
+                    "name": "Bias Voltage",
+                    "raw_path": [
+                        "/dat_mat_components/Bias [filt]/value",
+                        "/dat_mat_components/Bias calc/value",
+                        "/dat_mat_components/Bias/value",
+                    ],
+                    "@units": [
+                        "/dat_mat_components/Bias calc/unit",
+                        "/dat_mat_components/Bias/unit",
+                    ],
+                },
+                "@title": "Bias Spectroscopy(Backward)",
+                "grp_name": "Current(Backward)",
+            },
+        ],
         "reproducibility_indicators": {
-            "bias_sweep": None,
-            "current": None,
-            "current_gain": None,
-            "current_offset": None,
-            "reference_frequency": None,
-            "modulation_signal_type": None,
+            "bias_sweep": "",
+            "current": "",
+            "current_gain": "",
+            "current_offset": "",
+            "reference_frequency": "",
+            "modulation_signal_type": "",
         },
         "resolution_indicators": {
-            "bias_sweep": None,
-            "cryo_bottom_temp": None,
-            "cryo_shield_temp": None,
-            "reference_frequency": None,
-            "modulation_signal_type": None,
-            "stm_head_temp": None,
+            "bias_sweep": "",
+            "cryo_bottom_temp": "",
+            "cryo_shield_temp": "",
+            "reference_frequency": "",
+            "modulation_signal_type": "",
+            "stm_head_temp": "",
         },
     }
 }

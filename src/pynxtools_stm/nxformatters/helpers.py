@@ -121,7 +121,9 @@ def _get_data_unit_and_others(
     """
 
     if end_dict is None:
-        end_dict: dict[str:any] = partial_conf_dict[concept_field]
+        end_dict: dict[str:any] = partial_conf_dict.get(concept_field, "")
+        if not end_dict:
+            return "", "", None
 
     raw_path = end_dict.get("raw_path", "")
 
@@ -135,7 +137,7 @@ def _get_data_unit_and_others(
         raw_data = raw_path.split("@default:")[-1]
     else:
         raw_data = data_dict.get(raw_path)
-    unit_des = end_dict.get("@units", None)
+    unit_path = end_dict.get("@units", None)
 
     try:
         val_copy = deepcopy(end_dict)
@@ -144,15 +146,15 @@ def _get_data_unit_and_others(
     except KeyError:
         pass
 
-    if unit_des and isinstance(unit_des, list):
-        for unit_item in unit_des:
+    if unit_path and isinstance(unit_path, list):
+        for unit_item in unit_path:
             unit = data_dict.get(unit_item, None)
             if unit is not None:
                 break
-    elif unit_des and unit_des.startswith("@default:"):
-        unit = unit_des.split("@default:")[-1]
+    elif unit_path and unit_path.startswith("@default:"):
+        unit = unit_path.split("@default:")[-1]
     else:
-        unit = data_dict.get(unit_des, None)
+        unit = data_dict.get(unit_path, None)
     # TODO: write a function that write other attributes in general and use that func where this function is used
     return raw_data, _verify_unit(unit=unit), val_copy
 

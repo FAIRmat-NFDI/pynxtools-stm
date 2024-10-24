@@ -9,7 +9,7 @@ cwd = os.getcwd()
 
 
 def run_converter():
-    technique = "afm"
+    technique = "sts"
     default_config = False
     is_config_described = True
     data_file = None
@@ -20,9 +20,10 @@ def run_converter():
     input_files = []
     if technique == "sts":
         nxdl = "NXspm"
-        data_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/sts_nanonis_5e/STS_nanonis_generic_5e_1.dat"
+        data_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e/STS_nanonis_generic_5e_1.dat"
+        eln_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e/eln_data.yaml"
         reader = "spm"
-        output = "output_sts.nxs"
+        output = "sts_5e_default_config.nxs"
         input_files = [data_file, eln_file]
     elif technique == "afm" and default_config:
         nxdl = "NXafm"
