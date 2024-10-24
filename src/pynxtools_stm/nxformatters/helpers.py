@@ -291,6 +291,16 @@ def replace_variadic_name_part(name, part_to_embed):
         return name
 
 
+def cal_dx_by_dy(x_val: np.ndarray, y_val: np.ndarray) -> np.ndarray:
+    """Calc conductance (dI/dV) or gradiant dx/dy for x-variable and y-variable also return the result."""
+    dx_ = x_val[0::2] - x_val[1::2]
+    dy_ = y_val[0::2] - y_val[1::2]
+
+    dx_by_dy = dx_ / dy_
+
+    return dx_by_dy
+
+
 def transfer_plain_template_to_nested_dict(template, nested_dict):
     """TODO: Write a doc compatibel with doc test write test in pytest."""
 

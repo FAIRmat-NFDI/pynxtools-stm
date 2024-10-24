@@ -53,6 +53,11 @@ CONVERT_DICT = {
     "Mesh_scan": "mesh_SCAN[mesh_scan]",
 }
 
+PINT_QUANTITY_MAPPING = {
+    "[mass] * [length] ** 2 / [time] ** 3 / [current]": "voltage",
+    "[current]": "current",
+}
+
 
 @dataclass
 class NXdata:
@@ -146,7 +151,7 @@ class SPMformatter(ABC):
                 for item in val:
                     # Handle to construct nxdata group
                     if "@title" in item or "grp_name" in item and "data" in item:
-                        self._NXdata_grp_from_conf_description(
+                        _ = self._NXdata_grp_from_conf_description(
                             partial_conf_dict=item,
                             parent_path=parent_path,
                             group_name=key,
@@ -239,8 +244,13 @@ class SPMformatter(ABC):
         **kwarg,
     ): ...
 
+    # TODO: Try to use decorator to ge the group name at some later stage
     def _NXdata_grp_from_conf_description(
-        self, partial_conf_dict, parent_path: str, group_name: str, group_index=0
+        self,
+        partial_conf_dict,
+        parent_path: str,
+        group_name: str,
+        group_index=0,
     ):
         """Example NXdata dict descrioption from config
         partial_conf_dict = {
@@ -264,16 +274,22 @@ class SPMformatter(ABC):
             "@title": "Bias Spectroscopy Temperature1(filter)",
             "grp_name": "temperature1(filter)",
         }
-
-        "data" -> Signal data of "temperature1(filter)" denoted by
-                  the name key.
-        "0" -> Index of the axis if "axis_ind" is not provided.
-                Here both are same. Name of the axis is denotec
-                by the name key.
-        "title" -> Title of the main plot.
-        "grp_name" -> Name of the NXdata group.
-
         To get the proper relation please visit:
+
+        args:
+        -----
+            "data" -> Signal data of "temperature1(filter)" denoted by
+                    the name key.
+            "0" -> Index of the axis if "axis_ind" is not provided.
+                    Here both are same. Name of the axis is denotec
+                    by the name key.
+            "title" -> Title of the main plot.
+            "grp_name" -> Name of the NXdata group.
+
+        return:
+        -------
+            str: Name of the NXdata group.
+
         """
         grp_name_to_embed = partial_conf_dict.get("grp_name", f"data_{group_index}")
         if "grp_name" in partial_conf_dict:
@@ -347,3 +363,5 @@ class SPMformatter(ABC):
                 continue
             elif key.startswith("@"):
                 self.template[f"{parent_path}/{nxdata_group}/{key}"] = val
+
+        return nxdata_group

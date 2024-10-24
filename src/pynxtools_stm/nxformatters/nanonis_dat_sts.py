@@ -21,10 +21,13 @@ to NeXus application definition NXstm.
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from pynxtools_stm.nxformatters.base_formatter import SPMformatter
-from typing import Dict, Optional, Union
+from pynxtools_stm.nxformatters.base_formatter import (
+    SPMformatter,
+    PINT_QUANTITY_MAPPING,
+)
+from typing import Dict
 from pathlib import Path
-from dataclasses import dataclass
+from pint import UnitRegistry
 import re
 from pynxtools_stm.configs.nanonis_dat_generic_sts import _nanonis_sts_dat_generic_5e
 import pynxtools_stm.nxformatters.helpers as fhs
@@ -32,11 +35,11 @@ from pynxtools.dataconverter.template import Template
 from pynxtools_stm.nxformatters.helpers import (
     _get_data_unit_and_others,
     _scientific_num_pattern,
-    to_intended_t,
-    get_link_compatible_key,
-    replace_variadic_name_part,
 )
+from pynxtools_stm.nxformatters.helpers import cal_dx_by_dy
 import numpy as np
+
+ureg = UnitRegistry()
 
 
 class NanonisDatSTS(SPMformatter):
@@ -62,10 +65,6 @@ class NanonisDatSTS(SPMformatter):
             return fhs.read_config_file(config_file)
         return _nanonis_sts_dat_generic_5e
 
-    def _get_eln_dict(self, eln_file: str):
-        # TODO: Implement this function
-        raise NotImplementedError
-
     def get_nxformatted_template(self):
         self._format_template_from_eln()
         self.work_though_config_nested_dict(self.config_dict, "")
@@ -77,18 +76,27 @@ class NanonisDatSTS(SPMformatter):
         group_name="scan_region",
     ):
         # Note: This function is for 'scan_region' under the scan_control
-        # and 'scan_region' from 'bias_spec_scan_control'
+        # and 'scan_region' from 'bias_spec_scan_control' group
 
-        # scan range e.g. raw data path "3.11737E-9;29.1583E-9;15E-9;15E-9;0E+0"
+        # scan range e.g. raw data "3.11737E-9;29.1583E-9;15E-9;15E-9;0E+0"
         # that consists [offset_x, offset_y, range_x, range_y, angle]
-        if parent_path.endswith("bias_spec_scan_control"):
-            scan_range = "scan_range_N[scan_range_n]"
-            scan_ranges, unit, _ = _get_data_unit_and_others(
-                data_dict=self.raw_data,
-                partial_conf_dict=partial_conf_dict,
-                concept_field=scan_range,
-            )
-        else:
+        # if parent_path.endswith("bias_spec_scan_control"):
+        #     scan_range = "scan_range_N[scan_range_n]"
+        #     scan_ranges, unit, _ = _get_data_unit_and_others(
+        #         data_dict=self.raw_data,
+        #         partial_conf_dict=partial_conf_dict,
+        #         concept_field=scan_range,
+        #     )
+        # else:
+        #     return
+
+        scan_range = "scan_range_N[scan_range_n]"
+        scan_ranges, unit, _ = _get_data_unit_and_others(
+            data_dict=self.raw_data,
+            partial_conf_dict=partial_conf_dict,
+            concept_field=scan_range,
+        )
+        if not scan_ranges:
             return
 
         gbl_scan_ranges = re.findall(_scientific_num_pattern, scan_ranges)
@@ -139,43 +147,86 @@ class NanonisDatSTS(SPMformatter):
     ):
         if isinstance(partial_conf_dict, list):
             for ind, conf_dict in enumerate(partial_conf_dict):
-                self._NXdata_grp_from_conf_description(
+                _ = self._NXdata_grp_from_conf_description(
                     conf_dict, parent_path, group_name, ind
                 )
 
     def construct_scan_data_grp(self, partial_conf_dict, parent_path: str, group_name):
         if isinstance(partial_conf_dict, list):
             for ind, conf_dict in enumerate(partial_conf_dict):
-                self._NXdata_grp_from_conf_description(
+                _ = self._NXdata_grp_from_conf_description(
                     conf_dict, parent_path, group_name, group_index=ind
                 )
 
-    def _NXdata_grp_from_conf_description_for_bias_spectrocopy(
-        self, partial_conf_dict, parent_path: str, group_name: str
-    ):
-        # TODO: Collect the flip number from eln and multiply it with the
-        # data field of the NXdata group
-        flip_num = 1
-        partial_conf_dict_c = partial_conf_dict.copy()
-        super()._NXdata_grp_from_conf_description(
-            partial_conf_dict_c, parent_path, group_name
-        )
-        # Fit data plot according to the flip number
-        grp_name_to_embed = partial_conf_dict.get(
-            "grp_name", f"data_{self.group_index}"
-        )
-        if "grp_name" in partial_conf_dict:
-            del partial_conf_dict["grp_name"]
-
-        grp_name_to_embed_fit = grp_name_to_embed.replace(" ", "_").lower()
-        nxdata_group = replace_variadic_name_part(group_name, grp_name_to_embed_fit)
-        grp_data = partial_conf_dict.get("data", None)
-        fld_nm = grp_data.get("name", "")
-        field_nm_fit = fld_nm.replace(" ", "_").lower()
-        fld_data = self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"]
-        self.template[f"{parent_path}/{nxdata_group}/{field_nm_fit}"] = (
-            flip_num * fld_data
-        )
-
     def _construct_nxscan_controllers(self, partial_conf_dict, parent_path, group_name):
         pass
+
+    def _construct_dI_dV_grp(self, IV_dict, parent_path, group_name):
+        di_by_dv = cal_dx_by_dy(IV_dict["current_fld"], IV_dict["voltage_fld"])
+        self.template[f"{parent_path}/{group_name}/dI_by_dV"] = di_by_dv
+        self.template[f"{parent_path}/{group_name}/dI_by_dV/@units"] = str(
+            ureg(IV_dict["current_unit"] + "/" + IV_dict["voltage_unit"]).units
+        )
+        self.template[f"{parent_path}/{group_name}/@signal"] = "dI_by_dV"
+        axis = IV_dict["voltage_fld_name"]
+        self.template[f"{parent_path}/{group_name}/@axes"] = [axis]
+        self.template[f"{parent_path}/{group_name}/{axis}"] = IV_dict["voltage_fld"]
+        self.template[f"{parent_path}/{group_name}/{axis}/@units"] = IV_dict[
+            "voltage_unit"
+        ]
+        self.template[f"{parent_path}/{group_name}/@title"] = "dI by dV (Conductance)"
+
+    def _NXdata_grp_from_conf_description(
+        self, partial_conf_dict, parent_path, group_name, group_index=0
+    ):
+        group_name = super()._NXdata_grp_from_conf_description(
+            partial_conf_dict, parent_path, group_name, group_index
+        )
+
+        if group_name is None:
+            return
+        current_group = {
+            "current_fld": "",
+            "current_unit": "",
+            "current_fld_name": "",
+            "voltage_fld": "",
+            "voltage_unit": "",
+            "voltage_fld_name": "",
+        }
+        current = False
+        voltage = False
+        # check if group is current group
+        for key, val in self.template.items():
+            if key.startswith(parent_path + "/" + group_name):
+                if key.endswith("@units"):
+                    current = (
+                        PINT_QUANTITY_MAPPING.get(str(ureg(val).dimensionality))
+                        == "current"
+                        or current
+                    )
+                    if current and not current_group["current_unit"]:
+                        current_group["current_unit"] = val
+                        current_group["current_fld"] = self.template[key[0:-7]]
+                        current_group["current_fld_name"] = key[0:-7].split("/")[-1]
+
+                    voltage = (
+                        PINT_QUANTITY_MAPPING.get(str(ureg(val).dimensionality))
+                        == "voltage"
+                        or voltage
+                    )
+                    if voltage and not current_group["voltage_unit"]:
+                        current_group["voltage_unit"] = val
+                        current_group["voltage_fld"] = self.template[key[0:-7]]
+                        current_group["voltage_fld_name"] = key[0:-7].split("/")[-1]
+
+                    if current and voltage:
+                        group_name_grad = (
+                            f"{group_name[0:-1]}_grad]"
+                            if group_name[-1] == "]"
+                            else f"{group_name}_grad"
+                        )
+                        self._construct_dI_dV_grp(
+                            current_group, parent_path, group_name_grad
+                        )
+
+        return group_name

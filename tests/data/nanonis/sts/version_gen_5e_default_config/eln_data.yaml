@@ -1,0 +1,140 @@
+definition:
+  '@version': null
+experiment_technique: STS
+hardware:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 5e'
+  model/@version:
+    value: 'Generic 5e'
+software:
+  vendor:
+    value: 'Nanonis'
+  model:
+    value: 'Generic 5e'
+  model/@version:
+    value: 'Generic 5e'
+scan_mode:
+  value: null
+experiment_description: null
+experiment_identifier: null
+experiment_instrument:
+  Lockin:
+    modulation_status:
+      value: null
+    reference_frequency:
+      value: null
+      unit: null
+    reference_amplitude:
+      value: null
+      unit: null
+    reference_phase:
+      value: null
+      unit: null
+    lockin_current_flip_value:
+      value: -1.0
+  Temperature:
+    Channel_temp: null
+    Temperature_data: null
+    temperature:
+      value: null
+      unit: null
+    temperature_calibration:
+      coefficients:
+        value: null
+        unit: null
+  bias_spectroscopy_environment:
+    Bias_spectroscopy:
+      bias_flip_value:
+        value: null
+      Positioner_spm:
+        z_controller:
+          record_final_z: null
+          z_average_time:
+            value: null
+            unit: null
+          z_controller_hold: null
+          z_controller_time:
+            value: null
+            unit: null
+      bias_sweep:
+        scan_type:
+          value: null
+        linear_sweep:
+          reset_bias: null
+          scan_points_bias: null
+          step_size_bias:
+            value: null
+            unit: null
+        scan_region:
+          scan_end_bias:
+            value: null
+            unit: null
+          scan_offset_bias:
+            value: null
+            unit: null
+          scan_range_bias:
+            value: null
+            unit: null
+          scan_start_bias:
+            value: null
+            unit: null
+        settling_time:
+          value: null
+          unit: null
+  current_sensor:
+    Amplifier: null
+  hardware:
+    model:
+      '@version': null
+    vendor: null
+  piazo_sensor:
+    piezo_configuration::
+      calibration:
+        calibration_type: 'Active'
+        caliberation_name: '4k'
+        calibration_date: '2019-01-01'
+
+    Positioner_spm:
+      z_controller:
+        controller_status:
+          value: null
+        controller_name:
+          value: null
+        set_point:
+          value: null
+          unit: null
+        z: null
+  real_time_controller:
+    rcs_frequency: null
+  sample_bias_votage:
+    bias_calibration:
+      caliberation_time:
+        value: null
+        unit: null
+      coefficients:
+        value: null
+        unit: null
+    bias_offset:
+      value: null
+      unit: null
+    bias_voltage:
+      value: null
+      unit: null
+  scan_environment:
+    tip_temp:
+      value: null
+      unit: null
+    cryo_bottom_temp:
+      value: null
+      unit: null
+    cryo_shield_temp:
+      value: null
+      unit: null
+Sample:
+  name: null
+  sample_environment:
+    sample_bias_voltage: null
+reproducibility_indicators: null
+resolution_indicators: null
