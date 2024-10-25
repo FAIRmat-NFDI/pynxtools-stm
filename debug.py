@@ -18,13 +18,21 @@ def run_converter():
     output = None
     nxdl = None
     input_files = []
-    if technique == "sts":
+    if technique == "sts" and default_config:
         nxdl = "NXspm"
-        data_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e/STS_nanonis_generic_5e_1.dat"
-        eln_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e/eln_data.yaml"
+        data_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e_default_config/STS_nanonis_generic_5e_1.dat"
+        eln_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e_default_config/eln_data.yaml"
         reader = "spm"
         output = "sts_5e_default_config.nxs"
         input_files = [data_file, eln_file]
+    elif technique == "sts" and not default_config:
+        nxdl = "NXspm"
+        data_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e_with_described_nxdata/STS_nanonis_generic_5e_1.dat"
+        eln_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e_with_described_nxdata/eln_data.yaml"
+        config_file = "/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/sts/version_gen_5e_with_described_nxdata/config.json"
+        reader = "spm"
+        output = "sts_5e_default_config.nxs"
+        input_files = [data_file, eln_file, config_file]
     elif technique == "afm" and default_config:
         nxdl = "NXafm"
         data_file = f"{cwd}/tests/data/nanonis/afm/version_gen_4_default_config/A151216.123306-02602.sxm"

@@ -193,9 +193,9 @@ class NanonisDatSTS(SPMformatter):
             "voltage_unit": "",
             "voltage_fld_name": "",
         }
+        current_field_to_data = {}
         current = False
         voltage = False
-        # check if group is current group
         for key, val in self.template.items():
             if key.startswith(parent_path + "/" + group_name):
                 if key.endswith("@units"):
@@ -208,6 +208,7 @@ class NanonisDatSTS(SPMformatter):
                         current_group["current_unit"] = val
                         current_group["current_fld"] = self.template[key[0:-7]]
                         current_group["current_fld_name"] = key[0:-7].split("/")[-1]
+                        current_field_to_data[key[0:-7]] = self.template[key[0:-7]]
 
                     voltage = (
                         PINT_QUANTITY_MAPPING.get(str(ureg(val).dimensionality))
@@ -218,15 +219,25 @@ class NanonisDatSTS(SPMformatter):
                         current_group["voltage_unit"] = val
                         current_group["voltage_fld"] = self.template[key[0:-7]]
                         current_group["voltage_fld_name"] = key[0:-7].split("/")[-1]
-
-                    if current and voltage:
-                        group_name_grad = (
-                            f"{group_name[0:-1]}_grad]"
-                            if group_name[-1] == "]"
-                            else f"{group_name}_grad"
-                        )
-                        self._construct_dI_dV_grp(
-                            current_group, parent_path, group_name_grad
-                        )
+        # check if group is current group and calculatre dI/dV
+        if current and voltage:
+            flip_number = None
+            for key, val in self.eln.items():
+                if key.endswith("lockin_current_flip_value") and val is not None:
+                    flip_number = val
+            if flip_number is None:
+                raise ValueError(
+                    "Flip number for lockin current must be suplied via eln."
+                )
+            if len(current_field_to_data) != 1:
+                raise ValueError("Each group can have only one current field.")
+            current_field, value = list(current_field_to_data.items())[0]
+            self.template[current_field] = flip_number * value
+            group_name_grad = (
+                f"{group_name[0:-1]}_grad]"
+                if group_name[-1] == "]"
+                else f"{group_name}_grad"
+            )
+            self._construct_dI_dV_grp(current_group, parent_path, group_name_grad)
 
         return group_name

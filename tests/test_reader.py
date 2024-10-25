@@ -14,11 +14,11 @@ module_dir = os.path.dirname(os.path.abspath(__file__))
     "nxdl,reader_name,files_or_dir",
     [
         # ("NXstm", "spm", f"{module_dir}/data/nanonis/stm/version_gen_4_5"),
-        # (
-        #     "NXspm",
-        #     "spm",
-        #     f"{module_dir}/data/nanonis/stm/version_gen_4_5_with_described_nxdata",
-        # ),
+        (
+            "NXspm",
+            "spm",
+            f"{module_dir}/data/nanonis/sts/version_gen_5e_with_described_nxdata",
+        ),
         (
             "NXspm",
             "spm",
