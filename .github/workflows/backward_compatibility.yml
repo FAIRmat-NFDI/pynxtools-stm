@@ -12,8 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # pynxtools_versions: ["master", "basiceln_filename"]
-        pynxtools_versions: ["basiceln_filename"]
+        pynxtools_versions: ["master"]
     steps:
       - uses: actions/checkout@v2
         with:
