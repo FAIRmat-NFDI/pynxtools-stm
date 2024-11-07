@@ -379,7 +379,7 @@ _nanonis_sts_dat_generic_5e = {
                         "@units": "/Current/Current/unit",
                     },
                     "current_calibration": {
-                        "caliberation_time": "",
+                        "calibration_time": "",
                         "coefficients": {
                             "raw_path": "/Current/Calibration/value",
                             "@units": "/Current/Calibration/unit",
@@ -398,12 +398,12 @@ _nanonis_sts_dat_generic_5e = {
                 "AMPLIFIER[amplifier]": {"current_gain": ""},
                 "current": {"@units": ""},
                 "current_calibration": {
-                    "caliberation_time": {"@units": ""},
+                    "calibration_time": {"@units": ""},
                     "coefficients": {"@units": ""},
                 },
                 "current_offset": {"@units": ""},
             },
-            "piazo_sensor": {
+            "piezo_sensor": {
                 "piezo_configuration": {
                     "calibration": {
                         "calibration_type": {

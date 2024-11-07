@@ -78,11 +78,11 @@ experiment_instrument:
     model:
       '@version': null
     vendor: null
-  piazo_sensor:
+  piezo_sensor:
     piezo_configuration::
       calibration:
         calibration_type: 'Active'
-        caliberation_name: '4k'
+        calibration_name: '4k'
         calibration_date: '2019-01-01'
 
     Positioner_spm:
@@ -99,7 +99,7 @@ experiment_instrument:
     rcs_frequency: null
   sample_bias_votage:
     bias_calibration:
-      caliberation_time:
+      calibration_time:
         value: null
         unit: null
       coefficients:

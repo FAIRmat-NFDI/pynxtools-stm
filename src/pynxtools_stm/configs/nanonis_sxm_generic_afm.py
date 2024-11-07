@@ -55,48 +55,6 @@ _nanonis_afm_sxm_generic_5e = {
                         "@units": "/Oscillation Control/Reference Phase/@unit",
                     },
                     "frequency_harmonic": {"raw_path": "/Oscillation Control/Harmonic"},
-                    "cantilever_phase_positioner": {
-                        "actuator": {
-                            "feedback": {
-                                "K_p_value[k_p_value]": {
-                                    "raw_path": "/Oscillation Control/Phase P gain",
-                                    "@units": "/Oscillation Control/Phase P gain/@unit",
-                                },
-                                "K_i_value[k_i_value]": {
-                                    "raw_path": "/Oscillation Control/Phase I gain",
-                                    "@units": "/Oscillation Control/Phase I gain/@unit",
-                                },
-                                "K_d_value[k_d_value]": "",
-                                "K_t_const[k_t_const]": "",
-                            },
-                        },
-                    },
-                    "cantilever_frequency_positioner": {
-                        "actuator": {
-                            "feedback": {
-                                "K_p_value[k_p_value]": "",
-                                "K_i_value[k_i_value]": "",
-                                "K_d_value[k_d_value]": "",
-                                "K_t_const[k_t_const]": "",
-                            },
-                        },
-                    },
-                    "cantilever_amplitude_positioner": {
-                        "actuator": {
-                            "feedback": {
-                                "K_p_value[k_p_value]": {
-                                    "raw_path": "/Oscillation Control/Amplitude P gain",
-                                    "@units": "/Oscillation Control/Amplitude P gain/@unit",
-                                },
-                                "K_i_value[k_i_value]": {
-                                    "raw_path": "/Oscillation Control/Amplitude I gain",
-                                    "@units": "/Oscillation Control/Amplitude I gain/@unit",
-                                },
-                                "K_d_value[k_d_value]": "",
-                                "K_t_const[k_t_const]": "",
-                            },
-                        },
-                    },
                     "oscillator_excitation": {
                         "raw_path": "//Oscillation Control/Excitation",
                         "@units": "/Oscillation Control/Excitation/@unit",
@@ -119,6 +77,48 @@ _nanonis_afm_sxm_generic_5e = {
                         "amplitude_excitation": {
                             "raw_path": "/Oscillation Control/PLL-Setup amplitude/excitation",
                             "@units": "/Oscillation Control/PLL-Setup amplitude/excitation/@unit",
+                        },
+                        "cantilever_phase_positioner": {
+                            "actuator": {
+                                "feedback": {
+                                    "K_p_value[k_p_value]": {
+                                        "raw_path": "/Oscillation Control/Phase P gain",
+                                        "@units": "/Oscillation Control/Phase P gain/@unit",
+                                    },
+                                    "K_i_value[k_i_value]": {
+                                        "raw_path": "/Oscillation Control/Phase I gain",
+                                        "@units": "/Oscillation Control/Phase I gain/@unit",
+                                    },
+                                    "K_d_value[k_d_value]": "",
+                                    "K_t_const[k_t_const]": "",
+                                },
+                            },
+                        },
+                        "cantilever_frequency_positioner": {
+                            "actuator": {
+                                "feedback": {
+                                    "K_p_value[k_p_value]": "",
+                                    "K_i_value[k_i_value]": "",
+                                    "K_d_value[k_d_value]": "",
+                                    "K_t_const[k_t_const]": "",
+                                },
+                            },
+                        },
+                        "cantilever_amplitude_positioner": {
+                            "actuator": {
+                                "feedback": {
+                                    "K_p_value[k_p_value]": {
+                                        "raw_path": "/Oscillation Control/Amplitude P gain",
+                                        "@units": "/Oscillation Control/Amplitude P gain/@unit",
+                                    },
+                                    "K_i_value[k_i_value]": {
+                                        "raw_path": "/Oscillation Control/Amplitude I gain",
+                                        "@units": "/Oscillation Control/Amplitude I gain/@unit",
+                                    },
+                                    "K_d_value[k_d_value]": "",
+                                    "K_t_const[k_t_const]": "",
+                                },
+                            },
                         },
                     },
                     "frequency_shift": {
@@ -184,12 +184,12 @@ _nanonis_afm_sxm_generic_5e = {
                 "AMPLIFIER[amplifier]": {"current_gain": None},
                 "current": {"@units": None},
                 "current_calibration": {
-                    "caliberation_time": {"@units": None},
+                    "calibration_time": {"@units": None},
                     "coefficients": {"@units": None},
                 },
                 "current_offset": {"@units": None},
             },
-            "piazo_sensor": {
+            "piezo_sensor": {
                 "piezo_configuration": {
                     "calibration": {
                         "calibration_type": {

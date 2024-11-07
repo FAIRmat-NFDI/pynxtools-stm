@@ -56,7 +56,7 @@ experiment_instrument:
     Positioner_spm: null
     piezo_material: null
   photo_detector: null
-  piazo_sensor:
+  piezo_sensor:
     piezo_configuration:
       calibration:
         calibration_type: 'BBctive'

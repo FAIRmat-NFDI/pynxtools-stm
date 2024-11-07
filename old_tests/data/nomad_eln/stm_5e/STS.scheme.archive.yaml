@@ -304,7 +304,7 @@ definitions:
                         eln:
                           component: StringEditQuantity
                       description: |
-                        The name of caliberation type. (e.g. LHe).
+                        The name of calibration type. (e.g. LHe).
                     drift_correction_status:
                       type: bool
                       m_annotations:

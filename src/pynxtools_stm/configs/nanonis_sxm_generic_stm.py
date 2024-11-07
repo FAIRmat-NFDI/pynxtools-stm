@@ -144,7 +144,7 @@ _nanonis_stm_sxm_generic_5e = {
                         "raw_path": "/Current/Calibration",
                         "@units": "/Current/Calibration/@unit",
                     },
-                    "caliberation_time": "",
+                    "calibration_time": "",
                 },
                 "AMPLIFIER[amplifier]": {"current_gain": {"raw_path": "/Current/Gain"}},
             },
@@ -306,13 +306,13 @@ _nanonis_stm_sxm_generic_5e = {
                     "AMPLIFIER[amplifier]": {"current_gain": ""},
                     "current": "",
                     "current_calibration": {
-                        "caliberation_time": "",
+                        "calibration_time": "",
                         "coefficients": "",
                     },
                     "current_offset": "",
                 },
             },
-            "piazo_sensor": {
+            "piezo_sensor": {
                 "peizo_configuration": {
                     "calibration": {
                         "calibration_type": {

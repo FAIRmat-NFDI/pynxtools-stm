@@ -94,3 +94,40 @@ if __name__ == "__main__":
     #     raw_file=data_file,
     #     output_file="/home/rubel/NOMAD-FAIRmat/GH/pynxtools-stm/tests/data/nanonis/afm/version_gen_4/A151216.123306-02602.txt",
     # )
+
+
+# commit f04ac89a0d67b0d5bf017611c6224f60773b4c50
+# Author: RubelMozumder <32923026+RubelMozumder@users.noreply.github.com>
+# Date:   Thu Oct 31 14:03:25 2024 +0100
+#
+# Update contributed_definitions/nyaml/SPM/NXlockin.yaml
+#
+# commit 72070091da58f24052e1b47ed7b8f95fedca9f39
+# Author: Rubel <rubel.mozumder@outlook.com>
+# Date:   Fri Oct 25 09:24:38 2024 +0200
+#
+# SPM final version 1.
+#
+# commit cbeb14eb4d9c8fc2c340e28962c5b62260b95a8b
+# Author: Rubel <rubel.mozumder@outlook.com>
+# Date:   Wed Oct 23 11:03:06 2024 +0200
+#
+# Final revision.
+
+# commit 8a9931bafd144f57fe39ccb39a99b27acdbd7d13
+# Author: Rubel <rubel.mozumder@outlook.com>
+# Date:   Mon Oct 21 12:52:09 2024 +0200
+
+#     fix docs.
+
+# commit d2d9d831d0a96c9ffb045dcaa78191cba9d27a84
+# Author: Rubel <rubel.mozumder@outlook.com>
+# Date:   Mon Oct 21 12:24:49 2024 +0200
+
+#     Regenerate NXoptical_spectroscopy.
+
+# commit 8d49a32976681376cbb890ee8f9b3be5812968c3
+# Author: Rubel <rubel.mozumder@outlook.com>
+# Date:   Mon Oct 21 12:20:15 2024 +0200
+
+#     Conflict comment from optical spectroscoopy.
