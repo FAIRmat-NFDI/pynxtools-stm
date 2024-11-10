@@ -1,17 +1,40 @@
-# STS Reader
-The prime purpose of the reader is to transform data from measurement files into community-defined concepts constructed by the SPM community which allows experimentalists to store, organize, search, analyze, and share experimental data (only within the [NOMAD](https://nomad-lab.eu/nomad-lab/) platform) among the scientific communities. The reader builds on the [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) application definition and needs an experimental file, a config file and a eln file to transform the experimental data into the [NXsts](https://github.com/FAIRmat-NFDI/nexus_definitions/blob/fairmat/contributed_definitions/NXsts.nxdl.xml) application concepts. 
+# Scanning Probe Microscopy (SPM)
+Scanning Probe Microscopy (SPM) is a high resolution imaging technique used to study material surface at nano scale. The technique can take on a wide range form of experiments catagorized by operating environment (e.g., ambient, valcuum), interaction range, and actuation mode, leading STM (Scanning Tunneling Microscopy), AFM (Atomic Force Microscopy), STS (Scanning Probe Spectroscopy), SPSTM (Spin Polarised STM), MFM (Magnetic Force Microscopy). Thses complex experiments require complex setup of instruments provided by different technology company which turns out diverse data model and data format. How can we compare the diversed data model and data format? Can we interprete the data in a common data model and format accessible to all SPM community? Does the proposed data model follow FAIR data principle?
 
-## Supproted File Formats and File Versions
+Regarding a common data models or schema, we have developed community driven standard application definition, using NeXus[link_goes_here] data format, for SPM[link_goes_here] subdomains e.g., STM[link_goes here], STS[link_goes_here], AFM[link_goes_here] and a few base classes to describe instrument components (e.g. Lock-in[link-goes-here], Cantilever[link-goes-here]). Base on our data model, we build the reader that connects the data from experiment generated raw files to the standard application definition inscribed in a HDF5 file (as we are using NeXus data format in HDF5 file, we may also call it NeXus file with '.nxs' extension).
 
-- Can parse Scanning Tunneling Spectroscopy (STS) from
+
+## SPM Readers
+The prime purpose of the readers is to transform data from measurement files into community-defined concepts constructed by the SPM community which allows experimentalists to store, organize, search, analyze, and share experimental data (only within the [NOMAD](https://nomad-lab.eu/nomad-lab/) research data management (RDM) platform) among the scientific communities. The SPM readers is the bundle of readers from STM, STS and AFM. The readers follow a [common structure](link_to_common_code_structure) that allows to extend existing reader and include new readers for other members (e.g. SPSTM) of SPM family.
+
+### STS reader
+The reader builds on the [NXsts](link from nexus-fairmat page) or [SPM](link from nexus-fairmat page) application definition and needs an experimental file, a config file (optional, we will discuss later) and a eln (eln stands for electronic lab notebook) file to transform the experiment generated data and user provided data into the [NXsts](link from nexus-fairmat page) or [NXspm](link from nexus-fairmat page) application concepts. 
+
+Warning: The config file is a map between the data model from raw experimental file and data model inscribed in application definition, which infer different config files for different software version of the technology company provided setup. Less likely, config file may be different for different lab setups if experimentalist a allowed to modify the default raw data model in experimental file.
+
+#### Supproted File Formats and File Versions
+
+- Current version of SPM reader can parse STS from
     - `.dat` file format from Nanonis: 
-        - Versions: Generic 5e, Generic 4.5
-- Can parse Scanning Tunneling Microscopy (STM) from
-    - `.sxm` file format from Nanonis: 
-        - Versions: Generic 5e, Generic 4.5
+        - Versions: Generic 5e
 
-## NeXus Application Definition
-To define a standardized schema, we chose the [NeXus format](https://www.nexusformat.org/) and we defined an application definition `NXsts` for standardizing data from `STM` as well as `STS` experiments. You can find the application definition and information on related NeXus base classes on the NeXus-FAIRmat page for [Scanning Tunneling Spectroscopy](https://fairmat-nfdi.github.io/nexus_definitions/sts-structure.html).
+### STM Reader
+Like STS reader, STM reader has also the same interface and input files except a different application definition NXstm. 
+
+
+#### Supproted File Formats and File Versions
+- Current version of SPM can parse STM from
+    - `.sxm` file format from Nanonis: 
+        - Versions: Generic 4.5
+
+### AFM Reader
+Like STS and STM readers, AFM follows the same principles for user interface with a application definition specification of NXafm
+
+#### Supproted File Formats and File Versions
+  - Current version of SPM can parse AFM from
+      - `.sxm` file format from Nanonis: 
+          - Versions: Generic 4
+
 
 ## Introduction to Reader Input Files
 To utilize, reuse, or extend the reader, the different reader input files must be understood. The files are using specific semantic rules so that reader can understand the files and work with their content.
