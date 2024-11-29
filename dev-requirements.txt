@@ -208,7 +208,7 @@ pymdown-extensions==10.11.2
     #   mkdocs-material
     #   mkdocs-mermaid2-plugin
     #   mkdocstrings
-pynxtools @ git+https://github.com/FAIRmat-NFDI/pynxtools.git@master
+pynxtools==0.9.0
     # via
     #   -r requirements.txt
     #   pynxtools-stm (pyproject.toml)
@@ -260,7 +260,7 @@ ruamel-yaml==0.18.6
     #   pykwalify
 ruamel-yaml-clib==0.2.12
     # via ruamel-yaml
-ruff==0.7.0
+ruff==0.8.0
     # via pynxtools-stm (pyproject.toml)
 scipy==1.12.0
     # via
