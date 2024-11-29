@@ -41,6 +41,6 @@ jobs:
         run: |
           pytest tests/test_reader.py
       - name: Test Nomad Examples
-        if: "${{ matrix.python_version != '3.8' && matrix.python_version != '3.12'}}"
+        if: "${{ matrix.python_version != '3.8'}}"
         run: |
           pytest tests/test_nomad_examples.py
