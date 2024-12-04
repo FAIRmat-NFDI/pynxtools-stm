@@ -22,14 +22,11 @@ build==1.0.3
     # via pip-tools
 certifi==2024.8.30
     # via requests
-cffconvert==2.0.0
-    # via pynxtools-stm (pyproject.toml)
 charset-normalizer==3.4.0
     # via requests
 click==8.1.7
     # via
     #   -r requirements.txt
-    #   cffconvert
     #   click-default-group
     #   mkdocs
     #   mkdocstrings
@@ -92,8 +89,6 @@ jinja2==3.1.4
     #   mkdocstrings
 jsbeautifier==1.15.1
     # via mkdocs-mermaid2-plugin
-jsonschema==3.2.0
-    # via cffconvert
 kiwisolver==1.4.5
     # via
     #   -r requirements.txt
@@ -201,8 +196,6 @@ pluggy==1.4.0
     # via pytest
 pygments==2.18.0
     # via mkdocs-material
-pykwalify==1.8.0
-    # via cffconvert
 pymdown-extensions==10.11.2
     # via
     #   mkdocs-material
@@ -251,7 +244,6 @@ regex==2024.9.11
     # via mkdocs-material
 requests==2.32.3
     # via
-    #   cffconvert
     #   mkdocs-material
     #   mkdocs-mermaid2-plugin
 ruamel-yaml==0.18.6
