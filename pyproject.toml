@@ -27,7 +27,7 @@ dependencies = [
 ]
 
 [project.urls]
-"GitHub page" = "https://github.com/FAIRmat-NFDI/pynxtools-stm"
+"Homepage" = "https://github.com/FAIRmat-NFDI/pynxtools-stm"
 "Parent Project" =  "https://github.com/FAIRmat-NFDI"
 
 [project.optional-dependencies]
