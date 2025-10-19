@@ -10,3 +10,5 @@
 
  # STS reader 
  For full documentation please visit [GitHub documentation page](https://FAIRmat-NFDI.github.io/pynxtools-stm/)
+
+**NOTE**: For latest and upgraded version of `SPM` (`STM`, `STS` and `AFM`) readers please use the latest package [pynxtools-spm](https://github.com/FAIRmat-NFDI/pynxtools-spm) or [documentation](https://FAIRmat-NFDI.github.io/pynxtools-spm/). No further updates will be available to this repository.
